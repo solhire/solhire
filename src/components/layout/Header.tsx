@@ -6,6 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { FiMenu, FiX, FiSearch, FiUser, FiBriefcase, FiLogOut } from 'react-icons/fi';
+import { useUser } from '@clerk/nextjs';
 
 // Define types for navigation links
 interface NavLink {
@@ -14,49 +15,42 @@ interface NavLink {
   requiresWallet?: boolean;
 }
 
-// Wallet button wrapper component
+// Wallet button wrapper to handle styling
 const WalletButtonWrapper = () => {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) {
-    return (
-      <div className="h-10 w-32 bg-background-dark rounded-full animate-pulse" />
-    );
-  }
-
   return (
-    <WalletMultiButton className="!bg-primary hover:!bg-primary-dark !rounded-full" />
+    <div className="wallet-adapter-button-wrapper">
+      <WalletMultiButton className="wallet-adapter-button" />
+    </div>
   );
 };
+
+// Auth links for login/register
+const authLinks = [
+  { name: 'Login', href: '/login' },
+  { name: 'Register', href: '/register' },
+];
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isWalletConnected, setIsWalletConnected] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   const { connected } = useWallet();
+  const { isLoaded, isSignedIn, user } = useUser();
 
-  // Check authentication status
+  // Check wallet connection status
   useEffect(() => {
-    const checkAuth = () => {
-      const hasToken = localStorage.getItem('solhire_auth_token');
-      setIsAuthenticated(!!hasToken);
-      
+    const checkWallet = () => {
       const hasWallet = localStorage.getItem('solhire_wallet_connected');
       setIsWalletConnected(!!hasWallet);
     };
     
-    checkAuth();
+    checkWallet();
     
-    // Listen for storage events (for when another tab logs in/out)
-    window.addEventListener('storage', checkAuth);
-    return () => window.removeEventListener('storage', checkAuth);
+    // Listen for storage events (for when another tab connects/disconnects wallet)
+    window.addEventListener('storage', checkWallet);
+    return () => window.removeEventListener('storage', checkWallet);
   }, []);
 
   useEffect(() => {
@@ -72,12 +66,28 @@ const Header = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem('solhire_auth_token');
-    localStorage.removeItem('solhire_wallet_connected');
-    setIsAuthenticated(false);
-    setIsWalletConnected(false);
-    router.push('/');
+  const handleLogout = async () => {
+    try {
+      // Call the logout API endpoint
+      await fetch('/api/auth/logout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      // Clear local storage items
+      localStorage.removeItem('solhire_wallet_connected');
+      setIsWalletConnected(false);
+      
+      // Redirect to home page
+      router.push('/');
+      
+      // Reload the page to ensure Clerk session is cleared
+      window.location.reload();
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
   };
 
   const publicNavLinks: NavLink[] = [
@@ -94,150 +104,149 @@ const Header = () => {
     { name: 'Post a Job', href: '/post-a-job', requiresWallet: true },
   ];
 
-  const navLinks = isAuthenticated ? authNavLinks : publicNavLinks;
-
-  const authLinks: NavLink[] = [
-    { name: 'Login', href: '/login' },
-    { name: 'Register', href: '/register' },
-  ];
+  // Use the appropriate nav links based on authentication status
+  const navLinks = isLoaded && isSignedIn ? authNavLinks : publicNavLinks;
 
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled || isMobileMenuOpen ? 'bg-background/95 backdrop-blur-md shadow-lg' : 'bg-transparent'
+        isScrolled ? 'bg-background/90 backdrop-blur-lg shadow-lg' : 'bg-transparent'
       }`}
     >
-      <div className="container-custom">
-        <div className="flex items-center justify-between py-4">
+      <div className="container-custom mx-auto px-4 py-4">
+        <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center relative z-10">
+          <Link href="/" className="flex items-center">
             <span className="text-2xl font-bold text-white">Sol<span className="text-primary">Hire</span></span>
           </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            {navLinks.map((link) => {
-              // Skip wallet-required links if wallet not connected
-              if (link.requiresWallet && !isWalletConnected) return null;
-              // Skip "Post a Job" and "Dashboard" if not authenticated
-              if ((link.name === 'Post a Job' || link.name === 'Dashboard') && !isAuthenticated) return null;
-              
-              return (
-                <Link
-                  key={link.name}
-                  href={link.href}
-                  className={`text-sm font-medium transition-colors ${
-                    link.name === 'Become a Creator' || link.name === 'Post a Job'
-                      ? 'btn btn-primary btn-sm group relative'
-                      : pathname === link.href
-                      ? 'text-primary'
-                      : 'text-gray-300 hover:text-primary'
-                  }`}
-                >
-                  {link.name}
-                  {(link.name === 'Become a Creator' || link.name === 'Post a Job') && (
-                    <div className="absolute inset-0 rounded-full bg-primary/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  )}
-                </Link>
-              );
-            })}
+            {navLinks.map((link) => (
+              <Link
+                key={link.name}
+                href={link.href}
+                className={`text-sm font-medium transition-colors ${
+                  pathname === link.href
+                    ? 'text-primary'
+                    : 'text-gray-300 hover:text-primary'
+                } ${
+                  link.requiresWallet && !connected ? 'opacity-50 pointer-events-none' : ''
+                }`}
+              >
+                {link.name}
+              </Link>
+            ))}
           </nav>
 
-          {/* Search, Auth & Wallet Buttons */}
+          {/* Desktop Right Section */}
           <div className="hidden md:flex items-center space-x-4">
-            <button
-              className="p-2 rounded-full bg-background-light hover:bg-background-light/80 text-gray-300"
+            {/* Search Button */}
+            <Link
+              href="/search"
+              className="p-2 text-gray-300 hover:text-primary transition-colors"
               aria-label="Search"
             >
               <FiSearch className="w-5 h-5" />
-            </button>
-            
-            {!isAuthenticated ? (
-              <div className="flex items-center space-x-4">
-                {authLinks.map((link) => (
-                  <Link
-                    key={link.name}
-                    href={link.href}
-                    className={`text-sm font-medium ${
-                      link.name === 'Register'
-                        ? 'btn btn-primary'
-                        : 'text-gray-300 hover:text-primary'
-                    }`}
-                  >
-                    {link.name}
-                  </Link>
-                ))}
-              </div>
-            ) : (
+            </Link>
+
+            {/* Auth Buttons or User Menu */}
+            {isLoaded && !isSignedIn ? (
               <div className="flex items-center space-x-4">
                 <Link
-                  href="/profile"
-                  className="p-2 rounded-full bg-background-light hover:bg-background-light/80 text-gray-300"
+                  href="/login"
+                  className="text-sm font-medium text-gray-300 hover:text-primary transition-colors"
                 >
-                  <FiUser className="w-5 h-5" />
+                  Log In
                 </Link>
+                <Link href="/register" className="btn btn-primary btn-sm">
+                  Register
+                </Link>
+              </div>
+            ) : (
+              <div className="relative group">
                 <button
-                  onClick={handleLogout}
-                  className="p-2 rounded-full bg-background-light hover:bg-background-light/80 text-gray-300"
+                  className="flex items-center space-x-2 text-gray-300 hover:text-primary transition-colors"
+                  aria-label="User menu"
                 >
-                  <FiLogOut className="w-5 h-5" />
+                  <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+                    <FiUser className="w-4 h-4 text-primary" />
+                  </div>
+                  <span className="text-sm font-medium">{user?.firstName || 'User'}</span>
                 </button>
+
+                {/* Dropdown Menu */}
+                <div className="absolute right-0 mt-2 w-48 bg-background-dark border border-gray-700 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top-right">
+                  <div className="py-1">
+                    <Link
+                      href="/dashboard"
+                      className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-primary"
+                    >
+                      Dashboard
+                    </Link>
+                    <Link
+                      href="/profile"
+                      className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-primary"
+                    >
+                      Profile
+                    </Link>
+                    <button
+                      onClick={handleLogout}
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-primary"
+                    >
+                      Log Out
+                    </button>
+                  </div>
+                </div>
               </div>
             )}
-            
-            {isAuthenticated ? (
+
+            {/* Wallet Button - Only show when authenticated */}
+            {isLoaded && isSignedIn && (
               <WalletButtonWrapper />
-            ) : (
-              null
             )}
           </div>
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden p-2 rounded-full bg-background-light hover:bg-background-light/80 text-gray-300"
+            className="md:hidden text-gray-300 hover:text-primary"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
           >
-            {isMobileMenuOpen ? <FiX className="w-6 h-6" /> : <FiMenu className="w-6 h-6" />}
+            {isMobileMenuOpen ? (
+              <FiX className="w-6 h-6" />
+            ) : (
+              <FiMenu className="w-6 h-6" />
+            )}
           </button>
         </div>
       </div>
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-background border-t border-primary/20 absolute top-full left-0 right-0 shadow-lg">
-          <div className="container-custom py-4">
+        <div className="md:hidden bg-background-dark border-t border-gray-800">
+          <div className="container-custom mx-auto px-4 py-4">
             <nav className="flex flex-col space-y-4">
-              {navLinks.map((link) => {
-                // Skip wallet-required links if wallet not connected
-                if (link.requiresWallet && !isWalletConnected) return null;
-                // Skip "Post a Job" and "Dashboard" if not authenticated
-                if ((link.name === 'Post a Job' || link.name === 'Dashboard') && !isAuthenticated) return null;
-                
-                return (
-                  <Link
-                    key={link.name}
-                    href={link.href}
-                    className={`text-base font-medium transition-colors ${
-                      link.name === 'Become a Creator' || link.name === 'Post a Job'
-                        ? 'btn btn-primary w-full text-center group relative'
-                        : pathname === link.href
-                        ? 'text-primary'
-                        : 'text-gray-300 hover:text-primary'
-                    }`}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    {link.name}
-                    {(link.name === 'Become a Creator' || link.name === 'Post a Job') && (
-                      <div className="absolute inset-0 rounded-full bg-primary/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    )}
-                  </Link>
-                );
-              })}
-              
+              {navLinks.map((link) => (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  className={`text-base font-medium ${
+                    pathname === link.href
+                      ? 'text-primary'
+                      : 'text-gray-300 hover:text-primary'
+                  } ${
+                    link.requiresWallet && !connected ? 'opacity-50 pointer-events-none' : ''
+                  }`}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  {link.name}
+                </Link>
+              ))}
+
               <div className="pt-4 border-t border-gray-700">
                 <div className="flex flex-col space-y-4">
-                  {!isAuthenticated ? (
+                  {isLoaded && !isSignedIn ? (
                     authLinks.map((link) => (
                       <Link
                         key={link.name}
@@ -276,7 +285,7 @@ const Header = () => {
                   )}
                   
                   <div className="pt-2">
-                    {isAuthenticated ? (
+                    {isLoaded && isSignedIn ? (
                       <WalletButtonWrapper />
                     ) : (
                       null
