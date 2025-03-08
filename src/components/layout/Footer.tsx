@@ -41,8 +41,8 @@ const Footer = () => {
   ];
 
   const socialLinks = [
-    { name: 'Twitter', icon: <FiTwitter className="w-5 h-5" />, href: 'https://twitter.com' },
-    { name: 'Instagram', icon: <FiInstagram className="w-5 h-5" />, href: 'https://instagram.com' },
+    { name: 'Twitter', icon: <FiTwitter className="w-5 h-5" />, href: 'https://twitter.com/solhire' },
+    { name: 'Instagram', icon: <FiInstagram className="w-5 h-5" />, href: 'https://instagram.com/solhireus' },
     { name: 'LinkedIn', icon: <FiLinkedin className="w-5 h-5" />, href: 'https://linkedin.com' },
     { name: 'YouTube', icon: <FiYoutube className="w-5 h-5" />, href: 'https://youtube.com' },
     { name: 'GitHub', icon: <FiGithub className="w-5 h-5" />, href: 'https://github.com' },

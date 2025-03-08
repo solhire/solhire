@@ -5,9 +5,10 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
-import { FiMenu, FiX, FiSearch, FiUser, FiBriefcase, FiLogOut } from 'react-icons/fi';
+import { FiMenu, FiX, FiSearch, FiUser, FiBriefcase, FiLogOut, FiMessageSquare } from 'react-icons/fi';
 import { useUser } from '@clerk/nextjs';
 import Image from 'next/image';
+import GlobalChat from '@/components/chat/GlobalChat';
 
 // Define types for navigation links
 interface NavLink {
@@ -35,6 +36,7 @@ const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isWalletConnected, setIsWalletConnected] = useState(false);
+  const [showGlobalChat, setShowGlobalChat] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   const { connected } = useWallet();
@@ -142,6 +144,15 @@ const Header = () => {
 
           {/* Desktop Right Section */}
           <div className="hidden md:flex items-center space-x-4">
+            {/* Global Chat Button */}
+            <button
+              onClick={() => setShowGlobalChat(!showGlobalChat)}
+              className="p-2 rounded-full bg-primary/10 hover:bg-primary/20 text-primary transition-colors relative"
+              aria-label="Global Chat"
+            >
+              <FiMessageSquare className="w-5 h-5" />
+            </button>
+
             {/* Search Button */}
             <Link
               href="/search"
@@ -298,6 +309,12 @@ const Header = () => {
           </div>
         </div>
       )}
+
+      {/* Global Chat Component */}
+      <GlobalChat 
+        isOpen={showGlobalChat} 
+        onClose={() => setShowGlobalChat(false)} 
+      />
     </header>
   );
 };
