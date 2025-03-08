@@ -1,13 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { FiAlertCircle, FiArrowRight, FiCheck } from 'react-icons/fi';
 
-export default function ConnectWallet() {
+// Component to handle wallet connection
+function WalletConnector() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const message = searchParams.get('message');
@@ -36,7 +37,70 @@ export default function ConnectWallet() {
       }, 1500);
     }, 2000);
   };
-  
+
+  return (
+    <>
+      {message && (
+        <div className="mb-6 p-4 bg-primary/10 border border-primary/30 rounded-lg flex items-start">
+          <FiAlertCircle className="text-primary mr-3 mt-0.5 flex-shrink-0" />
+          <p className="text-gray-300 text-sm">{message}</p>
+        </div>
+      )}
+      
+      <div className="text-center mb-8">
+        <p className="text-gray-300">
+          Connect your Solana wallet to access premium features, post jobs, and make secure payments.
+        </p>
+      </div>
+      
+      <div className="space-y-6">
+        {isConnected ? (
+          <div className="p-4 bg-green-900/30 border border-green-800 rounded-lg flex items-center">
+            <FiCheck className="text-green-400 mr-3 flex-shrink-0" />
+            <p className="text-green-400">Wallet connected successfully!</p>
+          </div>
+        ) : (
+          <>
+            {error && (
+              <div className="p-3 bg-red-900/30 border border-red-800 rounded-lg">
+                <p className="text-red-400 text-sm">{error}</p>
+              </div>
+            )}
+            
+            <button
+              onClick={handleConnectWallet}
+              disabled={isConnecting}
+              className="w-full btn btn-primary py-3 flex items-center justify-center group relative overflow-hidden"
+            >
+              {isConnecting ? (
+                <div className="w-5 h-5 rounded-full border-2 border-t-white/30 border-r-white/30 border-b-white/30 border-l-white animate-spin" />
+              ) : (
+                <>
+                  Connect Solana Wallet
+                  <FiArrowRight className="ml-2" />
+                </>
+              )}
+              <div className="absolute inset-0 rounded-full bg-primary/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            </button>
+          </>
+        )}
+      </div>
+    </>
+  );
+}
+
+// Loading fallback
+function WalletConnectorFallback() {
+  return (
+    <div className="space-y-6">
+      <div className="animate-pulse bg-gray-700 h-10 rounded-lg mb-6"></div>
+      <div className="animate-pulse bg-gray-700 h-12 rounded-lg mb-6"></div>
+      <div className="animate-pulse bg-gray-700 h-12 rounded-lg"></div>
+    </div>
+  );
+}
+
+export default function ConnectWallet() {
   return (
     <main className="min-h-screen relative overflow-hidden flex items-center justify-center">
       {/* Background Elements */}
@@ -98,72 +162,30 @@ export default function ConnectWallet() {
               </span>
             </h1>
             
-            {message && (
-              <div className="mb-6 p-4 bg-primary/10 border border-primary/30 rounded-lg flex items-start">
-                <FiAlertCircle className="text-primary mr-3 mt-0.5 flex-shrink-0" />
-                <p className="text-gray-300 text-sm">{message}</p>
-              </div>
-            )}
+            <Suspense fallback={<WalletConnectorFallback />}>
+              <WalletConnector />
+            </Suspense>
             
-            <div className="text-center mb-8">
-              <p className="text-gray-300">
-                Connect your Solana wallet to access premium features, post jobs, and make secure payments.
-              </p>
-            </div>
-            
-            <div className="space-y-6">
-              {isConnected ? (
-                <div className="p-4 bg-green-900/30 border border-green-800 rounded-lg flex items-center">
-                  <FiCheck className="text-green-400 mr-3 flex-shrink-0" />
-                  <p className="text-green-400">Wallet connected successfully!</p>
+            <div className="pt-4 border-t border-gray-800">
+              <h3 className="text-lg font-medium text-white mb-4">Supported Wallets</h3>
+              <div className="grid grid-cols-3 gap-4">
+                <div className="p-3 bg-background-light rounded-lg flex flex-col items-center">
+                  <div className="w-10 h-10 bg-primary/20 rounded-full mb-2 flex items-center justify-center">
+                    <span className="text-primary text-xs">P</span>
+                  </div>
+                  <span className="text-xs text-gray-400">Phantom</span>
                 </div>
-              ) : (
-                <>
-                  {error && (
-                    <div className="p-3 bg-red-900/30 border border-red-800 rounded-lg">
-                      <p className="text-red-400 text-sm">{error}</p>
-                    </div>
-                  )}
-                  
-                  <button
-                    onClick={handleConnectWallet}
-                    disabled={isConnecting}
-                    className="w-full btn btn-primary py-3 flex items-center justify-center group relative overflow-hidden"
-                  >
-                    {isConnecting ? (
-                      <div className="w-5 h-5 rounded-full border-2 border-t-white/30 border-r-white/30 border-b-white/30 border-l-white animate-spin" />
-                    ) : (
-                      <>
-                        Connect Solana Wallet
-                        <FiArrowRight className="ml-2" />
-                      </>
-                    )}
-                    <div className="absolute inset-0 rounded-full bg-primary/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  </button>
-                </>
-              )}
-              
-              <div className="pt-4 border-t border-gray-800">
-                <h3 className="text-lg font-medium text-white mb-4">Supported Wallets</h3>
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="p-3 bg-background-light rounded-lg flex flex-col items-center">
-                    <div className="w-10 h-10 bg-primary/20 rounded-full mb-2 flex items-center justify-center">
-                      <span className="text-primary text-xs">P</span>
-                    </div>
-                    <span className="text-xs text-gray-400">Phantom</span>
+                <div className="p-3 bg-background-light rounded-lg flex flex-col items-center">
+                  <div className="w-10 h-10 bg-primary/20 rounded-full mb-2 flex items-center justify-center">
+                    <span className="text-primary text-xs">S</span>
                   </div>
-                  <div className="p-3 bg-background-light rounded-lg flex flex-col items-center">
-                    <div className="w-10 h-10 bg-primary/20 rounded-full mb-2 flex items-center justify-center">
-                      <span className="text-primary text-xs">S</span>
-                    </div>
-                    <span className="text-xs text-gray-400">Solflare</span>
+                  <span className="text-xs text-gray-400">Solflare</span>
+                </div>
+                <div className="p-3 bg-background-light rounded-lg flex flex-col items-center">
+                  <div className="w-10 h-10 bg-primary/20 rounded-full mb-2 flex items-center justify-center">
+                    <span className="text-primary text-xs">B</span>
                   </div>
-                  <div className="p-3 bg-background-light rounded-lg flex flex-col items-center">
-                    <div className="w-10 h-10 bg-primary/20 rounded-full mb-2 flex items-center justify-center">
-                      <span className="text-primary text-xs">B</span>
-                    </div>
-                    <span className="text-xs text-gray-400">Backpack</span>
-                  </div>
+                  <span className="text-xs text-gray-400">Backpack</span>
                 </div>
               </div>
             </div>

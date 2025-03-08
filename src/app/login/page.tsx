@@ -1,13 +1,14 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { FiMail, FiLock, FiArrowRight, FiAlertCircle } from 'react-icons/fi';
 
-export default function Login() {
+// Component to handle search params
+function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const message = searchParams.get('message');
@@ -35,6 +36,99 @@ export default function Login() {
     }, 1500);
   };
   
+  return (
+    <>
+      {message && (
+        <div className="mb-6 p-4 bg-primary/10 border border-primary/30 rounded-lg flex items-start">
+          <FiAlertCircle className="text-primary mr-3 mt-0.5 flex-shrink-0" />
+          <p className="text-gray-300 text-sm">{message}</p>
+        </div>
+      )}
+      
+      <form onSubmit={handleLogin} className="space-y-6">
+        <div>
+          <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
+            Email Address
+          </label>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <FiMail className="text-gray-500" />
+            </div>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="block w-full pl-10 pr-3 py-3 bg-background border border-gray-700 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary text-white"
+              placeholder="you@example.com"
+            />
+          </div>
+        </div>
+        
+        <div>
+          <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
+            Password
+          </label>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <FiLock className="text-gray-500" />
+            </div>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="block w-full pl-10 pr-3 py-3 bg-background border border-gray-700 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary text-white"
+              placeholder="••••••••"
+            />
+          </div>
+        </div>
+        
+        {error && (
+          <div className="p-3 bg-red-900/30 border border-red-800 rounded-lg">
+            <p className="text-red-400 text-sm">{error}</p>
+          </div>
+        )}
+        
+        <div>
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="w-full btn btn-primary py-3 flex items-center justify-center group relative overflow-hidden"
+          >
+            {isLoading ? (
+              <div className="w-5 h-5 rounded-full border-2 border-t-white/30 border-r-white/30 border-b-white/30 border-l-white animate-spin" />
+            ) : (
+              <>
+                Log In
+                <FiArrowRight className="ml-2" />
+              </>
+            )}
+            <div className="absolute inset-0 rounded-full bg-primary/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          </button>
+        </div>
+      </form>
+    </>
+  );
+}
+
+// Loading fallback
+function LoginFormFallback() {
+  return (
+    <div className="space-y-6">
+      <div className="animate-pulse bg-gray-700 h-10 rounded-lg mb-6"></div>
+      <div className="animate-pulse bg-gray-700 h-12 rounded-lg mb-6"></div>
+      <div className="animate-pulse bg-gray-700 h-12 rounded-lg mb-6"></div>
+      <div className="animate-pulse bg-gray-700 h-12 rounded-lg"></div>
+    </div>
+  );
+}
+
+export default function Login() {
   return (
     <main className="min-h-screen relative overflow-hidden flex items-center justify-center">
       {/* Background Elements */}
@@ -96,80 +190,9 @@ export default function Login() {
               </span>
             </h1>
             
-            {message && (
-              <div className="mb-6 p-4 bg-primary/10 border border-primary/30 rounded-lg flex items-start">
-                <FiAlertCircle className="text-primary mr-3 mt-0.5 flex-shrink-0" />
-                <p className="text-gray-300 text-sm">{message}</p>
-              </div>
-            )}
-            
-            <form onSubmit={handleLogin} className="space-y-6">
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
-                  Email Address
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <FiMail className="text-gray-500" />
-                  </div>
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="block w-full pl-10 pr-3 py-3 bg-background border border-gray-700 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary text-white"
-                    placeholder="you@example.com"
-                  />
-                </div>
-              </div>
-              
-              <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
-                  Password
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <FiLock className="text-gray-500" />
-                  </div>
-                  <input
-                    id="password"
-                    name="password"
-                    type="password"
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="block w-full pl-10 pr-3 py-3 bg-background border border-gray-700 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary text-white"
-                    placeholder="••••••••"
-                  />
-                </div>
-              </div>
-              
-              {error && (
-                <div className="p-3 bg-red-900/30 border border-red-800 rounded-lg">
-                  <p className="text-red-400 text-sm">{error}</p>
-                </div>
-              )}
-              
-              <div>
-                <button
-                  type="submit"
-                  disabled={isLoading}
-                  className="w-full btn btn-primary py-3 flex items-center justify-center group relative overflow-hidden"
-                >
-                  {isLoading ? (
-                    <div className="w-5 h-5 rounded-full border-2 border-t-white/30 border-r-white/30 border-b-white/30 border-l-white animate-spin" />
-                  ) : (
-                    <>
-                      Log In
-                      <FiArrowRight className="ml-2" />
-                    </>
-                  )}
-                  <div className="absolute inset-0 rounded-full bg-primary/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                </button>
-              </div>
-            </form>
+            <Suspense fallback={<LoginFormFallback />}>
+              <LoginForm />
+            </Suspense>
             
             <div className="mt-6 text-center">
               <p className="text-gray-400 text-sm">
