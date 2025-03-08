@@ -2,7 +2,17 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['localhost', 'res.cloudinary.com'],
+    domains: ['localhost', 'res.cloudinary.com', 'solhire.net'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'solhire.net',
+      },
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+      }
+    ]
   },
   // Skip type checking during build
   typescript: {
@@ -16,6 +26,67 @@ const nextConfig = {
   serverExternalPackages: ['@prisma/client'],
   // Disable static generation for client components
   staticPageGenerationTimeout: 300,
+  // Enable Vercel Analytics
+  analyticsId: process.env.VERCEL_ANALYTICS_ID,
+  // Domain configuration
+  async redirects() {
+    return [
+      // Redirect www to non-www
+      {
+        source: '/:path*',
+        has: [
+          {
+            type: 'host',
+            value: 'www.solhire.net',
+          },
+        ],
+        destination: 'https://solhire.net/:path*',
+        permanent: true,
+      },
+      // Redirect HTTP to HTTPS
+      {
+        source: '/:path*',
+        has: [
+          {
+            type: 'header',
+            key: 'x-forwarded-proto',
+            value: 'http',
+          },
+        ],
+        destination: 'https://solhire.net/:path*',
+        permanent: true,
+      },
+    ];
+  },
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          {
+            key: 'X-DNS-Prefetch-Control',
+            value: 'on'
+          },
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=31536000; includeSubDomains'
+          },
+          {
+            key: 'X-Frame-Options',
+            value: 'SAMEORIGIN'
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff'
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'origin-when-cross-origin'
+          }
+        ]
+      }
+    ];
+  },
   webpack: (config) => {
     config.resolve.fallback = { 
       fs: false, 
