@@ -104,13 +104,13 @@ const Header = () => {
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-background/90 backdrop-blur-md shadow-lg' : 'bg-transparent'
+        isScrolled || isMobileMenuOpen ? 'bg-background/95 backdrop-blur-md shadow-lg' : 'bg-transparent'
       }`}
     >
       <div className="container-custom">
         <div className="flex items-center justify-between py-4">
           {/* Logo */}
-          <Link href="/" className="flex items-center">
+          <Link href="/" className="flex items-center relative z-10">
             <span className="text-2xl font-bold text-white">Sol<span className="text-primary">Hire</span></span>
           </Link>
 
@@ -119,6 +119,8 @@ const Header = () => {
             {navLinks.map((link) => {
               // Skip wallet-required links if wallet not connected
               if (link.requiresWallet && !isWalletConnected) return null;
+              // Skip "Post a Job" and "Dashboard" if not authenticated
+              if ((link.name === 'Post a Job' || link.name === 'Dashboard') && !isAuthenticated) return null;
               
               return (
                 <Link
@@ -203,12 +205,14 @@ const Header = () => {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-background-light border-t border-primary/20">
+        <div className="md:hidden bg-background border-t border-primary/20 absolute top-full left-0 right-0 shadow-lg">
           <div className="container-custom py-4">
             <nav className="flex flex-col space-y-4">
               {navLinks.map((link) => {
                 // Skip wallet-required links if wallet not connected
                 if (link.requiresWallet && !isWalletConnected) return null;
+                // Skip "Post a Job" and "Dashboard" if not authenticated
+                if ((link.name === 'Post a Job' || link.name === 'Dashboard') && !isAuthenticated) return null;
                 
                 return (
                   <Link

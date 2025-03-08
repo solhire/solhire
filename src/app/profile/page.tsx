@@ -21,38 +21,35 @@ const mockProfile = {
   timeZone: 'PST',
   isVerified: true,
   joinDate: '2023-09',
-  completedProjects: 47,
-  rating: 4.9,
+  completedProjects: 0,
+  rating: 0,
   isOnline: true,
   bio: 'Creative professional specializing in motion design and 3D animation. Passionate about bringing ideas to life through compelling visual storytelling.',
   skills: ['Motion Design', '3D Animation', 'Video Editing', 'After Effects', 'Cinema 4D'],
   interests: ['Tech Innovation', 'Creative Content', 'Digital Art', 'Emerging Media'],
   languages: ['English', 'Spanish'],
-  portfolio: [
-    {
-      id: 1,
-      title: 'Brand Motion Package',
-      image: '/placeholder-image.jpg',
-      category: 'Motion Design',
-      client: 'Tech Startup',
-      completionDate: '2024-02'
-    },
-    {
-      id: 2,
-      title: '3D Product Animation',
-      image: '/placeholder-image.jpg',
-      category: '3D Animation',
-      client: 'E-commerce Brand',
-      completionDate: '2024-01'
-    }
-  ]
+  portfolio: [] as Array<{
+    id: number;
+    title: string;
+    image: string;
+    category: string;
+    client?: string;
+    completionDate?: string;
+  }>
 };
 
 export default function Profile() {
   const [activeView, setActiveView] = useState<'creator' | 'buyer'>('creator');
   const [showPortfolio, setShowPortfolio] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [profileData, setProfileData] = useState(mockProfile);
+
+  // Check authentication status
+  useEffect(() => {
+    const hasToken = localStorage.getItem('solhire_auth_token');
+    setIsAuthenticated(!!hasToken);
+  }, []);
 
   // Simulate loading
   useEffect(() => {
@@ -85,16 +82,16 @@ export default function Profile() {
         {/* Profile Header */}
         <div className="relative mb-8">
           {/* Cover Image - Purple Gradient */}
-          <div className="h-48 rounded-xl bg-gradient-to-r from-primary/20 via-primary/10 to-background overflow-hidden">
+          <div className="h-36 md:h-48 rounded-xl bg-gradient-to-r from-primary/20 via-primary/10 to-background overflow-hidden">
             <div className="absolute inset-0 bg-grid-pattern opacity-5" />
           </div>
           
           {/* Profile Info */}
           <div className="relative -mt-16 px-4">
-            <div className="flex flex-col md:flex-row items-start md:items-end space-y-4 md:space-y-0 md:space-x-6">
+            <div className="flex flex-col md:flex-row items-center md:items-end space-y-4 md:space-y-0 md:space-x-6">
               {/* Avatar */}
               <div className="relative">
-                <div className="w-32 h-32 rounded-full border-4 border-background overflow-hidden">
+                <div className="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-background overflow-hidden">
                   <Image
                     src={profileData.avatar}
                     alt={profileData.displayName}
@@ -106,9 +103,9 @@ export default function Profile() {
               </div>
               
               {/* Basic Info */}
-              <div className="flex-1">
-                <div className="flex items-center space-x-3 mb-2">
-                  <h1 className="text-3xl font-bold">{profileData.displayName}</h1>
+              <div className="flex-1 text-center md:text-left">
+                <div className="flex items-center justify-center md:justify-start space-x-3 mb-2">
+                  <h1 className="text-2xl md:text-3xl font-bold">{profileData.displayName}</h1>
                   {profileData.isVerified && (
                     <div className="text-primary" title="Verified User">
                       <FiShield className="w-5 h-5" />
@@ -118,7 +115,7 @@ export default function Profile() {
                     profileData.isOnline ? 'bg-green-500' : 'bg-gray-500'
                   }`} />
                 </div>
-                <div className="flex flex-wrap items-center gap-4 text-gray-400">
+                <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 text-gray-400">
                   <div className="flex items-center">
                     <FiMapPin className="w-4 h-4 mr-2" />
                     {profileData.location}
@@ -134,20 +131,24 @@ export default function Profile() {
                 </div>
               </div>
               
-              {/* Quick Stats */}
-              <div className="flex space-x-4">
-                <div className="text-center px-4 py-2 bg-background-light rounded-xl">
-                  <div className="text-2xl font-bold">{profileData.completedProjects}</div>
-                  <div className="text-sm text-gray-400">Projects</div>
-                </div>
-                <div className="text-center px-4 py-2 bg-background-light rounded-xl">
-                  <div className="text-2xl font-bold flex items-center justify-center">
-                    {profileData.rating}
-                    <FiStar className="w-4 h-4 text-yellow-500 ml-1" />
+              {/* Quick Stats - Only show if there are completed projects */}
+              {profileData.completedProjects > 0 && (
+                <div className="flex space-x-4">
+                  <div className="text-center px-4 py-2 bg-background-light rounded-xl">
+                    <div className="text-2xl font-bold">{profileData.completedProjects}</div>
+                    <div className="text-sm text-gray-400">Projects</div>
                   </div>
-                  <div className="text-sm text-gray-400">Rating</div>
+                  {profileData.rating > 0 && (
+                    <div className="text-center px-4 py-2 bg-background-light rounded-xl">
+                      <div className="text-2xl font-bold flex items-center justify-center">
+                        {profileData.rating}
+                        <FiStar className="w-4 h-4 text-yellow-500 ml-1" />
+                      </div>
+                      <div className="text-sm text-gray-400">Rating</div>
+                    </div>
+                  )}
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </div>
@@ -157,7 +158,7 @@ export default function Profile() {
           <div className="bg-background-light rounded-full p-1">
             <button
               onClick={() => setActiveView('creator')}
-              className={`px-6 py-2 rounded-full transition-all ${
+              className={`px-4 md:px-6 py-2 rounded-full transition-all text-sm md:text-base ${
                 activeView === 'creator'
                   ? 'bg-primary text-white'
                   : 'text-gray-400 hover:text-white'
@@ -167,7 +168,7 @@ export default function Profile() {
             </button>
             <button
               onClick={() => setActiveView('buyer')}
-              className={`px-6 py-2 rounded-full transition-all ${
+              className={`px-4 md:px-6 py-2 rounded-full transition-all text-sm md:text-base ${
                 activeView === 'buyer'
                   ? 'bg-primary text-white'
                   : 'text-gray-400 hover:text-white'
@@ -225,8 +226,8 @@ export default function Profile() {
               </div>
             </motion.div>
 
-            {/* Portfolio Section */}
-            {activeView === 'creator' && (
+            {/* Portfolio Section - Only show if there are portfolio items */}
+            {activeView === 'creator' && profileData.portfolio.length > 0 && (
               <motion.div
                 layout
                 className="card"
@@ -268,6 +269,33 @@ export default function Profile() {
                 )}
               </motion.div>
             )}
+
+            {/* Empty Portfolio State */}
+            {activeView === 'creator' && profileData.portfolio.length === 0 && (
+              <motion.div
+                layout
+                className="card"
+              >
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-xl font-bold">Portfolio</h2>
+                </div>
+                
+                <div className="text-center py-8">
+                  <FiBriefcase className="w-12 h-12 text-gray-500 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium mb-2">No portfolio items yet</h3>
+                  <p className="text-gray-400 mb-4">
+                    {isAuthenticated 
+                      ? "You haven't added any portfolio items yet." 
+                      : "This user hasn't added any portfolio items yet."}
+                  </p>
+                  {isAuthenticated && (
+                    <button className="btn btn-primary">
+                      Add Portfolio Item
+                    </button>
+                  )}
+                </div>
+              </motion.div>
+            )}
           </div>
 
           {/* Right Column */}
@@ -299,26 +327,26 @@ export default function Profile() {
               </p>
             </div>
             
-            {/* Achievements Card */}
+            {/* Account Status */}
             <div className="card">
-              <h2 className="text-xl font-bold mb-4">Achievements</h2>
+              <h2 className="text-xl font-bold mb-4">Account Status</h2>
               <div className="space-y-4">
                 <div className="flex items-center">
                   <div className="p-2 bg-background-light rounded-full mr-3">
-                    <FiAward className="w-5 h-5 text-yellow-500" />
+                    <FiShield className="w-5 h-5 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-medium">Top Rated</h3>
-                    <p className="text-gray-400 text-sm">Consistently high ratings</p>
+                    <h3 className="font-medium">Verified Account</h3>
+                    <p className="text-gray-400 text-sm">Identity confirmed</p>
                   </div>
                 </div>
                 <div className="flex items-center">
                   <div className="p-2 bg-background-light rounded-full mr-3">
-                    <FiTrendingUp className="w-5 h-5 text-green-500" />
+                    <FiCalendar className="w-5 h-5 text-blue-500" />
                   </div>
                   <div>
-                    <h3 className="font-medium">Rising Talent</h3>
-                    <p className="text-gray-400 text-sm">Growing reputation</p>
+                    <h3 className="font-medium">New Member</h3>
+                    <p className="text-gray-400 text-sm">Joined recently</p>
                   </div>
                 </div>
               </div>

@@ -3,19 +3,18 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { FiUser, FiMail, FiLock, FiAlertCircle } from 'react-icons/fi';
-import { useWallet } from '@solana/wallet-adapter-react';
-import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
+import { toast } from 'react-hot-toast';
+import { checkPasswordStrength } from '@/lib/password';
 
 const RegisterForm = () => {
   const router = useRouter();
-  const { connected } = useWallet();
   
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
     confirmPassword: '',
-    accountType: 'client', // 'client' or 'creative'
+    accountType: 'client', // 'client' or 'creator'
   });
   
   const [errors, setErrors] = useState<{
@@ -27,6 +26,7 @@ const RegisterForm = () => {
   }>({});
   
   const [isLoading, setIsLoading] = useState(false);
+  const [passwordStrength, setPasswordStrength] = useState({ score: 0, feedback: '' });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -34,6 +34,11 @@ const RegisterForm = () => {
       ...prev,
       [name]: value,
     }));
+    
+    // Check password strength
+    if (name === 'password') {
+      setPasswordStrength(checkPasswordStrength(value));
+    }
     
     // Clear error when user types
     if (errors[name as keyof typeof errors]) {
@@ -61,6 +66,8 @@ const RegisterForm = () => {
       newErrors.password = 'Password is required';
     } else if (formData.password.length < 8) {
       newErrors.password = 'Password must be at least 8 characters';
+    } else if (passwordStrength.score < 2) {
+      newErrors.password = 'Password is too weak';
     }
     
     if (formData.password !== formData.confirmPassword) {
@@ -77,20 +84,51 @@ const RegisterForm = () => {
     if (!validateForm()) return;
     
     setIsLoading(true);
+    setErrors({});
     
     try {
-      // Mock registration - in a real app, this would be an API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+          displayName: formData.name,
+          accountType: formData.accountType,
+        }),
+      });
       
-      // Simulate successful registration
-      console.log('Registered with:', formData);
-      router.push('/dashboard');
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'Registration failed');
+      }
+      
+      // Show success message
+      toast.success('Registration successful! Please check your email to verify your account.');
+      
+      // Redirect to login page
+      router.push('/login?message=Registration successful! Please check your email to verify your account.');
     } catch (error) {
       setErrors({
-        general: 'Failed to register. Please try again later.',
+        general: error instanceof Error ? error.message : 'Failed to register. Please try again.',
       });
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  // Password strength indicator
+  const getPasswordStrengthColor = () => {
+    switch (passwordStrength.score) {
+      case 0: return 'bg-red-500';
+      case 1: return 'bg-orange-500';
+      case 2: return 'bg-yellow-500';
+      case 3: return 'bg-green-500';
+      case 4: return 'bg-green-600';
+      default: return 'bg-gray-500';
     }
   };
 
@@ -171,6 +209,17 @@ const RegisterForm = () => {
               placeholder="••••••••"
             />
           </div>
+          {formData.password && (
+            <div className="mt-2">
+              <div className="h-1 w-full bg-gray-700 rounded-full overflow-hidden">
+                <div 
+                  className={`h-full ${getPasswordStrengthColor()}`} 
+                  style={{ width: `${(passwordStrength.score + 1) * 20}%` }}
+                />
+              </div>
+              <p className="mt-1 text-xs text-gray-400">{passwordStrength.feedback}</p>
+            </div>
+          )}
           {errors.password && (
             <p className="mt-1 text-sm text-red-500">{errors.password}</p>
           )}
@@ -212,57 +261,21 @@ const RegisterForm = () => {
             className="input w-full"
           >
             <option value="client">Hire Creatives</option>
-            <option value="creative">Offer My Services</option>
+            <option value="creator">Offer My Services</option>
+            <option value="both">Both</option>
           </select>
-        </div>
-
-        <div className="flex items-center">
-          <input
-            id="terms"
-            name="terms"
-            type="checkbox"
-            className="h-4 w-4 bg-background-light border-primary/30 rounded focus:ring-primary"
-            required
-          />
-          <label htmlFor="terms" className="ml-2 block text-sm text-gray-400">
-            I agree to the{' '}
-            <a href="/terms" className="text-primary hover:text-primary-light">
-              Terms of Service
-            </a>{' '}
-            and{' '}
-            <a href="/privacy" className="text-primary hover:text-primary-light">
-              Privacy Policy
-            </a>
-          </label>
         </div>
 
         <div>
           <button
             type="submit"
             disabled={isLoading}
-            className="btn btn-primary w-full py-3 flex justify-center"
+            className="w-full btn btn-primary"
           >
             {isLoading ? 'Creating account...' : 'Create account'}
           </button>
         </div>
       </form>
-
-      <div className="mt-6">
-        <div className="relative">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-gray-700"></div>
-          </div>
-          <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-background-light text-gray-400">Or continue with</span>
-          </div>
-        </div>
-
-        <div className="mt-6">
-          <div className="w-full flex justify-center">
-            <WalletMultiButton className="!bg-primary hover:!bg-primary-dark !rounded-full !py-3 !w-full !justify-center" />
-          </div>
-        </div>
-      </div>
     </div>
   );
 };
