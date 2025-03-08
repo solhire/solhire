@@ -27,6 +27,22 @@ const nextConfig = {
   // Disable static generation for client components
   staticPageGenerationTimeout: 300,
   // Domain configuration
+  async rewrites() {
+    return {
+      beforeFiles: [
+        {
+          source: '/:path*',
+          has: [
+            {
+              type: 'host',
+              value: '(?!solhire\\.net).*',
+            },
+          ],
+          destination: 'https://solhire.net/:path*',
+        },
+      ],
+    };
+  },
   async redirects() {
     return [
       // Redirect www to non-www
