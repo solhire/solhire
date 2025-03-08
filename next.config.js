@@ -26,8 +26,6 @@ const nextConfig = {
   serverExternalPackages: ['@prisma/client'],
   // Disable static generation for client components
   staticPageGenerationTimeout: 300,
-  // Enable Vercel Analytics
-  analyticsId: process.env.VERCEL_ANALYTICS_ID,
   // Domain configuration
   async redirects() {
     return [
