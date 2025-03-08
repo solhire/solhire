@@ -44,10 +44,16 @@ model UserProfile {
   createdJobs     Job[]          @relation("ClientJobs")
   assignedJobs    Job[]          @relation("CreatorJobs")
   proposals       Proposal[]     @relation("CreatorProposals")
+  conversations   Conversation[] @relation("ConversationParticipants")
+  messages        Message[]
   
   // Timestamps
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
+
+  // New fields
+  services        Service[]
+  serviceRatings   ServiceRating[]
 
   @@index([userId])
   @@index([username])
@@ -96,6 +102,10 @@ model Job {
   creator        UserProfile? @relation("CreatorJobs", fields: [creatorId], references: [id])
   creatorId      String?
   proposalsList  Proposal[]  @relation("JobProposals")
+  conversation   Conversation?
+  ratings        JobRating[]
+  likesCount     Int         @default(0)
+  dislikesCount  Int         @default(0)
   
   // Timestamps
   createdAt      DateTime    @default(now())
@@ -129,4 +139,103 @@ model Proposal {
   @@index([jobId])
   @@index([creatorId])
   @@index([status])
+}
+
+model Conversation {
+  id          String      @id @default(cuid())
+  participants UserProfile[] @relation("ConversationParticipants")
+  messages     Message[]
+  jobId        String?
+  job          Job?       @relation(fields: [jobId], references: [id])
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@index([jobId])
+}
+
+model Message {
+  id             String      @id @default(cuid())
+  content        String
+  senderId       String
+  sender         UserProfile @relation(fields: [senderId], references: [id])
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  attachments    String[]
+  isRead         Boolean     @default(false)
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  @@index([senderId])
+  @@index([conversationId])
+}
+
+model JobRating {
+  id          String      @id @default(cuid())
+  job         Job         @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  jobId       String
+  user        UserProfile @relation(fields: [userId], references: [id])
+  userId      String
+  rating      Int         @default(0) // 0 = dislike, 1 = like
+  comment     String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@unique([jobId, userId])
+  @@index([jobId])
+  @@index([userId])
+}
+
+model Service {
+  id             String      @id @default(cuid())
+  title          String
+  description    String
+  category       String
+  pricing        ServicePricing
+  availability   String      @default("available") // "available", "busy", "unavailable"
+  skills         String[]
+  portfolio      String[]    // URLs to portfolio images
+  provider       UserProfile @relation(fields: [providerId], references: [id])
+  providerId     String
+  ratings        ServiceRating[]
+  likesCount     Int         @default(0)
+  dislikesCount  Int         @default(0)
+  
+  // Timestamps
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  @@index([providerId])
+  @@index([category])
+}
+
+model ServicePricing {
+  id             String      @id @default(cuid())
+  service        Service     @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  serviceId      String      @unique
+  type           String      @default("fixed") // "fixed", "hourly", "range"
+  minPrice       Float
+  maxPrice       Float?
+  currency       String      @default("SOL")
+  
+  // Timestamps
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+}
+
+model ServiceRating {
+  id             String      @id @default(cuid())
+  service        Service     @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  serviceId      String
+  user           UserProfile @relation(fields: [userId], references: [id])
+  userId         String
+  rating         Int         @default(0) // 0 = dislike, 1 = like
+  comment        String?
+  
+  // Timestamps
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  @@unique([serviceId, userId])
+  @@index([serviceId])
+  @@index([userId])
 } 

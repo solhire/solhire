@@ -3,11 +3,11 @@
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import MainLayout from '@/components/layout/MainLayout';
-import { FiSearch, FiFilter, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import { FiSearch, FiFilter, FiX, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import { Job } from '@/types/job';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-hot-toast';
 
-// Service categories
 const categories = [
   'Video Editing',
   'Graphic Design',
@@ -21,7 +21,6 @@ const categories = [
   'Other'
 ];
 
-// Available skills for multi-select
 const availableSkills = [
   'Adobe Premiere Pro',
   'After Effects',
@@ -43,33 +42,11 @@ const availableSkills = [
   'Python',
 ];
 
-interface Service {
-  id: string;
-  title: string;
-  description: string;
-  category: string;
-  skills: string[];
-  portfolio: string[];
-  pricing: {
-    type: string;
-    minPrice: number;
-    maxPrice: number | null;
-    currency: string;
-  };
-  provider: {
-    displayName: string;
-    avatar: string;
-    rating: number;
-  };
-  likesCount: number;
-  dislikesCount: number;
-}
-
-export default function ServicesPage() {
+export default function SearchPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   
-  const [services, setServices] = useState<Service[]>([]);
+  const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
   const [showFilters, setShowFilters] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -79,12 +56,12 @@ export default function ServicesPage() {
     query: searchParams.get('q') || '',
     category: searchParams.get('category') || '',
     skills: (searchParams.get('skills')?.split(',') || []).filter(Boolean),
-    minPrice: searchParams.get('minPrice') || '',
-    maxPrice: searchParams.get('maxPrice') || '',
+    minBudget: searchParams.get('minBudget') || '',
+    maxBudget: searchParams.get('maxBudget') || '',
     sortBy: searchParams.get('sortBy') || 'newest'
   });
 
-  const fetchServices = async () => {
+  const fetchJobs = async () => {
     try {
       setLoading(true);
       
@@ -92,27 +69,27 @@ export default function ServicesPage() {
       if (filters.query) queryParams.set('q', filters.query);
       if (filters.category) queryParams.set('category', filters.category);
       if (filters.skills.length) queryParams.set('skills', filters.skills.join(','));
-      if (filters.minPrice) queryParams.set('minPrice', filters.minPrice);
-      if (filters.maxPrice) queryParams.set('maxPrice', filters.maxPrice);
+      if (filters.minBudget) queryParams.set('minBudget', filters.minBudget);
+      if (filters.maxBudget) queryParams.set('maxBudget', filters.maxBudget);
       if (filters.sortBy) queryParams.set('sortBy', filters.sortBy);
       queryParams.set('page', currentPage.toString());
       
-      const response = await fetch(`/api/services?${queryParams.toString()}`);
-      if (!response.ok) throw new Error('Failed to fetch services');
+      const response = await fetch(`/api/jobs?${queryParams.toString()}`);
+      if (!response.ok) throw new Error('Failed to fetch jobs');
       
       const data = await response.json();
-      setServices(data.services);
-      setTotalPages(Math.ceil(data.total / 10)); // Assuming 10 services per page
+      setJobs(data.jobs);
+      setTotalPages(Math.ceil(data.total / 10)); // Assuming 10 jobs per page
     } catch (error) {
-      console.error('Error fetching services:', error);
-      toast.error('Failed to load services');
+      console.error('Error fetching jobs:', error);
+      toast.error('Failed to load jobs');
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchServices();
+    fetchJobs();
   }, [filters, currentPage]);
 
   const handleSearch = (e: React.FormEvent) => {
@@ -123,11 +100,11 @@ export default function ServicesPage() {
     if (filters.query) queryParams.set('q', filters.query);
     if (filters.category) queryParams.set('category', filters.category);
     if (filters.skills.length) queryParams.set('skills', filters.skills.join(','));
-    if (filters.minPrice) queryParams.set('minPrice', filters.minPrice);
-    if (filters.maxPrice) queryParams.set('maxPrice', filters.maxPrice);
+    if (filters.minBudget) queryParams.set('minBudget', filters.minBudget);
+    if (filters.maxBudget) queryParams.set('maxBudget', filters.maxBudget);
     if (filters.sortBy) queryParams.set('sortBy', filters.sortBy);
     
-    router.push(`/services?${queryParams.toString()}`);
+    router.push(`/search?${queryParams.toString()}`);
   };
 
   const handleSkillToggle = (skill: string) => {
@@ -144,12 +121,12 @@ export default function ServicesPage() {
       query: '',
       category: '',
       skills: [],
-      minPrice: '',
-      maxPrice: '',
+      minBudget: '',
+      maxBudget: '',
       sortBy: 'newest'
     });
     setCurrentPage(1);
-    router.push('/services');
+    router.push('/search');
   };
 
   return (
@@ -223,23 +200,23 @@ export default function ServicesPage() {
                         </div>
                       </div>
 
-                      {/* Price Filter */}
+                      {/* Budget Filter */}
                       <div className="card">
-                        <h3 className="text-lg font-medium mb-4">Price Range (SOL)</h3>
+                        <h3 className="text-lg font-medium mb-4">Budget Range (SOL)</h3>
                         <div className="space-y-3">
                           <input
                             type="number"
                             placeholder="Min"
                             className="input w-full"
-                            value={filters.minPrice}
-                            onChange={(e) => setFilters(prev => ({ ...prev, minPrice: e.target.value }))}
+                            value={filters.minBudget}
+                            onChange={(e) => setFilters(prev => ({ ...prev, minBudget: e.target.value }))}
                           />
                           <input
                             type="number"
                             placeholder="Max"
                             className="input w-full"
-                            value={filters.maxPrice}
-                            onChange={(e) => setFilters(prev => ({ ...prev, maxPrice: e.target.value }))}
+                            value={filters.maxBudget}
+                            onChange={(e) => setFilters(prev => ({ ...prev, maxBudget: e.target.value }))}
                           />
                         </div>
                       </div>
@@ -253,9 +230,9 @@ export default function ServicesPage() {
                           onChange={(e) => setFilters(prev => ({ ...prev, sortBy: e.target.value }))}
                         >
                           <option value="newest">Newest First</option>
-                          <option value="price_high">Highest Price</option>
-                          <option value="price_low">Lowest Price</option>
-                          <option value="most_liked">Most Liked</option>
+                          <option value="budget_high">Highest Budget</option>
+                          <option value="budget_low">Lowest Budget</option>
+                          <option value="most_proposals">Most Proposals</option>
                         </select>
                       </div>
                     </motion.div>
@@ -273,7 +250,7 @@ export default function ServicesPage() {
                     <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
                     <input
                       type="text"
-                      placeholder="Search services..."
+                      placeholder="Search jobs..."
                       className="input w-full pl-12"
                       value={filters.query}
                       onChange={(e) => setFilters(prev => ({ ...prev, query: e.target.value }))}
@@ -287,78 +264,51 @@ export default function ServicesPage() {
 
               {/* Results */}
               {loading ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {[...Array(6)].map((_, i) => (
+                <div className="space-y-4">
+                  {[...Array(5)].map((_, i) => (
                     <div key={i} className="card animate-pulse">
-                      <div className="aspect-video bg-background-dark rounded-lg mb-4" />
-                      <div className="h-6 w-3/4 bg-background-dark rounded mb-2" />
-                      <div className="h-4 w-1/2 bg-background-dark rounded" />
+                      <div className="h-8 w-2/3 bg-background-dark rounded mb-4" />
+                      <div className="h-4 w-1/3 bg-background-dark rounded mb-2" />
+                      <div className="h-4 w-1/4 bg-background-dark rounded" />
                     </div>
                   ))}
                 </div>
-              ) : services.length > 0 ? (
-                <div className="space-y-8">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {services.map((service) => (
-                      <motion.div
-                        key={service.id}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="card hover:border-primary/50 transition-colors cursor-pointer"
-                        onClick={() => router.push(`/services/${service.id}`)}
-                      >
-                        {service.portfolio[0] && (
-                          <div className="aspect-video rounded-lg overflow-hidden mb-4">
-                            <img
-                              src={service.portfolio[0]}
-                              alt={service.title}
-                              className="w-full h-full object-cover"
-                            />
-                          </div>
-                        )}
-                        <h3 className="text-xl font-semibold mb-2">{service.title}</h3>
-                        <div className="flex items-center gap-4 text-sm text-gray-400 mb-4">
-                          <span>{service.category}</span>
-                          <span>•</span>
-                          <span>
-                            {service.pricing.type === 'fixed'
-                              ? `${service.pricing.minPrice} ${service.pricing.currency}`
-                              : service.pricing.type === 'hourly'
-                              ? `${service.pricing.minPrice} ${service.pricing.currency}/hr`
-                              : `${service.pricing.minPrice} - ${service.pricing.maxPrice} ${service.pricing.currency}`}
+              ) : jobs.length > 0 ? (
+                <div className="space-y-4">
+                  {jobs.map((job) => (
+                    <motion.div
+                      key={job.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="card hover:border-primary/50 transition-colors cursor-pointer"
+                      onClick={() => router.push(`/jobs/${job.id}`)}
+                    >
+                      <h3 className="text-xl font-semibold mb-2">{job.title}</h3>
+                      <div className="flex items-center gap-4 text-sm text-gray-400 mb-4">
+                        <span>{job.category}</span>
+                        <span>•</span>
+                        <span>{job.budget} SOL</span>
+                        <span>•</span>
+                        <span>{new Date(job.createdAt).toLocaleDateString()}</span>
+                      </div>
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {job.skills.map((skill) => (
+                          <span
+                            key={skill}
+                            className="px-3 py-1 bg-primary/20 text-primary rounded-full text-sm"
+                          >
+                            {skill}
                           </span>
-                        </div>
-                        <div className="flex flex-wrap gap-2 mb-4">
-                          {service.skills.slice(0, 3).map((skill) => (
-                            <span
-                              key={skill}
-                              className="px-3 py-1 bg-primary/20 text-primary rounded-full text-sm"
-                            >
-                              {skill}
-                            </span>
-                          ))}
-                          {service.skills.length > 3 && (
-                            <span className="px-3 py-1 bg-primary/20 text-primary rounded-full text-sm">
-                              +{service.skills.length - 3} more
-                            </span>
-                          )}
-                        </div>
-                        <div className="flex items-center justify-between text-sm">
-                          <div className="flex items-center gap-2">
-                            <img
-                              src={service.provider.avatar || '/default-avatar.png'}
-                              alt={service.provider.displayName}
-                              className="w-6 h-6 rounded-full object-cover"
-                            />
-                            <span className="text-gray-300">{service.provider.displayName}</span>
-                          </div>
-                          <div className="flex items-center gap-2 text-gray-400">
-                            <span>⭐ {service.provider.rating.toFixed(1)}</span>
-                          </div>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
+                        ))}
+                      </div>
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-gray-400">
+                          {job.proposals} proposals
+                        </span>
+                        <span className="text-primary">View Details →</span>
+                      </div>
+                    </motion.div>
+                  ))}
 
                   {/* Pagination */}
                   {totalPages > 1 && (
@@ -385,9 +335,9 @@ export default function ServicesPage() {
                 </div>
               ) : (
                 <div className="card text-center py-12">
-                  <h2 className="text-2xl font-semibold mb-4">No services found</h2>
+                  <h2 className="text-2xl font-semibold mb-4">No jobs found</h2>
                   <p className="text-gray-400 mb-6">
-                    Try adjusting your search filters or browse all available services.
+                    Try adjusting your search filters or browse all available jobs.
                   </p>
                   <button onClick={clearFilters} className="btn btn-primary">
                     Clear Filters

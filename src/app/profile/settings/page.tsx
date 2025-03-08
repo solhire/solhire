@@ -3,13 +3,22 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useProfile } from '@/hooks/useProfile';
-import { UpdateProfileInput } from '@/types/user';
-import { FiUser, FiLock, FiBriefcase, FiUpload } from 'react-icons/fi';
+import { UpdateProfileInput, PortfolioItem } from '@/types/user';
+import { FiUser, FiLock, FiBriefcase, FiUpload, FiPlus } from 'react-icons/fi';
 import { toast } from 'react-hot-toast';
+import RichTextEditor from '@/components/RichTextEditor';
+import FileUpload from '@/components/FileUpload';
+import ImageCropper from '@/components/ImageCropper';
+import PortfolioItemForm from '@/components/PortfolioItemForm';
 
 export default function ProfileSettings() {
   const { profile, loading, updateProfile, addPortfolioItem, updatePortfolioItem, removePortfolioItem } = useProfile();
   const [activeTab, setActiveTab] = useState('profile');
+  const [showPortfolioForm, setShowPortfolioForm] = useState(false);
+  const [editingPortfolioItem, setEditingPortfolioItem] = useState<Partial<PortfolioItem> | null>(null);
+  const [showImageCropper, setShowImageCropper] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
   const [formData, setFormData] = useState<UpdateProfileInput>({
     displayName: profile?.displayName || '',
     username: profile?.username || '',
@@ -31,6 +40,10 @@ export default function ProfileSettings() {
       ...prev,
       [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
     }));
+  };
+
+  const handleBioChange = (html: string) => {
+    setFormData(prev => ({ ...prev, bio: html }));
   };
 
   const handleArrayInput = (field: 'skills' | 'languages', value: string) => {
@@ -58,20 +71,39 @@ export default function ProfileSettings() {
     }
   };
 
-  const handlePortfolioUpload = async (file: File) => {
+  const handleAvatarUpload = async (file: File) => {
     try {
-      // TODO: Implement file upload to cloud storage
-      const imageUrl = 'placeholder_url';
-      await addPortfolioItem({
-        title: file.name,
-        description: '',
-        image: imageUrl,
-        category: 'Other',
-        completionDate: new Date().toISOString()
-      });
-      toast.success('Portfolio item added');
+      const imageUrl = URL.createObjectURL(file);
+      setSelectedImage(imageUrl);
+      setShowImageCropper(true);
     } catch (error) {
-      toast.error('Failed to upload portfolio item');
+      toast.error('Failed to process image');
+    }
+  };
+
+  const handleCroppedImage = async (blob: Blob) => {
+    try {
+      // TODO: Implement avatar upload to cloud storage
+      const imageUrl = URL.createObjectURL(blob);
+      await updateProfile({ ...formData, avatar: imageUrl });
+      setShowImageCropper(false);
+      toast.success('Profile picture updated');
+    } catch (error) {
+      toast.error('Failed to update profile picture');
+    }
+  };
+
+  const handlePortfolioSave = async (item: Partial<PortfolioItem>, file?: File) => {
+    try {
+      if (editingPortfolioItem && editingPortfolioItem.id) {
+        await updatePortfolioItem(editingPortfolioItem.id, item);
+      } else {
+        await addPortfolioItem(item);
+      }
+      setShowPortfolioForm(false);
+      setEditingPortfolioItem(null);
+    } catch (error) {
+      toast.error('Failed to save portfolio item');
     }
   };
 
@@ -117,9 +149,30 @@ export default function ProfileSettings() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
+        className="bg-white rounded-lg shadow-sm p-6"
       >
         {activeTab === 'profile' && (
           <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="flex items-center space-x-6 mb-6">
+              <div className="relative">
+                <img
+                  src={profile?.avatar || '/default-avatar.png'}
+                  alt={profile?.displayName}
+                  className="w-24 h-24 rounded-full object-cover"
+                />
+                <FileUpload
+                  onFileSelect={handleAvatarUpload}
+                  acceptedFileTypes="image/*"
+                  maxSizeMB={2}
+                  className="absolute bottom-0 right-0 w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center text-white cursor-pointer"
+                />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold">{profile?.displayName}</h3>
+                <p className="text-gray-600">@{profile?.username}</p>
+              </div>
+            </div>
+
             <div className="grid grid-cols-2 gap-6">
               <div>
                 <label className="block mb-2">Display Name</label>
@@ -128,7 +181,7 @@ export default function ProfileSettings() {
                   name="displayName"
                   value={formData.displayName}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 rounded-lg border"
+                  className="w-full px-4 py-2 rounded-lg border focus:ring-2 focus:ring-purple-500"
                 />
               </div>
               <div>
@@ -138,18 +191,17 @@ export default function ProfileSettings() {
                   name="username"
                   value={formData.username}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 rounded-lg border"
+                  className="w-full px-4 py-2 rounded-lg border focus:ring-2 focus:ring-purple-500"
                 />
               </div>
             </div>
 
             <div>
               <label className="block mb-2">Bio</label>
-              <textarea
-                name="bio"
-                value={formData.bio}
-                onChange={handleInputChange}
-                className="w-full px-4 py-2 rounded-lg border h-32"
+              <RichTextEditor
+                content={formData.bio || ''}
+                onChange={handleBioChange}
+                placeholder="Write something about yourself..."
               />
             </div>
 
@@ -161,7 +213,7 @@ export default function ProfileSettings() {
                   name="location"
                   value={formData.location}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 rounded-lg border"
+                  className="w-full px-4 py-2 rounded-lg border focus:ring-2 focus:ring-purple-500"
                 />
               </div>
               <div>
@@ -171,7 +223,7 @@ export default function ProfileSettings() {
                   name="timeZone"
                   value={formData.timeZone}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 rounded-lg border"
+                  className="w-full px-4 py-2 rounded-lg border focus:ring-2 focus:ring-purple-500"
                 />
               </div>
             </div>
@@ -202,10 +254,10 @@ export default function ProfileSettings() {
                   if (e.key === 'Enter') {
                     e.preventDefault();
                     handleArrayInput('skills', (e.target as HTMLInputElement).value);
-                    ;(e.target as HTMLInputElement).value = '';
+                    (e.target as HTMLInputElement).value = '';
                   }
                 }}
-                className="w-full px-4 py-2 rounded-lg border"
+                className="w-full px-4 py-2 rounded-lg border focus:ring-2 focus:ring-purple-500"
               />
             </div>
 
@@ -235,10 +287,10 @@ export default function ProfileSettings() {
                   if (e.key === 'Enter') {
                     e.preventDefault();
                     handleArrayInput('languages', (e.target as HTMLInputElement).value);
-                    ;(e.target as HTMLInputElement).value = '';
+                    (e.target as HTMLInputElement).value = '';
                   }
                 }}
-                className="w-full px-4 py-2 rounded-lg border"
+                className="w-full px-4 py-2 rounded-lg border focus:ring-2 focus:ring-purple-500"
               />
             </div>
 
@@ -250,16 +302,16 @@ export default function ProfileSettings() {
                   name="hourlyRate"
                   value={formData.hourlyRate}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 rounded-lg border"
+                  className="w-full px-4 py-2 rounded-lg border focus:ring-2 focus:ring-purple-500"
                 />
               </div>
               <div>
                 <label className="block mb-2">Availability</label>
                 <select
                   name="availability"
-                  value={formData.availability}
+                  value={formData.availability || 'available'}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 rounded-lg border"
+                  className="w-full px-4 py-2 rounded-lg border focus:ring-2 focus:ring-purple-500"
                 >
                   <option value="available">Available</option>
                   <option value="busy">Busy</option>
@@ -270,7 +322,7 @@ export default function ProfileSettings() {
 
             <button
               type="submit"
-              className="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700"
+              className="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition-colors"
             >
               Save Changes
             </button>
@@ -279,7 +331,7 @@ export default function ProfileSettings() {
 
         {activeTab === 'privacy' && (
           <div className="space-y-6">
-            <div className="flex items-center justify-between p-4 bg-white rounded-lg shadow">
+            <div className="flex items-center justify-between p-4 bg-white rounded-lg shadow-sm border">
               <div>
                 <h3 className="font-semibold">Show Email Address</h3>
                 <p className="text-gray-600">Allow other users to see your email address</p>
@@ -296,7 +348,7 @@ export default function ProfileSettings() {
               </label>
             </div>
 
-            <div className="flex items-center justify-between p-4 bg-white rounded-lg shadow">
+            <div className="flex items-center justify-between p-4 bg-white rounded-lg shadow-sm border">
               <div>
                 <h3 className="font-semibold">Show Hourly Rate</h3>
                 <p className="text-gray-600">Display your hourly rate on your profile</p>
@@ -315,7 +367,7 @@ export default function ProfileSettings() {
 
             <button
               onClick={handleSubmit}
-              className="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700"
+              className="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition-colors"
             >
               Save Privacy Settings
             </button>
@@ -324,40 +376,39 @@ export default function ProfileSettings() {
 
         {activeTab === 'portfolio' && (
           <div className="space-y-6">
-            <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
-              <FiUpload className="mx-auto text-4xl text-gray-400 mb-4" />
-              <h3 className="font-semibold mb-2">Upload Portfolio Items</h3>
-              <p className="text-gray-600 mb-4">Drag and drop your files here, or click to select files</p>
-              <input
-                type="file"
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) {
-                    handlePortfolioUpload(file);
-                  }
+            <div className="flex justify-between items-center">
+              <h2 className="text-xl font-semibold">Portfolio Items</h2>
+              <button
+                onClick={() => {
+                  setEditingPortfolioItem(null);
+                  setShowPortfolioForm(true);
                 }}
-                className="hidden"
-                id="portfolio-upload"
-                accept="image/*"
-              />
-              <label
-                htmlFor="portfolio-upload"
-                className="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 cursor-pointer"
+                className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors flex items-center"
               >
-                Select Files
-              </label>
+                <FiPlus className="mr-2" /> Add Item
+              </button>
             </div>
 
-            <div className="grid grid-cols-3 gap-6">
-              {profile?.portfolio?.map((item) => (
-                <div key={item.id} className="bg-white rounded-lg shadow overflow-hidden">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {profile?.portfolio?.filter(item => item.id).map((item) => (
+                <div key={item.id} className="bg-white rounded-lg shadow-sm border overflow-hidden">
                   <img src={item.image} alt={item.title} className="w-full h-48 object-cover" />
                   <div className="p-4">
                     <h4 className="font-semibold mb-2">{item.title}</h4>
                     <p className="text-gray-600 text-sm mb-4">{item.description}</p>
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {item.tags?.map((tag, index) => (
+                        <span key={index} className="bg-purple-100 px-2 py-1 rounded-full text-xs">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
                     <div className="flex justify-between">
                       <button
-                        onClick={() => updatePortfolioItem(item.id, { title: 'Updated Title' })}
+                        onClick={() => {
+                          setEditingPortfolioItem(item);
+                          setShowPortfolioForm(true);
+                        }}
                         className="text-purple-600 hover:text-purple-700"
                       >
                         Edit
@@ -376,6 +427,33 @@ export default function ProfileSettings() {
           </div>
         )}
       </motion.div>
+
+      {showImageCropper && selectedImage && (
+        <ImageCropper
+          imageUrl={selectedImage}
+          aspectRatio={1}
+          onCrop={handleCroppedImage}
+          onCancel={() => {
+            setShowImageCropper(false);
+            setSelectedImage(null);
+          }}
+        />
+      )}
+
+      {showPortfolioForm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <PortfolioItemForm
+              item={editingPortfolioItem || {}}
+              onSave={handlePortfolioSave}
+              onCancel={() => {
+                setShowPortfolioForm(false);
+                setEditingPortfolioItem(null);
+              }}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 } 
