@@ -12,7 +12,7 @@ import {
 import Link from 'next/link';
 import MainLayout from '@/components/layout/MainLayout';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { EmptyState } from '@/components/EmptyState';
+import EmptyState from '@/components/EmptyState';
 import { useRouter } from 'next/navigation';
 
 // Mock data - Replace with actual API calls
