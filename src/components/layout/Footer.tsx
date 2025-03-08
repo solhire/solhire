@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { FiGithub, FiTwitter, FiInstagram, FiLinkedin, FiYoutube, FiDollarSign } from 'react-icons/fi';
+import Image from 'next/image';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -56,9 +57,6 @@ const Footer = () => {
             <Link href="/" className="flex items-center">
               <span className="text-2xl font-bold text-white">Sol<span className="text-primary">Hire</span></span>
             </Link>
-            <p className="mt-4 text-gray-400 text-sm">
-              The premier marketplace for hiring creative professionals with Solana cryptocurrency payments.
-            </p>
             <div className="mt-6 flex items-center space-x-4">
               {socialLinks.map((link) => (
                 <a

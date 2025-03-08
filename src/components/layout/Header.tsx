@@ -7,6 +7,7 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { FiMenu, FiX, FiSearch, FiUser, FiBriefcase, FiLogOut } from 'react-icons/fi';
 import { useUser } from '@clerk/nextjs';
+import Image from 'next/image';
 
 // Define types for navigation links
 interface NavLink {
