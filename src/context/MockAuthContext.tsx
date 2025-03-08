@@ -10,6 +10,13 @@ interface MockUser {
   role: 'creator' | 'client';
   isVerified: boolean;
   walletAddress?: string;
+  displayName?: string;
+  bio?: string;
+  location?: string;
+  timeZone?: string;
+  skills?: string[];
+  interests?: string[];
+  languages?: string[];
 }
 
 interface MockAuthContextType {
@@ -29,7 +36,14 @@ const MOCK_USER: MockUser = {
   avatar: '/placeholder-avatar.jpg',
   role: 'creator',
   isVerified: true,
-  walletAddress: '7xKXVg...3cUb'
+  walletAddress: '7xKXVg...3cUb',
+  displayName: 'Demo User',
+  bio: 'This is a demo account for testing purposes.',
+  location: 'Global',
+  timeZone: 'UTC',
+  skills: ['Web Development', 'UI/UX Design', 'Smart Contracts'],
+  interests: ['Blockchain', 'DeFi', 'Web3'],
+  languages: ['English']
 };
 
 export function MockAuthProvider({ children }: { children: React.ReactNode }) {

@@ -41,8 +41,8 @@ const Header = () => {
   const pathname = usePathname();
   const router = useRouter();
   const { connected } = useWallet();
-  const { isLoaded, isSignedIn, user } = useUser();
-  const { logout } = useMockAuth();
+  const { isLoaded, isSignedIn, user: clerkUser } = useUser();
+  const { user: mockUser, logout: mockLogout } = useMockAuth();
 
   // Check wallet connection status
   useEffect(() => {
@@ -106,15 +106,16 @@ const Header = () => {
     { name: 'Home', href: '/' },
     { name: 'Services', href: '/services' },
     { name: 'Dashboard', href: '/dashboard' },
+    { name: 'Profile', href: '/profile' },
     { name: 'Post a Job', href: '/post-a-job', requiresWallet: true },
   ];
 
   // Use the appropriate nav links based on authentication status
-  const navLinks = isLoaded && isSignedIn ? authNavLinks : publicNavLinks;
+  const navLinks = (isLoaded && isSignedIn) || mockUser ? authNavLinks : publicNavLinks;
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed top-[48px] left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled ? 'bg-background/90 backdrop-blur-lg shadow-lg' : 'bg-transparent'
       }`}
     >
@@ -165,10 +166,33 @@ const Header = () => {
             </Link>
 
             {/* Auth Buttons or User Menu */}
-            {user ? (
+            {mockUser ? (
               <div className="flex items-center space-x-4">
-                <span>{user.username}</span>
-                <button onClick={logout} className="btn btn-outline">
+                <Link 
+                  href="/profile"
+                  className="flex items-center space-x-2 text-gray-300 hover:text-primary transition-colors"
+                >
+                  <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+                    <FiUser className="w-4 h-4" />
+                  </div>
+                  <span>{mockUser.username}</span>
+                </Link>
+                <button onClick={mockLogout} className="btn btn-outline">
+                  Logout
+                </button>
+              </div>
+            ) : isLoaded && isSignedIn ? (
+              <div className="flex items-center space-x-4">
+                <Link 
+                  href="/profile"
+                  className="flex items-center space-x-2 text-gray-300 hover:text-primary transition-colors"
+                >
+                  <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+                    <FiUser className="w-4 h-4" />
+                  </div>
+                  <span>{clerkUser?.username}</span>
+                </Link>
+                <button onClick={handleLogout} className="btn btn-outline">
                   Logout
                 </button>
               </div>
@@ -179,7 +203,7 @@ const Header = () => {
             )}
 
             {/* Wallet Button - Only show when authenticated */}
-            {isLoaded && isSignedIn && (
+            {(isLoaded && isSignedIn || mockUser) && (
               <WalletButtonWrapper />
             )}
           </div>
@@ -223,7 +247,28 @@ const Header = () => {
 
               <div className="pt-4 border-t border-gray-700">
                 <div className="flex flex-col space-y-4">
-                  {isLoaded && !isSignedIn ? (
+                  {mockUser ? (
+                    <>
+                      <Link
+                        href="/profile"
+                        className="flex items-center text-gray-300 hover:text-primary"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        <FiUser className="mr-2" />
+                        Profile
+                      </Link>
+                      <button
+                        onClick={() => {
+                          mockLogout();
+                          setIsMobileMenuOpen(false);
+                        }}
+                        className="flex items-center text-gray-300 hover:text-primary"
+                      >
+                        <FiLogOut className="mr-2" />
+                        Logout
+                      </button>
+                    </>
+                  ) : isLoaded && !isSignedIn ? (
                     authLinks.map((link) => (
                       <Link
                         key={link.name}
@@ -262,10 +307,8 @@ const Header = () => {
                   )}
                   
                   <div className="pt-2">
-                    {isLoaded && isSignedIn ? (
+                    {(isLoaded && isSignedIn || mockUser) && (
                       <WalletButtonWrapper />
-                    ) : (
-                      null
                     )}
                   </div>
                 </div>

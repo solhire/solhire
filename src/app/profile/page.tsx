@@ -12,51 +12,54 @@ import Link from 'next/link';
 import MainLayout from '@/components/layout/MainLayout';
 import EmptyState from '@/components/EmptyState';
 import { useRouter } from 'next/navigation';
+import { useMockAuth } from '@/context/MockAuthContext';
 
 // Mock profile data
 const mockProfile = {
-  username: '',
-  displayName: '',
+  username: 'demo_user',
+  displayName: 'Demo User',
   avatar: '/placeholder-avatar.jpg',
-  location: '',
-  timeZone: '',
-  isVerified: false,
+  location: 'Global',
+  timeZone: 'UTC',
+  isVerified: true,
   joinDate: new Date().toISOString().slice(0, 7),
   completedProjects: 0,
   rating: 0,
   isOnline: true,
-  bio: '',
-  skills: [],
-  interests: [],
-  languages: [],
+  bio: 'This is a demo account for testing purposes.',
+  skills: ['Web Development', 'UI/UX Design', 'Smart Contracts'],
+  interests: ['Blockchain', 'DeFi', 'Web3'],
+  languages: ['English'],
   portfolio: [],
   reviews: [],
   recentActivity: [],
-  walletAddress: ''
+  walletAddress: '7xKXVg...3cUb'
 };
 
 export default function Profile() {
   const [activeView, setActiveView] = useState<'creator' | 'buyer'>('creator');
   const [showPortfolio, setShowPortfolio] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [profileData, setProfileData] = useState(mockProfile);
   const router = useRouter();
+  const { user: mockUser } = useMockAuth();
 
-  // Check authentication status
-  useEffect(() => {
-    const hasToken = localStorage.getItem('solhire_auth_token');
-    setIsAuthenticated(!!hasToken);
-  }, []);
-
-  // Simulate loading
+  // Check authentication and load profile data
   useEffect(() => {
     const timer = setTimeout(() => {
+      if (mockUser) {
+        setProfileData({
+          ...mockProfile,
+          username: mockUser.username,
+          displayName: mockUser.username,
+          walletAddress: mockUser.walletAddress || ''
+        });
+      }
       setIsLoading(false);
     }, 1000);
     
     return () => clearTimeout(timer);
-  }, []);
+  }, [mockUser]);
 
   if (isLoading) {
     return (
@@ -69,6 +72,11 @@ export default function Profile() {
         </div>
       </MainLayout>
     );
+  }
+
+  if (!mockUser) {
+    router.push('/mock-login');
+    return null;
   }
 
   return (

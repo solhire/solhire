@@ -18,6 +18,7 @@ export default function GlobalChat({ isOpen, onClose }: { isOpen: boolean; onClo
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [isMinimized, setIsMinimized] = useState(false);
+  const [isSending, setIsSending] = useState(false);
   const isMobile = useMediaQuery('(max-width: 768px)');
   
   const [userColor] = useState(() => {
@@ -30,12 +31,9 @@ export default function GlobalChat({ isOpen, onClose }: { isOpen: boolean; onClo
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    // Create a reference to temporary messages
-    const messagesRef = query(ref(database, 'temp_messages'), limitToLast(50));
-    
-    // Clear existing messages when component mounts
-    remove(ref(database, 'temp_messages')).catch(console.error);
+    if (!isOpen) return;
 
+    const messagesRef = query(ref(database, 'temp_messages'), limitToLast(50));
     const unsubscribe = onValue(messagesRef, (snapshot) => {
       const messagesData: Message[] = [];
       snapshot.forEach((childSnapshot) => {
@@ -48,15 +46,15 @@ export default function GlobalChat({ isOpen, onClose }: { isOpen: boolean; onClo
       scrollToBottom();
     });
 
-    // Cleanup: Clear messages when component unmounts
     return () => {
       unsubscribe();
-      remove(ref(database, 'temp_messages')).catch(console.error);
     };
-  }, []);
+  }, [isOpen]);
 
   // Clean old messages periodically
   useEffect(() => {
+    if (!isOpen) return;
+
     const cleanup = setInterval(() => {
       const oneHourAgo = Date.now() - 3600000; // 1 hour in milliseconds
       const messagesRef = ref(database, 'temp_messages');
@@ -72,27 +70,33 @@ export default function GlobalChat({ isOpen, onClose }: { isOpen: boolean; onClo
     }, 300000); // Run every 5 minutes
 
     return () => clearInterval(cleanup);
-  }, []);
+  }, [isOpen]);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    setTimeout(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
   };
 
   const sendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newMessage.trim()) return;
+    if (!newMessage.trim() || isSending) return;
 
     try {
+      setIsSending(true);
       const messagesRef = ref(database, 'temp_messages');
       await push(messagesRef, {
-        text: newMessage,
+        text: newMessage.trim(),
         timestamp: Date.now(),
         color: userColor
       });
       setNewMessage('');
-      inputRef.current?.focus();
+      scrollToBottom();
     } catch (error) {
       console.error('Error sending message:', error);
+    } finally {
+      setIsSending(false);
+      inputRef.current?.focus();
     }
   };
 
