@@ -30,10 +30,6 @@ export default function RootLayout({
 
   return (
     <html lang="en" className={inter.variable}>
-      <head>
-        <title>SolHire - Connect with Top Web3 Talent</title>
-        <meta name="description" content="Find and hire the best Web3 talent or get hired for Web3 projects." />
-      </head>
       <body className={`min-h-screen bg-background ${inter.className}`}>
         <Providers>
           {!isUnlocked && <PasswordProtection onUnlock={handleUnlock} />}
