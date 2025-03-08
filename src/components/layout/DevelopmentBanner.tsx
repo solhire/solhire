@@ -9,7 +9,7 @@ const DevelopmentBanner = () => {
   if (!isVisible) return null;
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-[100]">
+    <div className="fixed top-0 left-0 right-0 z-50 h-[48px]">
       <div className="py-3 px-4 sm:px-6 bg-gradient-to-r from-purple-600 via-violet-500 to-indigo-600 text-white shadow-lg">
         <div className="container-custom flex flex-col sm:flex-row items-center justify-between">
           <div className="flex items-center mb-2 sm:mb-0">

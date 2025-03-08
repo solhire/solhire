@@ -191,7 +191,7 @@ model Service {
   title          String
   description    String
   category       String
-  pricing        ServicePricing?  @relation(onDelete: Cascade)
+  pricing        ServicePricing?  @relation
   availability   String      @default("available") // "available", "busy", "unavailable"
   skills         String[]
   portfolio      String[]    // URLs to portfolio images
@@ -211,7 +211,7 @@ model Service {
 
 model ServicePricing {
   id             String      @id @default(cuid())
-  service        Service     @relation(fields: [serviceId], references: [id])
+  service        Service     @relation(fields: [serviceId], references: [id], onDelete: Cascade)
   serviceId      String      @unique
   type           String      @default("fixed") // "fixed", "hourly", "range"
   minPrice       Float

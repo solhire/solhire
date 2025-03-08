@@ -10,12 +10,12 @@ interface MainLayoutProps {
 
 const MainLayout = ({ children }: MainLayoutProps) => {
   return (
-    <>
+    <div className="min-h-screen flex flex-col">
       <DevelopmentBanner />
       <Header />
-      <main>{children}</main>
+      <main className="flex-1 pt-[calc(48px+64px)]">{children}</main>
       <Footer />
-    </>
+    </div>
   );
 };
 
