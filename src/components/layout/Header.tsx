@@ -115,10 +115,10 @@ const Header = () => {
       }`}
     >
       <div className="container-custom mx-auto px-4 py-4">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between min-h-[48px]">
           {/* Logo */}
           <Link href="/" className="flex items-center">
-            <span className="text-2xl font-bold text-white">Sol<span className="text-primary">Hire</span></span>
+            <span className="text-xl md:text-2xl font-bold text-white">Sol<span className="text-primary">Hire</span></span>
           </Link>
 
           {/* Desktop Navigation */}
