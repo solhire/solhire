@@ -19,11 +19,33 @@ function LoginFormFallback() {
   );
 }
 
-export default function Login() {
-  const router = useRouter();
+// Component that uses useSearchParams
+function LoginForm() {
   const searchParams = useSearchParams();
   const redirectUrl = searchParams.get('redirectTo') || '/';
+  
+  return (
+    <SignIn 
+      redirectUrl={redirectUrl}
+      appearance={{
+        elements: {
+          formButtonPrimary: 'bg-primary hover:bg-primary-dark text-white',
+          card: 'bg-transparent shadow-none',
+          headerTitle: 'hidden',
+          headerSubtitle: 'hidden',
+          socialButtonsBlockButton: 'bg-background-light border border-gray-700 text-white',
+          formFieldInput: 'bg-background border border-gray-700 text-white',
+          formFieldLabel: 'text-gray-300',
+          footerActionLink: 'text-primary hover:text-primary-light',
+          dividerLine: 'bg-gray-700',
+          dividerText: 'text-gray-400'
+        }
+      }}
+    />
+  );
+}
 
+export default function Login() {
   return (
     <main className="min-h-screen relative overflow-hidden flex items-center justify-center">
       {/* Background Elements */}
@@ -86,23 +108,7 @@ export default function Login() {
             </h1>
             
             <Suspense fallback={<LoginFormFallback />}>
-              <SignIn 
-                redirectUrl={redirectUrl}
-                appearance={{
-                  elements: {
-                    formButtonPrimary: 'bg-primary hover:bg-primary-dark text-white',
-                    card: 'bg-transparent shadow-none',
-                    headerTitle: 'hidden',
-                    headerSubtitle: 'hidden',
-                    socialButtonsBlockButton: 'bg-background-light border border-gray-700 text-white',
-                    formFieldInput: 'bg-background border border-gray-700 text-white',
-                    formFieldLabel: 'text-gray-300',
-                    footerActionLink: 'text-primary hover:text-primary-light',
-                    dividerLine: 'bg-gray-700',
-                    dividerText: 'text-gray-400'
-                  }
-                }}
-              />
+              <LoginForm />
             </Suspense>
             
             <div className="mt-6 text-center">
