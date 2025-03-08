@@ -3,16 +3,6 @@ const nextConfig = {
   reactStrictMode: true,
   images: {
     domains: ['localhost', 'res.cloudinary.com', 'solhire.net'],
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'solhire.net',
-      },
-      {
-        protocol: 'https',
-        hostname: 'res.cloudinary.com',
-      }
-    ]
   },
   // Skip type checking during build
   typescript: {
@@ -27,36 +17,8 @@ const nextConfig = {
   // Disable static generation for client components
   staticPageGenerationTimeout: 300,
   // Domain configuration
-  async rewrites() {
-    return {
-      beforeFiles: [
-        {
-          source: '/:path*',
-          has: [
-            {
-              type: 'host',
-              value: '(?!solhire\\.net).*',
-            },
-          ],
-          destination: 'https://solhire.net/:path*',
-        },
-      ],
-    };
-  },
   async redirects() {
     return [
-      // Redirect www to non-www
-      {
-        source: '/:path*',
-        has: [
-          {
-            type: 'host',
-            value: 'www.solhire.net',
-          },
-        ],
-        destination: 'https://solhire.net/:path*',
-        permanent: true,
-      },
       // Redirect HTTP to HTTPS
       {
         source: '/:path*',
@@ -67,7 +29,7 @@ const nextConfig = {
             value: 'http',
           },
         ],
-        destination: 'https://solhire.net/:path*',
+        destination: 'https://:host/:path*',
         permanent: true,
       },
     ];
