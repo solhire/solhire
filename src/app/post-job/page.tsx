@@ -4,8 +4,7 @@ import { useState, useEffect } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { FiUpload, FiInfo, FiAlertCircle } from 'react-icons/fi';
-import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
+import MainLayout from '@/components/layout/MainLayout';
 import { toast } from 'react-toastify';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
@@ -51,29 +50,31 @@ const availableSkills = [
 
 // Loading skeleton component
 const LoadingSkeleton = () => (
-  <main className="min-h-screen">
-    <Header />
+  <MainLayout>
     <section className="py-20 bg-background-light">
       <div className="container-custom">
-        <div className="max-w-4xl mx-auto">
-          <div className="h-12 w-64 bg-background-dark rounded-lg animate-pulse mb-4" />
-          <div className="h-6 w-96 bg-background-dark rounded-lg animate-pulse mb-8" />
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div className="space-y-8">
-              {[...Array(5)].map((_, i) => (
-                <div key={i} className="card">
+        <h1 className="text-4xl md:text-5xl font-bold mb-6">Post a Job</h1>
+        <div className="animate-pulse">
+          <div className="max-w-4xl mx-auto">
+            <div className="h-12 w-64 bg-background-dark rounded-lg animate-pulse mb-4" />
+            <div className="h-6 w-96 bg-background-dark rounded-lg animate-pulse mb-8" />
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div className="space-y-8">
+                {[...Array(5)].map((_, i) => (
+                  <div key={i} className="card">
+                    <div className="h-8 w-32 bg-background-dark rounded-lg animate-pulse mb-4" />
+                    <div className="h-12 bg-background-dark rounded-lg animate-pulse" />
+                  </div>
+                ))}
+              </div>
+              <div className="space-y-8">
+                <div className="card">
                   <div className="h-8 w-32 bg-background-dark rounded-lg animate-pulse mb-4" />
-                  <div className="h-12 bg-background-dark rounded-lg animate-pulse" />
-                </div>
-              ))}
-            </div>
-            <div className="space-y-8">
-              <div className="card">
-                <div className="h-8 w-32 bg-background-dark rounded-lg animate-pulse mb-4" />
-                <div className="space-y-4">
-                  {[...Array(4)].map((_, i) => (
-                    <div key={i} className="h-6 bg-background-dark rounded-lg animate-pulse" />
-                  ))}
+                  <div className="space-y-4">
+                    {[...Array(4)].map((_, i) => (
+                      <div key={i} className="h-6 bg-background-dark rounded-lg animate-pulse" />
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
@@ -81,8 +82,7 @@ const LoadingSkeleton = () => (
         </div>
       </div>
     </section>
-    <Footer />
-  </main>
+  </MainLayout>
 );
 
 // Wallet button wrapper component
@@ -301,8 +301,7 @@ export default function PostJob() {
   }
 
   return (
-    <main className="min-h-screen">
-      <Header />
+    <MainLayout>
       <section className="py-20 bg-background-light">
         <div className="container-custom">
           <div className="max-w-4xl mx-auto">
@@ -671,7 +670,6 @@ export default function PostJob() {
           </div>
         </div>
       </section>
-      <Footer />
 
       {/* Confirmation Dialog */}
       {showConfirmation && (
@@ -726,6 +724,6 @@ export default function PostJob() {
           color: #7C3AED;
         }
       `}</style>
-    </main>
+    </MainLayout>
   );
 }

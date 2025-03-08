@@ -9,33 +9,30 @@ import {
 } from 'react-icons/fi';
 import Image from 'next/image';
 import Link from 'next/link';
-import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
+import MainLayout from '@/components/layout/MainLayout';
+import EmptyState from '@/components/EmptyState';
+import { useRouter } from 'next/navigation';
 
 // Mock profile data
 const mockProfile = {
-  username: 'alexcreative',
-  displayName: 'Alex Johnson',
-  avatar: '/cz.jpg',
-  location: 'San Francisco, CA',
-  timeZone: 'PST',
-  isVerified: true,
-  joinDate: '2023-09',
+  username: '',
+  displayName: '',
+  avatar: '/placeholder-avatar.jpg',
+  location: '',
+  timeZone: '',
+  isVerified: false,
+  joinDate: new Date().toISOString().slice(0, 7),
   completedProjects: 0,
   rating: 0,
   isOnline: true,
-  bio: 'Creative professional specializing in motion design and 3D animation. Passionate about bringing ideas to life through compelling visual storytelling.',
-  skills: ['Motion Design', '3D Animation', 'Video Editing', 'After Effects', 'Cinema 4D'],
-  interests: ['Tech Innovation', 'Creative Content', 'Digital Art', 'Emerging Media'],
-  languages: ['English', 'Spanish'],
-  portfolio: [] as Array<{
-    id: number;
-    title: string;
-    image: string;
-    category: string;
-    client?: string;
-    completionDate?: string;
-  }>
+  bio: '',
+  skills: [],
+  interests: [],
+  languages: [],
+  portfolio: [],
+  reviews: [],
+  recentActivity: [],
+  walletAddress: ''
 };
 
 export default function Profile() {
@@ -44,6 +41,7 @@ export default function Profile() {
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [profileData, setProfileData] = useState(mockProfile);
+  const router = useRouter();
 
   // Check authentication status
   useEffect(() => {
@@ -62,22 +60,19 @@ export default function Profile() {
 
   if (isLoading) {
     return (
-      <main className="min-h-screen bg-background">
-        <Header />
+      <MainLayout>
         <div className="container-custom pt-24 pb-12 flex items-center justify-center">
           <div className="flex flex-col items-center space-y-4">
             <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
             <p className="text-gray-400">Loading profile...</p>
           </div>
         </div>
-        <Footer />
-      </main>
+      </MainLayout>
     );
   }
 
   return (
-    <main className="min-h-screen bg-background">
-      <Header />
+    <MainLayout>
       <div className="container-custom pt-24 pb-12">
         {/* Profile Header */}
         <div className="relative mb-8">
@@ -272,29 +267,14 @@ export default function Profile() {
 
             {/* Empty Portfolio State */}
             {activeView === 'creator' && profileData.portfolio.length === 0 && (
-              <motion.div
-                layout
-                className="card"
-              >
-                <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-xl font-bold">Portfolio</h2>
-                </div>
-                
-                <div className="text-center py-8">
-                  <FiBriefcase className="w-12 h-12 text-gray-500 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium mb-2">No portfolio items yet</h3>
-                  <p className="text-gray-400 mb-4">
-                    {isAuthenticated 
-                      ? "You haven't added any portfolio items yet." 
-                      : "This user hasn't added any portfolio items yet."}
-                  </p>
-                  {isAuthenticated && (
-                    <button className="btn btn-primary">
-                      Add Portfolio Item
-                    </button>
-                  )}
-                </div>
-              </motion.div>
+              <EmptyState
+                title="No Portfolio Items"
+                description="Showcase your work by adding portfolio items to attract potential clients."
+                action={{
+                  label: "Add Portfolio Item",
+                  onClick: () => router.push('/profile/portfolio/new')
+                }}
+              />
             )}
           </div>
 
@@ -354,7 +334,6 @@ export default function Profile() {
           </div>
         </div>
       </div>
-      <Footer />
-    </main>
+    </MainLayout>
   );
 } 

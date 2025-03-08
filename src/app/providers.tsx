@@ -8,6 +8,7 @@ import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 import { clusterApiUrl } from '@solana/web3.js';
 import { ClerkProvider } from '@clerk/nextjs';
 import { Toaster } from 'react-hot-toast';
+import { MockAuthProvider } from '@/context/MockAuthContext';
 
 // Import wallet adapter CSS
 import '@solana/wallet-adapter-react-ui/styles.css';
@@ -31,12 +32,19 @@ export function Providers({ children }: { children: React.ReactNode }) {
     [network]
   );
 
-  return (
+  // Wrap content with Clerk only if publishable key is available
+  const wrappedContent = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY ? (
     <ClerkProvider publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}>
+      {children}
+    </ClerkProvider>
+  ) : children;
+
+  return (
+    <MockAuthProvider>
       <ConnectionProvider endpoint={endpoint}>
         <WalletProvider wallets={wallets} autoConnect>
           <WalletModalProvider>
-            {children}
+            {wrappedContent}
             <ToastContainer
               position="bottom-right"
               autoClose={5000}
@@ -53,6 +61,6 @@ export function Providers({ children }: { children: React.ReactNode }) {
           </WalletModalProvider>
         </WalletProvider>
       </ConnectionProvider>
-    </ClerkProvider>
+    </MockAuthProvider>
   );
 } 

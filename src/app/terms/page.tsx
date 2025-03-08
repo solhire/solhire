@@ -1,11 +1,8 @@
-import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
+import MainLayout from '@/components/layout/MainLayout';
 
 export default function Terms() {
   return (
-    <main className="min-h-screen">
-      <Header />
-      
+    <MainLayout>
       <section className="pt-32 pb-20 bg-background-light">
         <div className="container-custom">
           <div className="bg-background-dark p-8 md:p-12 rounded-2xl shadow-lg border border-gray-800">
@@ -210,8 +207,6 @@ export default function Terms() {
           </div>
         </div>
       </section>
-      
-      <Footer />
-    </main>
+    </MainLayout>
   );
 } 

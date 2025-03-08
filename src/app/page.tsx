@@ -1,8 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Metadata } from 'next';
-import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
+import MainLayout from '@/components/layout/MainLayout';
 import FeaturedCreatives from '@/components/home/FeaturedCreatives';
 import PopularServices from '@/components/home/PopularServices';
 import HowItWorks from '@/components/home/HowItWorks';
@@ -15,9 +14,7 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return (
-    <main className="min-h-screen">
-      <Header />
-      
+    <MainLayout>
       {/* Hero Section */}
       <section className="relative h-[90vh] flex items-center">
         <div className="absolute inset-0 z-0">
@@ -86,8 +83,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-      
-      <Footer />
-    </main>
+    </MainLayout>
   );
 } 

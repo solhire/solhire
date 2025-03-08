@@ -1,11 +1,9 @@
 import Link from 'next/link';
-import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
+import MainLayout from '@/components/layout/MainLayout';
 
 export default function ProfileNotFound() {
   return (
-    <main className="min-h-screen bg-background">
-      <Header />
+    <MainLayout>
       <div className="container-custom pt-24 pb-12">
         <div className="card text-center py-12">
           <h1 className="text-2xl font-bold mb-4">Profile Not Found</h1>
@@ -22,7 +20,6 @@ export default function ProfileNotFound() {
           </div>
         </div>
       </div>
-      <Footer />
-    </main>
+    </MainLayout>
   );
 } 

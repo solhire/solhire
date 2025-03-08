@@ -9,6 +9,7 @@ import { FiMenu, FiX, FiSearch, FiUser, FiBriefcase, FiLogOut, FiMessageSquare }
 import { useUser } from '@clerk/nextjs';
 import Image from 'next/image';
 import GlobalChat from '@/components/chat/GlobalChat';
+import { useMockAuth } from '@/context/MockAuthContext';
 
 // Define types for navigation links
 interface NavLink {
@@ -41,6 +42,7 @@ const Header = () => {
   const router = useRouter();
   const { connected } = useWallet();
   const { isLoaded, isSignedIn, user } = useUser();
+  const { logout } = useMockAuth();
 
   // Check wallet connection status
   useEffect(() => {
@@ -163,54 +165,17 @@ const Header = () => {
             </Link>
 
             {/* Auth Buttons or User Menu */}
-            {isLoaded && !isSignedIn ? (
+            {user ? (
               <div className="flex items-center space-x-4">
-                <Link
-                  href="/login"
-                  className="text-sm font-medium text-gray-300 hover:text-primary transition-colors"
-                >
-                  Log In
-                </Link>
-                <Link href="/register" className="btn btn-primary btn-sm">
-                  Register
-                </Link>
+                <span>{user.username}</span>
+                <button onClick={logout} className="btn btn-outline">
+                  Logout
+                </button>
               </div>
             ) : (
-              <div className="relative group">
-                <button
-                  className="flex items-center space-x-2 text-gray-300 hover:text-primary transition-colors"
-                  aria-label="User menu"
-                >
-                  <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-                    <FiUser className="w-4 h-4 text-primary" />
-                  </div>
-                  <span className="text-sm font-medium">{user?.firstName || 'User'}</span>
-                </button>
-
-                {/* Dropdown Menu */}
-                <div className="absolute right-0 mt-2 w-48 bg-background-dark border border-gray-700 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top-right">
-                  <div className="py-1">
-                    <Link
-                      href="/dashboard"
-                      className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-primary"
-                    >
-                      Dashboard
-                    </Link>
-                    <Link
-                      href="/profile"
-                      className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-primary"
-                    >
-                      Profile
-                    </Link>
-                    <button
-                      onClick={handleLogout}
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-primary"
-                    >
-                      Log Out
-                    </button>
-                  </div>
-                </div>
-              </div>
+              <Link href="/mock-login" className="btn btn-primary">
+                Login
+              </Link>
             )}
 
             {/* Wallet Button - Only show when authenticated */}

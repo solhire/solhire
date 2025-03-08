@@ -10,74 +10,28 @@ import {
   FiSearch
 } from 'react-icons/fi';
 import Link from 'next/link';
-import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
+import MainLayout from '@/components/layout/MainLayout';
 import { useWallet } from '@solana/wallet-adapter-react';
+import { EmptyState } from '@/components/EmptyState';
+import { useRouter } from 'next/navigation';
 
 // Mock data - Replace with actual API calls
 const mockData = {
   earnings: {
-    total: 2500,
-    pending: 500,
-    thisMonth: 1200,
+    total: 0,
+    pending: 0,
+    thisMonth: 0,
     currency: 'SOL'
   },
   stats: {
-    completionRate: 98,
-    responseTime: '2 hours',
-    activeProjects: 4,
-    totalReviews: 28
+    completionRate: 0,
+    responseTime: '0 hours',
+    activeProjects: 0,
+    totalReviews: 0
   },
-  activeOrders: [
-    {
-      id: 1,
-      title: 'Website Redesign',
-      client: 'Tech Solutions Inc.',
-      deadline: '2024-04-15',
-      status: 'in-progress' as const,
-      amount: 5.2
-    },
-    {
-      id: 2,
-      title: 'Logo Animation',
-      client: 'Creative Studio',
-      deadline: '2024-04-10',
-      status: 'reviewing' as const,
-      amount: 2.8
-    }
-  ],
-  jobPostings: [
-    {
-      id: 1,
-      title: 'UI/UX Designer Needed',
-      applications: 12,
-      status: 'active',
-      postedDate: '2024-03-28'
-    },
-    {
-      id: 2,
-      title: 'Video Editor for YouTube',
-      applications: 8,
-      status: 'active',
-      postedDate: '2024-03-27'
-    }
-  ],
-  recommendedJobs: [
-    {
-      id: 1,
-      title: '3D Animation Project',
-      budget: '10-15 SOL',
-      postedDate: '2024-03-29',
-      matchScore: 95
-    },
-    {
-      id: 2,
-      title: 'Motion Graphics Designer',
-      budget: '5-8 SOL',
-      postedDate: '2024-03-28',
-      matchScore: 88
-    }
-  ]
+  activeOrders: [],
+  jobPostings: [],
+  recommendedJobs: []
 };
 
 export default function Dashboard() {
@@ -87,6 +41,7 @@ export default function Dashboard() {
     { id: 2, message: 'Payment released for Website Redesign', type: 'success', time: '5 hours ago' }
   ]);
   const { connected, publicKey } = useWallet();
+  const router = useRouter();
 
   // Status color mapping
   const statusColors = {
@@ -97,9 +52,7 @@ export default function Dashboard() {
   };
 
   return (
-    <main className="min-h-screen bg-background">
-      <Header />
-      
+    <MainLayout>
       <div className="container-custom pt-24 pb-12">
         {/* View Toggle */}
         <div className="flex justify-between items-center mb-8">
@@ -213,45 +166,56 @@ export default function Dashboard() {
                   View All <FiArrowRight className="ml-2 w-4 h-4" />
                 </Link>
               </div>
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="text-left text-gray-400 border-b border-gray-800">
-                      <th className="pb-4">Project</th>
-                      <th className="pb-4">Client</th>
-                      <th className="pb-4">Deadline</th>
-                      <th className="pb-4">Amount</th>
-                      <th className="pb-4">Status</th>
-                      <th className="pb-4">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {mockData.activeOrders.map((order) => (
-                      <tr key={order.id} className="border-b border-gray-800">
-                        <td className="py-4">{order.title}</td>
-                        <td className="py-4">{order.client}</td>
-                        <td className="py-4">{new Date(order.deadline).toLocaleDateString()}</td>
-                        <td className="py-4">{order.amount} SOL</td>
-                        <td className="py-4">
-                          <span className={`px-3 py-1 rounded-full text-xs ${statusColors[order.status]}`}>
-                            {order.status}
-                          </span>
-                        </td>
-                        <td className="py-4">
-                          <div className="flex space-x-2">
-                            <button className="p-2 rounded-full bg-background-light text-gray-400 hover:text-white">
-                              <FiEye className="w-4 h-4" />
-                            </button>
-                            <button className="p-2 rounded-full bg-background-light text-gray-400 hover:text-white">
-                              <FiMessageSquare className="w-4 h-4" />
-                            </button>
-                          </div>
-                        </td>
+              {mockData.activeOrders.length === 0 ? (
+                <EmptyState
+                  title="No Active Orders"
+                  description="You don't have any active orders yet. Start by browsing available jobs or creating a service."
+                  action={{
+                    label: "Browse Jobs",
+                    onClick: () => router.push('/services')
+                  }}
+                />
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="text-left text-gray-400 border-b border-gray-800">
+                        <th className="pb-4">Project</th>
+                        <th className="pb-4">Client</th>
+                        <th className="pb-4">Deadline</th>
+                        <th className="pb-4">Amount</th>
+                        <th className="pb-4">Status</th>
+                        <th className="pb-4">Actions</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                    </thead>
+                    <tbody>
+                      {mockData.activeOrders.map((order) => (
+                        <tr key={order.id} className="border-b border-gray-800">
+                          <td className="py-4">{order.title}</td>
+                          <td className="py-4">{order.client}</td>
+                          <td className="py-4">{new Date(order.deadline).toLocaleDateString()}</td>
+                          <td className="py-4">{order.amount} SOL</td>
+                          <td className="py-4">
+                            <span className={`px-3 py-1 rounded-full text-xs ${statusColors[order.status]}`}>
+                              {order.status}
+                            </span>
+                          </td>
+                          <td className="py-4">
+                            <div className="flex space-x-2">
+                              <button className="p-2 rounded-full bg-background-light text-gray-400 hover:text-white">
+                                <FiEye className="w-4 h-4" />
+                              </button>
+                              <button className="p-2 rounded-full bg-background-light text-gray-400 hover:text-white">
+                                <FiMessageSquare className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
 
             {/* Recommended Jobs */}
@@ -262,23 +226,34 @@ export default function Dashboard() {
                   <FiRefreshCw className="w-5 h-5" />
                 </button>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {mockData.recommendedJobs.map((job) => (
-                  <div key={job.id} className="p-4 rounded-xl bg-background-light border border-gray-800 hover:border-primary/50 transition-colors">
-                    <div className="flex justify-between items-start mb-3">
-                      <h3 className="font-semibold">{job.title}</h3>
-                      <span className="text-xs bg-primary/20 text-primary px-2 py-1 rounded-full">
-                        {job.matchScore}% Match
-                      </span>
+              {mockData.recommendedJobs.length === 0 ? (
+                <EmptyState
+                  title="No Recommendations Yet"
+                  description="Complete your profile and add your skills to get personalized job recommendations."
+                  action={{
+                    label: "Complete Profile",
+                    onClick: () => router.push('/profile/settings')
+                  }}
+                />
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {mockData.recommendedJobs.map((job) => (
+                    <div key={job.id} className="p-4 rounded-xl bg-background-light border border-gray-800 hover:border-primary/50 transition-colors">
+                      <div className="flex justify-between items-start mb-3">
+                        <h3 className="font-semibold">{job.title}</h3>
+                        <span className="text-xs bg-primary/20 text-primary px-2 py-1 rounded-full">
+                          {job.matchScore}% Match
+                        </span>
+                      </div>
+                      <p className="text-gray-400 text-sm mb-3">Budget: {job.budget}</p>
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs text-gray-400">Posted {job.postedDate}</span>
+                        <button className="btn btn-primary btn-sm">Apply Now</button>
+                      </div>
                     </div>
-                    <p className="text-gray-400 text-sm mb-3">Budget: {job.budget}</p>
-                    <div className="flex justify-between items-center">
-                      <span className="text-xs text-gray-400">Posted {job.postedDate}</span>
-                      <button className="btn btn-primary btn-sm">Apply Now</button>
-                    </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -294,43 +269,54 @@ export default function Dashboard() {
                   Post New Job
                 </Link>
               </div>
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="text-left text-gray-400 border-b border-gray-800">
-                      <th className="pb-4">Title</th>
-                      <th className="pb-4">Applications</th>
-                      <th className="pb-4">Posted Date</th>
-                      <th className="pb-4">Status</th>
-                      <th className="pb-4">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {mockData.jobPostings.map((job) => (
-                      <tr key={job.id} className="border-b border-gray-800">
-                        <td className="py-4">{job.title}</td>
-                        <td className="py-4">{job.applications} applications</td>
-                        <td className="py-4">{job.postedDate}</td>
-                        <td className="py-4">
-                          <span className="px-3 py-1 rounded-full text-xs bg-green-500/20 text-green-500">
-                            {job.status}
-                          </span>
-                        </td>
-                        <td className="py-4">
-                          <div className="flex space-x-2">
-                            <button className="p-2 rounded-full bg-background-light text-gray-400 hover:text-white">
-                              <FiEye className="w-4 h-4" />
-                            </button>
-                            <button className="p-2 rounded-full bg-background-light text-gray-400 hover:text-white">
-                              <FiEdit className="w-4 h-4" />
-                            </button>
-                          </div>
-                        </td>
+              {mockData.jobPostings.length === 0 ? (
+                <EmptyState
+                  title="No Job Postings"
+                  description="You haven't posted any jobs yet. Create your first job posting to find talented creators."
+                  action={{
+                    label: "Post a Job",
+                    onClick: () => router.push('/post-job')
+                  }}
+                />
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="text-left text-gray-400 border-b border-gray-800">
+                        <th className="pb-4">Title</th>
+                        <th className="pb-4">Applications</th>
+                        <th className="pb-4">Posted Date</th>
+                        <th className="pb-4">Status</th>
+                        <th className="pb-4">Actions</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                    </thead>
+                    <tbody>
+                      {mockData.jobPostings.map((job) => (
+                        <tr key={job.id} className="border-b border-gray-800">
+                          <td className="py-4">{job.title}</td>
+                          <td className="py-4">{job.applications} applications</td>
+                          <td className="py-4">{job.postedDate}</td>
+                          <td className="py-4">
+                            <span className="px-3 py-1 rounded-full text-xs bg-green-500/20 text-green-500">
+                              {job.status}
+                            </span>
+                          </td>
+                          <td className="py-4">
+                            <div className="flex space-x-2">
+                              <button className="p-2 rounded-full bg-background-light text-gray-400 hover:text-white">
+                                <FiEye className="w-4 h-4" />
+                              </button>
+                              <button className="p-2 rounded-full bg-background-light text-gray-400 hover:text-white">
+                                <FiEdit className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
 
             {/* Wallet & Payments */}
@@ -381,8 +367,6 @@ export default function Dashboard() {
           </div>
         )}
       </div>
-
-      <Footer />
-    </main>
+    </MainLayout>
   );
 } 

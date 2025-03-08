@@ -1,5 +1,4 @@
-import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
+import MainLayout from '@/components/layout/MainLayout';
 import Link from 'next/link';
 import { FiZap, FiGlobe, FiShield, FiCpu } from 'react-icons/fi';
 
@@ -51,9 +50,7 @@ export default function About() {
   ];
 
   return (
-    <main className="min-h-screen">
-      <Header />
-      
+    <MainLayout>
       {/* Hero Section */}
       <section className="pt-32 pb-20 bg-background-light">
         <div className="container-custom">
@@ -154,8 +151,6 @@ export default function About() {
           </div>
         </div>
       </section>
-      
-      <Footer />
-    </main>
+    </MainLayout>
   );
 } 

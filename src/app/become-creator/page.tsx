@@ -4,8 +4,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { FiCheck, FiArrowRight, FiUsers, FiBriefcase, FiDollarSign, FiStar } from 'react-icons/fi';
 import Link from 'next/link';
-import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
+import MainLayout from '@/components/layout/MainLayout';
 
 // Creator categories with icons and descriptions
 const categories = [
@@ -86,9 +85,7 @@ export default function BecomeCreator() {
   };
 
   return (
-    <main className="min-h-screen">
-      <Header />
-      
+    <MainLayout>
       {/* Hero Section */}
       <section className="relative py-20 bg-gradient-to-br from-primary/20 via-primary/10 to-background">
         <div className="absolute inset-0 bg-grid-pattern opacity-5" />
@@ -256,16 +253,6 @@ export default function BecomeCreator() {
           </Link>
         </div>
       </section>
-
-      <Footer />
-
-      <style jsx global>{`
-        .bg-grid-pattern {
-          background-image: linear-gradient(to right, rgba(139, 92, 246, 0.1) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(139, 92, 246, 0.1) 1px, transparent 1px);
-          background-size: 24px 24px;
-        }
-      `}</style>
-    </main>
+    </MainLayout>
   );
 } 
