@@ -42,7 +42,7 @@ export default function TokenPage() {
               <FiShield className="mr-2 text-red-500" /> Official Token Source
             </h2>
             <p className="mb-4">
-              The $HIRE token is ONLY deployed from the official PumpFun profile:
+              The $HIRE token will ONLY be deployed from the official PumpFun profile:
             </p>
             <a 
               href="https://pump.fun/profile/GGXrfcU9DWCweJR9UDbhyPzF57aaSy9JSqT1NNDmTLzB" 
@@ -55,20 +55,20 @@ export default function TokenPage() {
             </a>
             
             <div className="mb-6 bg-[#FF9900]/10 p-4 rounded-lg border border-[#FF9900]/30">
-              <h3 className="text-lg font-bold text-[#FF9900] mb-2">Official Contract Address:</h3>
-              <p className="font-mono text-sm break-all text-white mb-2">
-                7Qz3mJ5QFKyfUjFvrG2APs1Ko5gMBHdaceyxU5Kdpump
+              <h3 className="text-lg font-bold text-[#FF9900] mb-2">Token Status:</h3>
+              <p className="text-white mb-2">
+                There is currently NO official $HIRE token. The token has not been deployed yet.
               </p>
               <p className="text-white text-sm">
-                Always verify this contract address before interacting with the token. Updates will be posted on our <a href="https://twitter.com/solhire" target="_blank" rel="noopener noreferrer" className="text-[#FF9900] hover:text-[#FFAA33] underline">Twitter</a> first.
+                The official token launch will be announced on our <a href="https://twitter.com/solhire" target="_blank" rel="noopener noreferrer" className="text-[#FF9900] hover:text-[#FFAA33] underline">Twitter</a> first, and then updated here.
               </p>
             </div>
             
             <div className="bg-red-900/20 p-4 rounded-lg border border-red-800/30">
               <p className="text-lg font-bold text-red-400 mb-2">⚠️ IMPORTANT</p>
               <p>
-                Any tokens claiming to be $HIRE from any other address are NOT official and should be considered fraudulent. 
-                Always verify the contract address on this page before interacting with any token.
+                Any tokens currently claiming to be $HIRE are NOT official and should be considered fraudulent. 
+                Do not interact with any tokens claiming to be $HIRE at this time.
               </p>
             </div>
           </div>
