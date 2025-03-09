@@ -1,4 +1,4 @@
-import { ref, push, DatabaseReference } from 'firebase/database';
+import { ref, push, DatabaseReference, Database } from 'firebase/database';
 import { database } from '@/lib/firebase';
 
 /**
@@ -19,7 +19,7 @@ export async function sendMessageWithRetry(
   while (retryCount <= maxRetries) {
     try {
       // Get reference to the database path
-      const dbRef = ref(database, path);
+      const dbRef = ref(database as Database, path);
       
       // Push the message data
       const messageRef = await push(dbRef, {
@@ -53,7 +53,7 @@ export async function sendMessageWithRetry(
 export async function checkFirebaseConnection(): Promise<boolean> {
   try {
     // Try to write to a test location
-    const testRef = ref(database, 'connection_test');
+    const testRef = ref(database as Database, 'connection_test');
     await push(testRef, {
       timestamp: Date.now(),
       test: true

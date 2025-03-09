@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { database } from '@/lib/firebase';
-import { ref, push, onValue, query, limitToLast, remove, serverTimestamp } from 'firebase/database';
+import { ref, push, onValue, query, limitToLast, remove, serverTimestamp, Database } from 'firebase/database';
 import { FiX, FiSend, FiMaximize2, FiMinimize2, FiMessageCircle } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
@@ -63,7 +63,7 @@ export default function GlobalChat({ isOpen, onClose }: { isOpen: boolean; onClo
       setIsUsernameSet(true);
     }
 
-    const messagesRef = query(ref(database, 'global_chat_messages'), limitToLast(50));
+    const messagesRef = query(ref(database as Database, 'global_chat_messages'), limitToLast(50));
     
     try {
       const unsubscribe = onValue(messagesRef, (snapshot) => {
@@ -99,7 +99,7 @@ export default function GlobalChat({ isOpen, onClose }: { isOpen: boolean; onClo
 
     const cleanup = setInterval(() => {
       const sixHoursAgo = Date.now() - 21600000; // 6 hours in milliseconds
-      const messagesRef = ref(database, 'global_chat_messages');
+      const messagesRef = ref(database as Database, 'global_chat_messages');
       
       try {
         onValue(messagesRef, (snapshot) => {
