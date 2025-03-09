@@ -1,5 +1,5 @@
 import { initializeApp, getApps } from 'firebase/app';
-import { getDatabase, connectDatabaseEmulator, ref, onValue, set, get, Database } from 'firebase/database';
+import { getDatabase, connectDatabaseEmulator, ref, onValue, set, get, Database, goOnline, goOffline } from 'firebase/database';
 import { getStorage } from 'firebase/storage';
 
 const firebaseConfig = {
@@ -18,6 +18,7 @@ let app: any = null;
 // Initialize with a placeholder that will be replaced in the try block
 let database = {} as Database;
 let storage: any = null;
+let isInitialized = false;
 
 try {
   console.log("Initializing Firebase with config:", {
@@ -29,12 +30,21 @@ try {
   app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
   database = getDatabase(app);
   storage = getStorage(app);
+  isInitialized = true;
   
   // Set up connection monitoring
   const connectedRef = ref(database, '.info/connected');
   onValue(connectedRef, (snap) => {
     if (snap.val() === true) {
       console.log('Connected to Firebase');
+      // Update a last_online status or perform other connected actions
+      const statusRef = ref(database, 'connection_status');
+      set(statusRef, {
+        status: 'online',
+        timestamp: Date.now()
+      }).catch(error => {
+        console.error('Error updating online status:', error);
+      });
     } else {
       console.log('Disconnected from Firebase');
     }
@@ -49,6 +59,23 @@ try {
     console.error('Firebase connection test failed:', error);
   });
   
+  // Handle online/offline events
+  if (typeof window !== 'undefined') {
+    window.addEventListener('online', () => {
+      console.log('Browser went online');
+      if (isInitialized) {
+        goOnline(database);
+      }
+    });
+    
+    window.addEventListener('offline', () => {
+      console.log('Browser went offline');
+      if (isInitialized) {
+        goOffline(database);
+      }
+    });
+  }
+  
 } catch (error) {
   console.error('Error initializing Firebase:', error);
   // Fallback to prevent app crashes
@@ -56,5 +83,26 @@ try {
   // Database is already initialized with a placeholder
   if (!storage) storage = {} as any;
 }
+
+/**
+ * Force reconnection to Firebase
+ */
+export const reconnectToFirebase = () => {
+  if (isInitialized) {
+    try {
+      // Go offline and then online to force a reconnection
+      goOffline(database);
+      setTimeout(() => {
+        goOnline(database);
+        console.log('Forced Firebase reconnection');
+      }, 1000);
+      return true;
+    } catch (error) {
+      console.error('Error reconnecting to Firebase:', error);
+      return false;
+    }
+  }
+  return false;
+};
 
 export { database, storage }; 

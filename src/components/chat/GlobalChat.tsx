@@ -3,10 +3,12 @@
 import { useState, useEffect, useRef } from 'react';
 import { database } from '@/lib/firebase';
 import { ref, push, onValue, query, limitToLast, remove, serverTimestamp, Database } from 'firebase/database';
-import { FiX, FiSend, FiMaximize2, FiMinimize2, FiMessageCircle } from 'react-icons/fi';
+import { FiX, FiSend, FiMaximize2, FiMinimize2, FiMessageCircle, FiRefreshCw } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { sendMessageWithRetry, checkFirebaseConnection } from '@/utils/firebase-helpers';
+import { reconnectToFirebase } from '@/lib/firebase';
+import { isBrowserOnline, checkInternetConnectivity, registerConnectivityListeners } from '@/utils/network-helpers';
 
 interface Message {
   id: string;
@@ -41,16 +43,65 @@ export default function GlobalChat({ isOpen, onClose }: { isOpen: boolean; onClo
 
   const [isFirebaseConnected, setIsFirebaseConnected] = useState(true);
 
+  // Define checkConnection function outside useEffect so it can be reused
+  const checkConnection = async () => {
+    const isConnected = await checkFirebaseConnection();
+    setIsFirebaseConnected(isConnected);
+  };
+
   // Check Firebase connection on mount
   useEffect(() => {
     if (!isOpen) return;
-
-    const checkConnection = async () => {
-      const isConnected = await checkFirebaseConnection();
-      setIsFirebaseConnected(isConnected);
-    };
-
     checkConnection();
+  }, [isOpen]);
+
+  // Add a periodic connection check
+  useEffect(() => {
+    if (!isOpen) return;
+
+    // Set up periodic connection checks
+    const connectionCheckInterval = setInterval(() => {
+      if (!isFirebaseConnected) {
+        console.log('Attempting to reconnect to Firebase...');
+        checkConnection();
+      }
+    }, 10000); // Check every 10 seconds if disconnected
+
+    return () => {
+      clearInterval(connectionCheckInterval);
+    };
+  }, [isOpen, isFirebaseConnected]);
+
+  // Add browser online/offline event listeners
+  useEffect(() => {
+    if (!isOpen) return;
+    
+    const handleOnline = async () => {
+      console.log('Browser went online');
+      // Double-check with a real connectivity test
+      const isConnected = await checkInternetConnectivity();
+      if (isConnected) {
+        reconnectToFirebase();
+        setTimeout(checkConnection, 1000);
+      }
+    };
+    
+    const handleOffline = () => {
+      console.log('Browser went offline');
+      setIsFirebaseConnected(false);
+    };
+    
+    // Register the listeners
+    const unregister = registerConnectivityListeners(handleOnline, handleOffline);
+    
+    // Initial check
+    if (!isBrowserOnline()) {
+      setIsFirebaseConnected(false);
+    }
+    
+    return () => {
+      unregister();
+    };
   }, [isOpen]);
 
   useEffect(() => {
@@ -251,6 +302,28 @@ export default function GlobalChat({ isOpen, onClose }: { isOpen: boolean; onClo
     </div>
   );
 
+  // Add a manual reconnect function
+  const handleManualReconnect = async () => {
+    setErrorMessage("Attempting to reconnect...");
+    
+    // Try to reconnect to Firebase
+    const reconnected = reconnectToFirebase();
+    
+    // Check connection after a short delay
+    setTimeout(async () => {
+      const isConnected = await checkFirebaseConnection();
+      setIsFirebaseConnected(isConnected);
+      
+      if (isConnected) {
+        setErrorMessage("Reconnected successfully!");
+        // Clear success message after a few seconds
+        setTimeout(() => setErrorMessage(null), 3000);
+      } else {
+        setErrorMessage("Failed to reconnect. Please check your internet connection and try again.");
+      }
+    }, 2000);
+  };
+
   const chatContent = (
     <motion.div
       initial={isMobile ? 'mobile.initial' : 'desktop.initial'}
@@ -336,13 +409,31 @@ export default function GlobalChat({ isOpen, onClose }: { isOpen: boolean; onClo
           {/* Message Input */}
           <form onSubmit={sendMessage} className="p-4 border-t border-primary/20 bg-background-dark/30">
             {!isFirebaseConnected && (
-              <div className="mb-2 px-3 py-2 bg-yellow-500/10 border border-yellow-500/30 rounded-lg text-yellow-400 text-sm">
-                You appear to be offline. Messages may not be sent until connection is restored.
+              <div className="mb-2 px-3 py-2 bg-yellow-500/10 border border-yellow-500/30 rounded-lg text-yellow-400 text-sm flex justify-between items-center">
+                <span>You appear to be offline. Messages may not be sent until connection is restored.</span>
+                <button 
+                  type="button" 
+                  onClick={handleManualReconnect}
+                  className="ml-2 p-1 rounded-full hover:bg-yellow-500/20 transition-colors"
+                  title="Try to reconnect"
+                >
+                  <FiRefreshCw className="w-4 h-4" />
+                </button>
               </div>
             )}
             {errorMessage && (
-              <div className="mb-2 px-3 py-2 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-sm">
-                {errorMessage}
+              <div className="mb-2 px-3 py-2 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-sm flex justify-between items-center">
+                <span>{errorMessage}</span>
+                {errorMessage.includes("Failed") && (
+                  <button 
+                    type="button" 
+                    onClick={handleManualReconnect}
+                    className="ml-2 p-1 rounded-full hover:bg-red-500/20 transition-colors"
+                    title="Try to reconnect"
+                  >
+                    <FiRefreshCw className="w-4 h-4" />
+                  </button>
+                )}
               </div>
             )}
             <div className="flex items-center space-x-2">
