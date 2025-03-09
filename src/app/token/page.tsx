@@ -164,9 +164,6 @@ export default function TokenPage() {
             <Link href="https://twitter.com/solhire" className="btn btn-outline border-[#FF9900] text-[#FF9900] hover:bg-[#FF9900] hover:text-white px-8 py-3">
               Follow on Twitter
             </Link>
-            <Link href="https://discord.gg/solhire" className="btn btn-outline border-[#FF9900] text-[#FF9900] hover:bg-[#FF9900] hover:text-white px-8 py-3">
-              Join Discord
-            </Link>
           </div>
         </div>
       </section>
