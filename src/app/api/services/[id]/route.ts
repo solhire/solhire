@@ -34,9 +34,7 @@ export async function GET(request: Request, { params }: RouteParams) {
             description: true,
           },
         },
-        skills: true,
-        portfolio: true,
-        stats: true,
+        pricing: true,
       },
     });
 
@@ -53,26 +51,26 @@ export async function GET(request: Request, { params }: RouteParams) {
       title: service.title,
       description: service.description,
       category: service.category,
-      skills: service.skills.map(skill => skill.name),
-      portfolio: service.portfolio.map(item => item.imageUrl),
+      skills: service.skills,
+      portfolio: service.portfolio,
       pricing: {
-        type: service.pricingType,
-        minPrice: service.minPrice,
-        maxPrice: service.pricingType === 'range' ? service.maxPrice : undefined,
-        currency: service.currency,
+        type: service.pricing?.type || 'fixed',
+        minPrice: service.pricing?.minPrice || 0,
+        maxPrice: service.pricing?.type === 'range' ? service.pricing?.maxPrice : undefined,
+        currency: service.pricing?.currency || 'SOL',
       },
       provider: {
         id: service.provider.id,
         displayName: service.provider.displayName,
-        avatar: service.provider.avatar,
+        avatar: service.provider.avatar || '',
         rating: service.provider.rating,
         completedProjects: service.provider.completedProjects,
-        description: service.provider.description,
+        description: service.provider.description || '',
       },
       stats: {
-        likesCount: service.stats.likesCount,
-        dislikesCount: service.stats.dislikesCount,
-        ratingCount: service.stats.ratingCount,
+        likesCount: service.likesCount || 0,
+        dislikesCount: service.dislikesCount || 0,
+        ratingCount: 0,
       },
     };
 
@@ -130,53 +128,18 @@ export async function PUT(request: Request, { params }: RouteParams) {
         title: body.title,
         description: body.description,
         category: body.category,
-        pricingType: body.pricing.type,
-        minPrice: body.pricing.minPrice,
-        maxPrice: body.pricing.type === 'range' ? body.pricing.maxPrice : null,
-        currency: body.pricing.currency,
-        // Skills and portfolio will be updated separately
+        skills: body.skills,
+        portfolio: body.portfolio,
+        pricing: {
+          update: {
+            type: body.pricing.type,
+            minPrice: body.pricing.minPrice,
+            maxPrice: body.pricing.type === 'range' ? body.pricing.maxPrice : null,
+            currency: body.pricing.currency || 'SOL',
+          }
+        },
       },
     });
-
-    // Update skills if provided
-    if (body.skills && Array.isArray(body.skills)) {
-      // Delete existing skills
-      await prisma.serviceSkill.deleteMany({
-        where: { serviceId: id },
-      });
-
-      // Add new skills
-      await Promise.all(
-        body.skills.map(async (skillName: string) => {
-          await prisma.serviceSkill.create({
-            data: {
-              serviceId: id,
-              name: skillName,
-            },
-          });
-        })
-      );
-    }
-
-    // Update portfolio if provided
-    if (body.portfolio && Array.isArray(body.portfolio)) {
-      // Delete existing portfolio items
-      await prisma.servicePortfolio.deleteMany({
-        where: { serviceId: id },
-      });
-
-      // Add new portfolio items
-      await Promise.all(
-        body.portfolio.map(async (imageUrl: string) => {
-          await prisma.servicePortfolio.create({
-            data: {
-              serviceId: id,
-              imageUrl,
-            },
-          });
-        })
-      );
-    }
 
     return NextResponse.json({ 
       success: true, 
@@ -228,27 +191,14 @@ export async function DELETE(request: Request, { params }: RouteParams) {
       );
     }
 
-    // Delete related records first
-    await prisma.serviceSkill.deleteMany({
-      where: { serviceId: id },
-    });
-
-    await prisma.servicePortfolio.deleteMany({
-      where: { serviceId: id },
-    });
-
-    await prisma.serviceStats.deleteMany({
-      where: { serviceId: id },
-    });
-
-    // Delete the service
+    // Delete the service (no need to delete related records separately since they're scalar fields)
     await prisma.service.delete({
       where: { id },
     });
 
     return NextResponse.json({ 
       success: true, 
-      message: 'Service deleted successfully' 
+      message: 'Service deleted successfully'
     });
   } catch (error) {
     console.error('Error deleting service:', error);
