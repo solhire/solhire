@@ -39,20 +39,8 @@ export default function TokenPage() {
         <div className="container-custom">
           <div className="bg-gradient-to-r from-red-900/20 to-red-800/10 border border-red-800/30 rounded-xl p-6 mb-12">
             <h2 className="text-2xl font-bold mb-4 flex items-center">
-              <FiShield className="mr-2 text-red-500" /> Official Token Source
+              <FiShield className="mr-2 text-red-500" /> Official Token Status
             </h2>
-            <p className="mb-4">
-              The $HIRE token will ONLY be deployed from the official PumpFun profile:
-            </p>
-            <a 
-              href="https://pump.fun/profile/GGXrfcU9DWCweJR9UDbhyPzF57aaSy9JSqT1NNDmTLzB" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="flex items-center text-[#FF9900] hover:text-[#FFAA33] mb-4 font-mono text-sm break-all"
-            >
-              https://pump.fun/profile/GGXrfcU9DWCweJR9UDbhyPzF57aaSy9JSqT1NNDmTLzB
-              <FiExternalLink className="ml-2 flex-shrink-0" />
-            </a>
             
             <div className="mb-6 bg-[#FF9900]/10 p-4 rounded-lg border border-[#FF9900]/30">
               <h3 className="text-lg font-bold text-[#FF9900] mb-2">Token Status:</h3>
@@ -65,7 +53,7 @@ export default function TokenPage() {
             </div>
             
             <div className="bg-red-900/20 p-4 rounded-lg border border-red-800/30">
-              <p className="text-lg font-bold text-red-400 mb-2">⚠️ IMPORTANT</p>
+              <p className="text-lg font-bold text-red-400 mb-2">⚠️ WARNING</p>
               <p>
                 Any tokens currently claiming to be $HIRE are NOT official and should be considered fraudulent. 
                 Do not interact with any tokens claiming to be $HIRE at this time.
