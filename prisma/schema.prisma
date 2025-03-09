@@ -55,6 +55,8 @@ model UserProfile {
   services        Service[]
   serviceRatings   ServiceRating[]
   jobRatings      JobRating[]    @relation("UserJobRatings")
+  notifications   Notification[]
+  messageStatuses MessageStatus[]
 
   @@index([userId])
   @@index([username])
@@ -163,11 +165,44 @@ model Message {
   conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
   attachments    String[]
   isRead         Boolean     @default(false)
+  readBy         MessageStatus[]
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
 
   @@index([senderId])
   @@index([conversationId])
+}
+
+model MessageStatus {
+  id        String    @id @default(cuid())
+  messageId String
+  message   Message   @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  userId    String
+  user      UserProfile @relation(fields: [userId], references: [id])
+  isRead    Boolean   @default(false)
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@unique([messageId, userId])
+  @@index([messageId])
+  @@index([userId])
+}
+
+model Notification {
+  id          String      @id @default(cuid())
+  userId      String
+  user        UserProfile @relation(fields: [userId], references: [id])
+  type        String      // "message", "proposal", "job_update", etc.
+  title       String
+  content     String
+  isRead      Boolean     @default(false)
+  data        Json?       // Additional data specific to notification type
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@index([userId])
+  @@index([type])
+  @@index([isRead])
 }
 
 model JobRating {

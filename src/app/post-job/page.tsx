@@ -162,39 +162,87 @@ const TipTapEditor = ({ value, onChange }: { value: string; onChange: (value: st
 };
 
 export default function PostJob() {
-  const { connected } = useWallet();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showConfirmation, setShowConfirmation] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
-  const [formattedDeadline, setFormattedDeadline] = useState<string>('');
+  const router = useRouter();
+  const { publicKey } = useWallet();
+  const [isLoading, setIsLoading] = useState(false);
+  const [formSubmitted, setFormSubmitted] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     description: '',
     category: '',
+    budget: '',
+    timeframe: '',
+    requirements: [] as string[],
     skills: [] as string[],
-    budgetMin: '',
-    budgetMax: '',
-    deadline: '',
     contactPreference: 'discord',
-    attachments: [] as File[],
   });
+  const [files, setFiles] = useState<File[]>([]);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const router = useRouter();
+  const [requirementInput, setRequirementInput] = useState('');
 
-  // Handle hydration
+  // Check if user is authenticated
   useEffect(() => {
-    setIsMounted(true);
-  }, []);
+    const checkAuth = async () => {
+      try {
+        const response = await fetch('/api/auth/check');
+        const data = await response.json();
+        
+        if (!data.isAuthenticated) {
+          toast.error('Please log in to post a job');
+          router.push('/login?redirect=/post-job');
+        }
+      } catch (error) {
+        console.error('Auth check error:', error);
+      }
+    };
+    
+    checkAuth();
+  }, [router]);
 
-  // Update formatted deadline whenever the deadline changes
-  useEffect(() => {
-    if (formData.deadline) {
-      const date = new Date(formData.deadline);
-      setFormattedDeadline(date.toLocaleDateString());
-    } else {
-      setFormattedDeadline('');
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[name];
+        return newErrors;
+      });
     }
-  }, [formData.deadline]);
+    
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleDescriptionChange = (html: string) => {
+    setFormData(prev => ({ ...prev, description: html }));
+    
+    // Clear error when user starts typing
+    if (errors.description) {
+      setErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors.description;
+        return newErrors;
+      });
+    }
+  };
+
+  const handleRequirementAdd = () => {
+    if (requirementInput.trim()) {
+      setFormData(prev => ({
+        ...prev,
+        requirements: [...prev.requirements, requirementInput.trim()]
+      }));
+      setRequirementInput('');
+    }
+  };
+
+  const handleRequirementRemove = (index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      requirements: prev.requirements.filter((_, i) => i !== index)
+    }));
+  };
 
   const handleSkillToggle = (skill: string) => {
     setFormData(prev => ({
@@ -208,55 +256,52 @@ export default function PostJob() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const newFiles = Array.from(e.target.files);
-      const validFiles = newFiles.filter(file => {
-        if (file.size > 10 * 1024 * 1024) { // 10MB limit
-          toast.error(`File ${file.name} exceeds 10MB limit`);
-          return false;
-        }
-        return true;
-      });
-      setFormData(prev => ({
-        ...prev,
-        attachments: [...prev.attachments, ...validFiles]
-      }));
+      
+      // Validate file size (10MB limit)
+      const oversizedFiles = newFiles.filter(file => file.size > 10 * 1024 * 1024);
+      if (oversizedFiles.length > 0) {
+        toast.error('Some files exceed the 10MB size limit and were not added');
+        const validFiles = newFiles.filter(file => file.size <= 10 * 1024 * 1024);
+        setFiles(prev => [...prev, ...validFiles]);
+      } else {
+        setFiles(prev => [...prev, ...newFiles]);
+      }
     }
   };
 
   const removeFile = (index: number) => {
-    setFormData(prev => ({
-      ...prev,
-      attachments: prev.attachments.filter((_, i) => i !== index)
-    }));
+    setFiles(prev => prev.filter((_, i) => i !== index));
   };
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
     
     if (!formData.title.trim()) {
-      newErrors.title = 'Job title is required';
-    } else if (formData.title.length > 100) {
-      newErrors.title = 'Job title must be less than 100 characters';
+      newErrors.title = 'Title is required';
     }
+    
     if (!formData.description.trim()) {
-      newErrors.description = 'Job description is required';
+      newErrors.description = 'Description is required';
     }
+    
     if (!formData.category) {
-      newErrors.category = 'Please select a category';
+      newErrors.category = 'Category is required';
     }
+    
+    if (!formData.budget) {
+      newErrors.budget = 'Budget is required';
+    } else if (isNaN(Number(formData.budget)) || Number(formData.budget) <= 0) {
+      newErrors.budget = 'Budget must be a positive number';
+    }
+    
+    if (!formData.timeframe.trim()) {
+      newErrors.timeframe = 'Timeframe is required';
+    }
+    
     if (formData.skills.length === 0) {
-      newErrors.skills = 'Please select at least one required skill';
+      newErrors.skills = 'At least one skill is required';
     }
-    if (!formData.budgetMin || !formData.budgetMax) {
-      newErrors.budget = 'Please specify budget range';
-    } else if (Number(formData.budgetMin) > Number(formData.budgetMax)) {
-      newErrors.budget = 'Minimum budget cannot be greater than maximum budget';
-    }
-    if (!formData.deadline) {
-      newErrors.deadline = 'Please specify a deadline';
-    } else if (new Date(formData.deadline) < new Date()) {
-      newErrors.deadline = 'Deadline cannot be in the past';
-    }
-
+    
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -265,52 +310,51 @@ export default function PostJob() {
     e.preventDefault();
     
     if (!validateForm()) {
+      // Scroll to the first error
+      const firstErrorField = Object.keys(errors)[0];
+      const element = document.querySelector(`[name="${firstErrorField}"]`);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
       return;
     }
-
-    setShowConfirmation(true);
+    
+    await confirmSubmit();
   };
 
   const confirmSubmit = async () => {
-    setShowConfirmation(false);
-    setIsSubmitting(true);
-
     try {
-      // Upload attachments first if any
-      const attachmentUrls = [];
+      setIsLoading(true);
       
-      if (formData.attachments.length > 0) {
-        for (const file of formData.attachments) {
+      // Upload files first if any
+      let attachmentUrls: string[] = [];
+      
+      if (files.length > 0) {
+        for (const file of files) {
           const formData = new FormData();
           formData.append('file', file);
           
-          const response = await fetch('/api/upload', {
+          const uploadResponse = await fetch('/api/upload', {
             method: 'POST',
             body: formData,
           });
           
-          if (!response.ok) {
-            throw new Error('Failed to upload attachment');
+          if (!uploadResponse.ok) {
+            throw new Error('File upload failed');
           }
           
-          const data = await response.json();
-          attachmentUrls.push(data.url);
+          const uploadResult = await uploadResponse.json();
+          attachmentUrls.push(uploadResult.url);
         }
       }
       
-      // Prepare job data
+      // Submit job data
       const jobData = {
-        title: formData.title,
-        description: formData.description,
-        category: formData.category,
-        budget: parseFloat(formData.budgetMax) || parseFloat(formData.budgetMin) || 0,
-        timeframe: formData.deadline,
-        skills: formData.skills,
-        requirements: [formData.contactPreference], // Store contact preference as a requirement for now
+        ...formData,
+        budget: Number(formData.budget),
         attachments: attachmentUrls,
       };
       
-      // Submit job to API
       const response = await fetch('/api/jobs', {
         method: 'POST',
         headers: {
@@ -321,36 +365,83 @@ export default function PostJob() {
       
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to post job');
+        throw new Error(errorData.message || 'Failed to create job');
       }
       
+      const result = await response.json();
+      
+      // Success!
+      setFormSubmitted(true);
       toast.success('Job posted successfully!');
       
-      // Reset form
-      setFormData({
-        title: '',
-        description: '',
-        category: '',
-        skills: [],
-        budgetMin: '',
-        budgetMax: '',
-        deadline: '',
-        contactPreference: 'discord',
-        attachments: [],
-      });
+      // Redirect to the job page after a short delay
+      setTimeout(() => {
+        router.push(`/jobs/${result.id}`);
+      }, 2000);
       
-      // Redirect to dashboard
-      router.push('/dashboard');
     } catch (error) {
-      console.error('Error posting job:', error);
-      toast.error(error instanceof Error ? error.message : 'Failed to post job. Please try again.');
+      console.error('Job submission error:', error);
+      toast.error(error instanceof Error ? error.message : 'Failed to post job');
     } finally {
-      setIsSubmitting(false);
+      setIsLoading(false);
     }
   };
 
-  if (!isMounted) {
-    return <LoadingSkeleton />;
+  if (formSubmitted) {
+    return (
+      <MainLayout>
+        <div className="container-custom py-12">
+          <div className="bg-white rounded-xl shadow-lg p-8 max-w-2xl mx-auto text-center">
+            <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <svg className="w-10 h-10 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+            </div>
+            <h2 className="text-2xl font-bold mb-4">Job Posted Successfully!</h2>
+            <p className="text-gray-600 mb-6">Your job has been posted and is now visible to potential freelancers.</p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button
+                onClick={() => router.push('/dashboard')}
+                className="btn-primary"
+              >
+                Go to Dashboard
+              </button>
+              <button
+                onClick={() => router.push('/')}
+                className="btn-secondary"
+              >
+                Back to Home
+              </button>
+            </div>
+          </div>
+        </div>
+      </MainLayout>
+    );
+  }
+
+  if (!publicKey) {
+    return (
+      <MainLayout>
+        <section className="py-20 bg-background-light">
+          <div className="container-custom">
+            <div className="max-w-4xl mx-auto">
+              <h1 className="text-4xl md:text-5xl font-bold mb-6">Post a Job</h1>
+              <p className="text-lg text-gray-300 mb-8">
+                Find the perfect creative professional for your project.
+              </p>
+
+              <div className="card text-center py-12">
+                <h2 className="text-2xl font-semibold mb-4">Connect Your Wallet</h2>
+                <p className="text-gray-400 mb-6">
+                  You need to connect your Solana wallet to post a job.
+                </p>
+                <WalletButtonWrapper />
+              </div>
+            </div>
+          </div>
+        </section>
+      </MainLayout>
+    );
   }
 
   return (
@@ -363,51 +454,33 @@ export default function PostJob() {
               Find the perfect creative professional for your project.
             </p>
 
-            {!connected ? (
-              <div className="card text-center py-12">
-                <h2 className="text-2xl font-semibold mb-4">Connect Your Wallet</h2>
-                <p className="text-gray-400 mb-6">
-                  You need to connect your Solana wallet to post a job.
-                </p>
-                <WalletButtonWrapper />
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                {/* Form Section */}
-                <form onSubmit={handleSubmit} className="space-y-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Form Section */}
+              <div className="bg-background-dark rounded-2xl p-6 shadow-lg">
+                <form onSubmit={handleSubmit} className="space-y-6">
                   {/* Job Title */}
-                  <div className="card">
-                    <label className="block text-lg font-medium mb-2">
-                      Job Title
-                      <span className="text-red-500">*</span>
-                    </label>
+                  <div>
+                    <label className="block mb-2">Job Title</label>
                     <input
                       type="text"
                       className="input w-full"
                       placeholder="e.g., Professional Video Editor Needed for YouTube Series"
+                      name="title"
                       value={formData.title}
-                      onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+                      onChange={handleInputChange}
                       maxLength={100}
                     />
-                    <div className="flex justify-between items-center mt-1">
-                      {errors.title && (
-                        <p className="text-red-500 text-sm">{errors.title}</p>
-                      )}
-                      <span className="text-sm text-gray-400">
-                        {formData.title.length}/100 characters
-                      </span>
-                    </div>
+                    {errors.title && (
+                      <p className="text-red-500 mt-1 text-sm">{errors.title}</p>
+                    )}
                   </div>
 
                   {/* Job Description */}
-                  <div className="card">
-                    <label className="block text-lg font-medium mb-2">
-                      Job Description
-                      <span className="text-red-500">*</span>
-                    </label>
+                  <div>
+                    <label className="block mb-2">Job Description</label>
                     <TipTapEditor
                       value={formData.description}
-                      onChange={(value) => setFormData(prev => ({ ...prev, description: value }))}
+                      onChange={handleDescriptionChange}
                     />
                     {errors.description && (
                       <p className="text-red-500 mt-1 text-sm">{errors.description}</p>
@@ -415,15 +488,13 @@ export default function PostJob() {
                   </div>
 
                   {/* Category */}
-                  <div className="card">
-                    <label className="block text-lg font-medium mb-2">
-                      Category
-                      <span className="text-red-500">*</span>
-                    </label>
+                  <div>
+                    <label className="block mb-2">Category</label>
                     <select
                       className="input w-full"
+                      name="category"
                       value={formData.category}
-                      onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
+                      onChange={handleInputChange}
                     >
                       <option value="">Select a category</option>
                       {categories.map((category) => (
@@ -437,21 +508,96 @@ export default function PostJob() {
                     )}
                   </div>
 
-                  {/* Required Skills */}
-                  <div className="card">
-                    <label className="block text-lg font-medium mb-2">
-                      Required Skills
-                      <span className="text-red-500">*</span>
-                    </label>
-                    <div className="flex flex-wrap gap-3">
+                  {/* Budget */}
+                  <div>
+                    <label className="block mb-2">Budget (SOL)</label>
+                    <input
+                      type="number"
+                      className="input w-full"
+                      placeholder="Enter your budget"
+                      name="budget"
+                      value={formData.budget}
+                      onChange={handleInputChange}
+                      min="0"
+                      step="0.1"
+                    />
+                    {errors.budget && (
+                      <p className="text-red-500 mt-1 text-sm">{errors.budget}</p>
+                    )}
+                  </div>
+
+                  {/* Timeframe */}
+                  <div>
+                    <label className="block mb-2">Timeframe</label>
+                    <input
+                      type="date"
+                      className="input w-full"
+                      name="timeframe"
+                      value={formData.timeframe}
+                      onChange={handleInputChange}
+                      min={new Date().toISOString().split('T')[0]}
+                    />
+                    {errors.timeframe && (
+                      <p className="text-red-500 mt-1 text-sm">{errors.timeframe}</p>
+                    )}
+                  </div>
+
+                  {/* Requirements */}
+                  <div>
+                    <label className="block mb-2">Requirements</label>
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        className="input flex-1"
+                        placeholder="Add a requirement"
+                        value={requirementInput}
+                        onChange={(e) => setRequirementInput(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                            handleRequirementAdd();
+                          }
+                        }}
+                      />
+                      <button
+                        type="button"
+                        className="btn btn-primary px-4"
+                        onClick={handleRequirementAdd}
+                      >
+                        Add
+                      </button>
+                    </div>
+                    
+                    {formData.requirements.length > 0 && (
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {formData.requirements.map((req, index) => (
+                          <div key={index} className="bg-background-light px-3 py-1 rounded-full flex items-center gap-2">
+                            <span>{req}</span>
+                            <button
+                              type="button"
+                              className="text-gray-400 hover:text-red-500"
+                              onClick={() => handleRequirementRemove(index)}
+                            >
+                              ×
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Skills */}
+                  <div>
+                    <label className="block mb-2">Required Skills</label>
+                    <div className="flex flex-wrap gap-2">
                       {availableSkills.map((skill) => (
                         <button
                           key={skill}
                           type="button"
-                          className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                          className={`px-3 py-1 rounded-full text-sm ${
                             formData.skills.includes(skill)
                               ? 'bg-primary text-white'
-                              : 'bg-background text-gray-400 hover:text-white'
+                              : 'bg-background-light text-gray-300 hover:bg-background-light/80'
                           }`}
                           onClick={() => handleSkillToggle(skill)}
                         >
@@ -464,115 +610,60 @@ export default function PostJob() {
                     )}
                   </div>
 
-                  {/* Budget Range */}
-                  <div className="card">
-                    <label className="block text-lg font-medium mb-2">
-                      Budget Range (SOL)
-                      <span className="text-red-500">*</span>
-                    </label>
-                    <div className="flex gap-4">
-                      <div className="flex-1">
-                        <input
-                          type="number"
-                          className="input w-full"
-                          placeholder="Min"
-                          min="0"
-                          step="0.1"
-                          value={formData.budgetMin}
-                          onChange={(e) => setFormData(prev => ({ ...prev, budgetMin: e.target.value }))}
-                        />
-                      </div>
-                      <div className="flex-1">
-                        <input
-                          type="number"
-                          className="input w-full"
-                          placeholder="Max"
-                          min="0"
-                          step="0.1"
-                          value={formData.budgetMax}
-                          onChange={(e) => setFormData(prev => ({ ...prev, budgetMax: e.target.value }))}
-                        />
-                      </div>
-                    </div>
-                    {errors.budget && (
-                      <p className="text-red-500 mt-1 text-sm">{errors.budget}</p>
-                    )}
-                  </div>
-
-                  {/* Timeline/Deadline */}
-                  <div className="card">
-                    <label className="block text-lg font-medium mb-2">
-                      Project Deadline
-                      <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="date"
-                      className="input w-full"
-                      value={formData.deadline}
-                      onChange={(e) => setFormData(prev => ({ ...prev, deadline: e.target.value }))}
-                      min={new Date().toISOString().split('T')[0]}
-                    />
-                    {errors.deadline && (
-                      <p className="text-red-500 mt-1 text-sm">{errors.deadline}</p>
-                    )}
-                  </div>
-
-                  {/* Contact Preferences */}
-                  <div className="card">
-                    <label className="block text-lg font-medium mb-2">
-                      Contact Preference
-                    </label>
+                  {/* Contact Preference */}
+                  <div>
+                    <label className="block mb-2">Contact Preference</label>
                     <select
                       className="input w-full"
+                      name="contactPreference"
                       value={formData.contactPreference}
-                      onChange={(e) => setFormData(prev => ({ ...prev, contactPreference: e.target.value }))}
+                      onChange={handleInputChange}
                     >
                       <option value="discord">Discord</option>
                       <option value="email">Email</option>
                       <option value="telegram">Telegram</option>
+                      <option value="platform">Platform Messages</option>
                     </select>
                   </div>
 
-                  {/* File Attachments */}
-                  <div className="card">
-                    <label className="block text-lg font-medium mb-2">
-                      Attachments
-                    </label>
-                    <div className="border-2 border-dashed border-primary/30 rounded-xl p-6 text-center">
+                  {/* Attachments */}
+                  <div>
+                    <label className="block mb-2">Attachments</label>
+                    <div className="border-2 border-dashed border-gray-600 rounded-lg p-4 text-center">
                       <input
                         type="file"
-                        multiple
-                        className="hidden"
                         id="file-upload"
+                        className="hidden"
+                        multiple
                         onChange={handleFileChange}
                       />
                       <label
                         htmlFor="file-upload"
-                        className="cursor-pointer flex flex-col items-center"
+                        className="cursor-pointer flex flex-col items-center justify-center"
                       >
-                        <FiUpload className="w-8 h-8 text-primary mb-2" />
-                        <span className="text-gray-400">
-                          Click to upload or drag and drop files here
+                        <FiUpload className="w-8 h-8 mb-2 text-gray-400" />
+                        <span className="text-gray-300">
+                          Click to upload files (max 10MB each)
                         </span>
-                        <span className="text-sm text-gray-500 mt-1">
-                          Max file size: 10MB
+                        <span className="text-gray-500 text-sm mt-1">
+                          Accepted formats: PDF, PNG, JPG, GIF
                         </span>
                       </label>
                     </div>
-                    {formData.attachments.length > 0 && (
+                    {files.length > 0 && (
                       <div className="mt-4 space-y-2">
-                        {formData.attachments.map((file, index) => (
+                        {files.map((file, index) => (
                           <div
                             key={index}
-                            className="flex items-center justify-between bg-background p-2 rounded-lg"
+                            className="flex items-center justify-between bg-background-light p-2 rounded"
                           >
-                            <span className="text-sm text-gray-300">{file.name}</span>
+                            <span className="truncate max-w-[200px]">{file.name}</span>
                             <button
                               type="button"
+                              className="text-red-500 hover:text-red-700"
                               onClick={() => removeFile(index)}
-                              className="text-red-500 hover:text-red-400"
                             >
-                              Remove
+                              ×
                             </button>
                           </div>
                         ))}
@@ -581,200 +672,136 @@ export default function PostJob() {
                   </div>
 
                   {/* Submit Button */}
-                  <div className="flex justify-end">
-                    <button
-                      type="submit"
-                      className="btn btn-primary px-8 py-3 text-lg flex items-center gap-2"
-                      disabled={isSubmitting}
-                    >
-                      {isSubmitting ? (
-                        <>
-                          <span className="animate-spin">⏳</span>
-                          Posting...
-                        </>
-                      ) : (
-                        'Post Job'
-                      )}
-                    </button>
-                  </div>
+                  <button
+                    type="submit"
+                    className="btn btn-primary px-8 py-3 text-lg flex items-center gap-2"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      <>
+                        <span className="animate-spin">⏳</span>
+                        Posting...
+                      </>
+                    ) : (
+                      <>Post Job</>
+                    )}
+                  </button>
                 </form>
+              </div>
 
-                {/* Preview Section */}
-                <div className="space-y-8">
-                  <div className="card">
-                    <h2 className="text-2xl font-semibold mb-6">Job Preview</h2>
-                    <div className="space-y-6">
-                      {/* Job Title */}
-                      <div>
-                        <h3 className="text-xl font-medium mb-2">{formData.title || 'Job Title'}</h3>
-                        <div className="flex items-center gap-4 text-sm text-gray-400">
-                          <span>{formData.category || 'Category'}</span>
-                          <span>•</span>
-                          <span>Budget: {formData.budgetMin && formData.budgetMax ? `${formData.budgetMin} - ${formData.budgetMax} SOL` : 'Not specified'}</span>
-                        </div>
+              {/* Preview Section */}
+              <div className="bg-background-dark rounded-2xl p-6 shadow-lg">
+                <h3 className="text-xl font-semibold mb-4">Job Preview</h3>
+                <div className="space-y-6">
+                  {/* Title */}
+                  <div>
+                    <h2 className="text-2xl font-bold">
+                      {formData.title || 'Your Job Title'}
+                    </h2>
+                  </div>
+
+                  {/* Description */}
+                  <div>
+                    <h4 className="text-lg font-medium mb-2">Description</h4>
+                    <div
+                      className="prose prose-invert max-w-none"
+                      dangerouslySetInnerHTML={{
+                        __html: formData.description || '<p>Job description will appear here</p>',
+                      }}
+                    />
+                  </div>
+
+                  {/* Category */}
+                  <div>
+                    <h4 className="text-lg font-medium mb-2">Category</h4>
+                    <div className="inline-block bg-primary/20 text-primary px-3 py-1 rounded-full">
+                      {formData.category || 'Category'}
+                    </div>
+                  </div>
+
+                  {/* Budget */}
+                  <div>
+                    <h4 className="text-lg font-medium mb-2">Budget</h4>
+                    <p className="text-gray-300">
+                      {formData.budget ? `${formData.budget} SOL` : 'Budget will appear here'}
+                    </p>
+                  </div>
+
+                  {/* Timeline */}
+                  <div>
+                    <h4 className="text-lg font-medium mb-2">Timeline</h4>
+                    <p className="text-gray-300">
+                      {formData.timeframe ? `Deadline: ${formData.timeframe}` : 'No deadline specified'}
+                    </p>
+                  </div>
+
+                  {/* Skills */}
+                  <div>
+                    <h4 className="text-lg font-medium mb-2">Required Skills</h4>
+                    {formData.skills.length > 0 ? (
+                      <div className="flex flex-wrap gap-2">
+                        {formData.skills.map((skill) => (
+                          <span
+                            key={skill}
+                            className="bg-background-light px-3 py-1 rounded-full text-sm"
+                          >
+                            {skill}
+                          </span>
+                        ))}
                       </div>
+                    ) : (
+                      <p className="text-gray-500">No skills selected</p>
+                    )}
+                  </div>
 
-                      {/* Description */}
-                      <div>
-                        <h4 className="text-lg font-medium mb-2">Description</h4>
-                        <div 
-                          className="prose prose-invert max-w-none"
-                          dangerouslySetInnerHTML={{ __html: formData.description || 'No description provided' }}
-                        />
-                      </div>
+                  {/* Requirements */}
+                  <div>
+                    <h4 className="text-lg font-medium mb-2">Requirements</h4>
+                    {formData.requirements.length > 0 ? (
+                      <ul className="list-disc pl-5 space-y-1">
+                        {formData.requirements.map((req, index) => (
+                          <li key={index}>{req}</li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="text-gray-500">No requirements added</p>
+                    )}
+                  </div>
 
-                      {/* Required Skills */}
-                      <div>
-                        <h4 className="text-lg font-medium mb-2">Required Skills</h4>
-                        <div className="flex flex-wrap gap-2">
-                          {formData.skills.length > 0 ? (
-                            formData.skills.map((skill) => (
-                              <span
-                                key={skill}
-                                className="px-3 py-1 bg-primary/20 text-primary rounded-full text-sm"
-                              >
-                                {skill}
-                              </span>
-                            ))
-                          ) : (
-                            <span className="text-gray-400">No skills specified</span>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Timeline */}
-                      <div className="Timeline">
-                        <h4 className="text-lg font-medium mb-2">Timeline</h4>
-                        <p className="text-gray-300">
-                          {formattedDeadline ? `Deadline: ${formattedDeadline}` : 'No deadline specified'}
-                        </p>
-                      </div>
-
-                      {/* Contact Preference */}
-                      <div>
-                        <h4 className="text-lg font-medium mb-2">Contact</h4>
-                        <p className="text-gray-300 capitalize">
-                          Preferred contact method: {formData.contactPreference}
-                        </p>
-                      </div>
-
-                      {/* Attachments */}
-                      {formData.attachments.length > 0 && (
-                        <div>
-                          <h4 className="text-lg font-medium mb-2">Attachments</h4>
-                          <div className="space-y-2">
-                            {formData.attachments.map((file, index) => (
-                              <div
-                                key={index}
-                                className="flex items-center gap-2 text-sm text-gray-300"
-                              >
-                                <FiUpload className="w-4 h-4" />
-                                <span>{file.name}</span>
-                              </div>
-                            ))}
+                  {/* Attachments */}
+                  {files.length > 0 && (
+                    <div>
+                      <h4 className="text-lg font-medium mb-2">Attachments</h4>
+                      <div className="space-y-2">
+                        {files.map((file, index) => (
+                          <div
+                            key={index}
+                            className="flex items-center gap-2 text-gray-300"
+                          >
+                            <FiInfo className="flex-shrink-0" />
+                            <span className="truncate">{file.name}</span>
                           </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Next Steps */}
-                  <div className="card">
-                    <h2 className="text-2xl font-semibold mb-6">Next Steps</h2>
-                    <div className="space-y-4">
-                      <div className="flex items-start gap-3">
-                        <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-                          <span className="text-primary font-medium">1</span>
-                        </div>
-                        <div>
-                          <h3 className="font-medium mb-1">Review Applicants</h3>
-                          <p className="text-gray-400 text-sm">
-                            Review applications from qualified creatives and select the best match for your project.
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex items-start gap-3">
-                        <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-                          <span className="text-primary font-medium">2</span>
-                        </div>
-                        <div>
-                          <h3 className="font-medium mb-1">Escrow Payment</h3>
-                          <p className="text-gray-400 text-sm">
-                            Secure your payment in escrow using Solana. Funds will be released upon project completion.
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex items-start gap-3">
-                        <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-                          <span className="text-primary font-medium">3</span>
-                        </div>
-                        <div>
-                          <h3 className="font-medium mb-1">Project Management</h3>
-                          <p className="text-gray-400 text-sm">
-                            Use our platform to manage your project, communicate with the creative, and track progress.
-                          </p>
-                        </div>
+                        ))}
                       </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               </div>
-            )}
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Confirmation Dialog */}
-      {showConfirmation && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-background-light rounded-2xl p-6 max-w-md w-full mx-4">
-            <div className="flex items-center gap-3 mb-4">
-              <FiAlertCircle className="w-6 h-6 text-primary" />
-              <h2 className="text-xl font-semibold">Confirm Job Post</h2>
-            </div>
-            <p className="text-gray-300 mb-6">
-              Are you sure you want to post this job? This action cannot be undone.
-            </p>
-            <div className="flex justify-end gap-4">
-              <button
-                onClick={() => setShowConfirmation(false)}
-                className="btn btn-outline"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={confirmSubmit}
-                className="btn btn-primary"
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? 'Posting...' : 'Confirm Post'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
       <style jsx global>{`
-        .prose-editor .prose {
-          color: white;
+        .tiptap {
+          min-height: 150px;
+          padding: 1rem;
+          border-radius: 0.5rem;
+          background-color: #1e1e2d;
+          color: #e2e8f0;
         }
-        .prose-editor .prose p {
-          margin: 0.5em 0;
-        }
-        .prose-editor .prose ul {
-          list-style-type: disc;
-          padding-left: 1.5em;
-        }
-        .prose-editor .prose ol {
-          list-style-type: decimal;
-          padding-left: 1.5em;
-        }
-        .prose-editor .prose a {
-          color: #8B5CF6;
-          text-decoration: underline;
-        }
-        .prose-editor .prose a:hover {
-          color: #7C3AED;
+        .tiptap:focus {
+          outline: 2px solid #6d28d9;
         }
       `}</style>
     </MainLayout>

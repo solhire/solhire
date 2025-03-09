@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import MainLayout from '@/components/layout/MainLayout';
 import { FiSearch, FiFilter, FiX, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { Job } from '@/types/job';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-hot-toast';
+import debounce from 'lodash/debounce';
 
 const categories = [
   'Video Editing',
@@ -52,34 +53,54 @@ export default function SearchPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   
-  const [filters, setFilters] = useState({
+  const [filters, setFilters] = useState(() => ({
     query: searchParams.get('q') || '',
     category: searchParams.get('category') || '',
     skills: (searchParams.get('skills')?.split(',') || []).filter(Boolean),
     minBudget: searchParams.get('minBudget') || '',
     maxBudget: searchParams.get('maxBudget') || '',
     sortBy: searchParams.get('sortBy') || 'newest'
-  });
+  }));
 
-  const fetchJobs = async () => {
+  const updateURL = useCallback((newFilters: typeof filters, page: number) => {
+    const queryParams = new URLSearchParams();
+    if (newFilters.query) queryParams.set('q', newFilters.query);
+    if (newFilters.category) queryParams.set('category', newFilters.category);
+    if (newFilters.skills.length) queryParams.set('skills', newFilters.skills.join(','));
+    if (newFilters.minBudget) queryParams.set('minBudget', newFilters.minBudget);
+    if (newFilters.maxBudget) queryParams.set('maxBudget', newFilters.maxBudget);
+    if (newFilters.sortBy) queryParams.set('sortBy', newFilters.sortBy);
+    if (page > 1) queryParams.set('page', page.toString());
+    
+    router.push(`/search?${queryParams.toString()}`, { scroll: false });
+  }, [router]);
+
+  const debouncedUpdateURL = useCallback(
+    debounce((newFilters: typeof filters, page: number) => {
+      updateURL(newFilters, page);
+    }, 500),
+    [updateURL]
+  );
+
+  const fetchJobs = async (currentFilters: typeof filters, pageNum: number) => {
     try {
       setLoading(true);
       
       const queryParams = new URLSearchParams();
-      if (filters.query) queryParams.set('q', filters.query);
-      if (filters.category) queryParams.set('category', filters.category);
-      if (filters.skills.length) queryParams.set('skills', filters.skills.join(','));
-      if (filters.minBudget) queryParams.set('minBudget', filters.minBudget);
-      if (filters.maxBudget) queryParams.set('maxBudget', filters.maxBudget);
-      if (filters.sortBy) queryParams.set('sortBy', filters.sortBy);
-      queryParams.set('page', currentPage.toString());
+      if (currentFilters.query) queryParams.set('q', currentFilters.query);
+      if (currentFilters.category) queryParams.set('category', currentFilters.category);
+      if (currentFilters.skills.length) queryParams.set('skills', currentFilters.skills.join(','));
+      if (currentFilters.minBudget) queryParams.set('minBudget', currentFilters.minBudget);
+      if (currentFilters.maxBudget) queryParams.set('maxBudget', currentFilters.maxBudget);
+      if (currentFilters.sortBy) queryParams.set('sortBy', currentFilters.sortBy);
+      queryParams.set('page', pageNum.toString());
       
       const response = await fetch(`/api/jobs?${queryParams.toString()}`);
       if (!response.ok) throw new Error('Failed to fetch jobs');
       
       const data = await response.json();
       setJobs(data.jobs);
-      setTotalPages(Math.ceil(data.total / 10)); // Assuming 10 jobs per page
+      setTotalPages(Math.ceil(data.total / 10));
     } catch (error) {
       console.error('Error fetching jobs:', error);
       toast.error('Failed to load jobs');
@@ -89,8 +110,34 @@ export default function SearchPage() {
   };
 
   useEffect(() => {
-    fetchJobs();
-  }, [filters, currentPage]);
+    const page = Number(searchParams.get('page')) || 1;
+    setCurrentPage(page);
+    
+    const newFilters = {
+      query: searchParams.get('q') || '',
+      category: searchParams.get('category') || '',
+      skills: (searchParams.get('skills')?.split(',') || []).filter(Boolean),
+      minBudget: searchParams.get('minBudget') || '',
+      maxBudget: searchParams.get('maxBudget') || '',
+      sortBy: searchParams.get('sortBy') || 'newest'
+    };
+    
+    setFilters(newFilters);
+    fetchJobs(newFilters, page);
+  }, [searchParams]);
+
+  const handleFilterChange = (newFilters: typeof filters) => {
+    setFilters(newFilters);
+    setCurrentPage(1);
+    debouncedUpdateURL(newFilters, 1);
+    fetchJobs(newFilters, 1);
+  };
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+    updateURL(filters, newPage);
+    fetchJobs(filters, newPage);
+  };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -169,7 +216,7 @@ export default function SearchPage() {
                         <select
                           className="input w-full"
                           value={filters.category}
-                          onChange={(e) => setFilters(prev => ({ ...prev, category: e.target.value }))}
+                          onChange={(e) => handleFilterChange({ ...filters, category: e.target.value })}
                         >
                           <option value="">All Categories</option>
                           {categories.map((category) => (
@@ -209,14 +256,14 @@ export default function SearchPage() {
                             placeholder="Min"
                             className="input w-full"
                             value={filters.minBudget}
-                            onChange={(e) => setFilters(prev => ({ ...prev, minBudget: e.target.value }))}
+                            onChange={(e) => handleFilterChange({ ...filters, minBudget: e.target.value })}
                           />
                           <input
                             type="number"
                             placeholder="Max"
                             className="input w-full"
                             value={filters.maxBudget}
-                            onChange={(e) => setFilters(prev => ({ ...prev, maxBudget: e.target.value }))}
+                            onChange={(e) => handleFilterChange({ ...filters, maxBudget: e.target.value })}
                           />
                         </div>
                       </div>
@@ -227,7 +274,7 @@ export default function SearchPage() {
                         <select
                           className="input w-full"
                           value={filters.sortBy}
-                          onChange={(e) => setFilters(prev => ({ ...prev, sortBy: e.target.value }))}
+                          onChange={(e) => handleFilterChange({ ...filters, sortBy: e.target.value })}
                         >
                           <option value="newest">Newest First</option>
                           <option value="budget_high">Highest Budget</option>
@@ -253,7 +300,7 @@ export default function SearchPage() {
                       placeholder="Search jobs..."
                       className="input w-full pl-12"
                       value={filters.query}
-                      onChange={(e) => setFilters(prev => ({ ...prev, query: e.target.value }))}
+                      onChange={(e) => handleFilterChange({ ...filters, query: e.target.value })}
                     />
                   </div>
                   <button type="submit" className="btn btn-primary px-8">
@@ -314,7 +361,7 @@ export default function SearchPage() {
                   {totalPages > 1 && (
                     <div className="flex justify-center items-center gap-4 mt-8">
                       <button
-                        onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                        onClick={() => handlePageChange(Math.max(currentPage - 1, 1))}
                         disabled={currentPage === 1}
                         className="btn btn-outline p-2"
                       >
@@ -324,7 +371,7 @@ export default function SearchPage() {
                         Page {currentPage} of {totalPages}
                       </span>
                       <button
-                        onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                        onClick={() => handlePageChange(Math.min(currentPage + 1, totalPages))}
                         disabled={currentPage === totalPages}
                         className="btn btn-outline p-2"
                       >

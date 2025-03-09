@@ -1,6 +1,17 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { prisma } from '@/lib/prisma';
+import { createNotification } from '@/lib/notifications';
+import { z } from 'zod';
+
+// Input validation schema
+const messageSchema = z.object({
+  conversationId: z.string().optional(),
+  recipientId: z.string(),
+  content: z.string(),
+  attachments: z.array(z.string()).optional(),
+  jobId: z.string().optional(),
+});
 
 // Get conversations for the current user
 export async function GET(request: Request) {
@@ -43,11 +54,19 @@ export async function GET(request: Request) {
             createdAt: 'desc',
           },
           take: 1,
-          select: {
-            content: true,
-            createdAt: true,
-            senderId: true,
-            isRead: true,
+          include: {
+            sender: {
+              select: {
+                id: true,
+                displayName: true,
+                avatar: true,
+              },
+            },
+            readBy: {
+              where: {
+                userId: userProfile.id,
+              },
+            },
           },
         },
         job: {
@@ -60,7 +79,11 @@ export async function GET(request: Request) {
           select: {
             messages: {
               where: {
-                isRead: false,
+                readBy: {
+                  none: {
+                    userId: userProfile.id,
+                  },
+                },
                 NOT: {
                   senderId: userProfile.id,
                 },
@@ -92,7 +115,16 @@ export async function POST(request: Request) {
     }
 
     const data = await request.json();
-    const { recipientId, jobId, content, attachments = [] } = data;
+    const validatedData = messageSchema.safeParse(data);
+
+    if (!validatedData.success) {
+      return NextResponse.json(
+        { error: 'Invalid message data', details: validatedData.error.errors },
+        { status: 400 }
+      );
+    }
+
+    const { conversationId, recipientId, content, attachments = [], jobId } = validatedData.data;
 
     // Get user profile
     const userProfile = await prisma.userProfile.findUnique({
@@ -103,31 +135,27 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'User profile not found' }, { status: 404 });
     }
 
-    // Check if conversation exists
-    let conversation = await prisma.conversation.findFirst({
-      where: {
-        AND: [
-          {
-            participants: {
-              some: {
-                id: userProfile.id,
-              },
+    // Get or create conversation
+    let conversation;
+    if (conversationId) {
+      conversation = await prisma.conversation.findFirst({
+        where: {
+          id: conversationId,
+          participants: {
+            some: {
+              id: userProfile.id,
             },
           },
-          {
-            participants: {
-              some: {
-                id: recipientId,
-              },
-            },
-          },
-          jobId ? { jobId } : {},
-        ],
-      },
-    });
+        },
+        include: {
+          participants: true,
+        },
+      });
 
-    // If no conversation exists, create one
-    if (!conversation) {
+      if (!conversation) {
+        return NextResponse.json({ error: 'Conversation not found' }, { status: 404 });
+      }
+    } else {
       conversation = await prisma.conversation.create({
         data: {
           jobId,
@@ -137,6 +165,9 @@ export async function POST(request: Request) {
               { id: recipientId },
             ],
           },
+        },
+        include: {
+          participants: true,
         },
       });
     }
@@ -152,14 +183,23 @@ export async function POST(request: Request) {
         conversation: {
           connect: { id: conversation.id },
         },
+        readBy: {
+          create: {
+            userId: userProfile.id,
+            isRead: true,
+            readAt: new Date(),
+          },
+        },
       },
       include: {
         sender: {
           select: {
+            id: true,
             displayName: true,
             avatar: true,
           },
         },
+        readBy: true,
       },
     });
 
@@ -168,6 +208,31 @@ export async function POST(request: Request) {
       where: { id: conversation.id },
       data: { updatedAt: new Date() },
     });
+
+    // Create notification for recipient
+    const recipient = conversation.participants.find(p => p.id !== userProfile.id);
+    if (recipient) {
+      await createNotification(
+        recipient.userId,
+        'message',
+        `New message from ${userProfile.displayName}`,
+        content.length > 50 ? `${content.substring(0, 50)}...` : content,
+        {
+          conversationId: conversation.id,
+          messageId: message.id,
+          senderId: userProfile.id,
+        }
+      );
+    }
+
+    // Emit real-time update via Socket.IO
+    const io = global.socketIo;
+    if (io && recipient) {
+      io.to(recipient.userId).emit('message', {
+        conversationId: conversation.id,
+        message,
+      });
+    }
 
     return NextResponse.json(message);
   } catch (error) {
@@ -198,19 +263,54 @@ export async function PUT(request: Request) {
       return NextResponse.json({ error: 'User profile not found' }, { status: 404 });
     }
 
-    // Mark all unread messages in the conversation as read
-    await prisma.message.updateMany({
+    // Get unread messages
+    const unreadMessages = await prisma.message.findMany({
       where: {
         conversationId,
         NOT: {
           senderId: userProfile.id,
         },
-        isRead: false,
-      },
-      data: {
-        isRead: true,
+        readBy: {
+          none: {
+            userId: userProfile.id,
+          },
+        },
       },
     });
+
+    // Mark messages as read
+    await Promise.all(
+      unreadMessages.map(message =>
+        prisma.messageStatus.create({
+          data: {
+            messageId: message.id,
+            userId: userProfile.id,
+            isRead: true,
+            readAt: new Date(),
+          },
+        })
+      )
+    );
+
+    // Emit read receipts via Socket.IO
+    const io = global.socketIo;
+    if (io && unreadMessages.length > 0) {
+      const conversation = await prisma.conversation.findUnique({
+        where: { id: conversationId },
+        include: {
+          participants: true,
+        },
+      });
+
+      const sender = conversation?.participants.find(p => p.id !== userProfile.id);
+      if (sender) {
+        io.to(sender.userId).emit('read', {
+          conversationId,
+          userId: userProfile.id,
+          messageIds: unreadMessages.map(m => m.id),
+        });
+      }
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {

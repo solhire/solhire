@@ -1,26 +1,65 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { prisma } from '@/lib/prisma';
+import { z } from 'zod';
+import { Prisma } from '@prisma/client';
+
+// Input validation schema
+const searchParamsSchema = z.object({
+  q: z.string().optional(),
+  category: z.string().optional(),
+  skills: z.string().optional(),
+  minPrice: z.string().optional(),
+  maxPrice: z.string().optional(),
+  sortBy: z.enum(['newest', 'price_high', 'price_low', 'most_liked', 'best_rated']).optional(),
+  page: z.string().optional()
+});
+
+// Service creation schema
+const serviceCreateSchema = z.object({
+  title: z.string().min(5).max(100),
+  description: z.string().min(20).max(2000),
+  category: z.string(),
+  skills: z.array(z.string()),
+  portfolio: z.array(z.string()),
+  pricing: z.object({
+    type: z.enum(['fixed', 'hourly', 'range']),
+    minPrice: z.number().positive(),
+    maxPrice: z.number().positive().optional(),
+    currency: z.string().default('SOL')
+  })
+});
 
 // Get all services with optional filters and search
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
+    
+    // Validate input parameters
+    const validatedParams = searchParamsSchema.safeParse(Object.fromEntries(searchParams.entries()));
+    if (!validatedParams.success) {
+      return NextResponse.json(
+        { error: 'Invalid search parameters', details: validatedParams.error.errors },
+        { status: 400 }
+      );
+    }
+
     const query = searchParams.get('q');
     const category = searchParams.get('category');
-    const skillsFilter = searchParams.get('skills')?.split(',');
+    const skillsFilter = searchParams.get('skills')?.split(',').filter(Boolean);
     const minPrice = searchParams.get('minPrice') ? Number(searchParams.get('minPrice')) : undefined;
     const maxPrice = searchParams.get('maxPrice') ? Number(searchParams.get('maxPrice')) : undefined;
     const sortBy = searchParams.get('sortBy') || 'newest';
     const page = Number(searchParams.get('page')) || 1;
-    const limit = 10;
+    const limit = 12;
     const offset = (page - 1) * limit;
 
     // Build where clause
-    const where: any = {
-      availability: 'available', // Only show available services
+    const where: Prisma.ServiceWhereInput = {
+      availability: 'available',
     };
 
+    // Full-text search on title and description
     if (query) {
       where.OR = [
         { title: { contains: query, mode: 'insensitive' } },
@@ -34,40 +73,33 @@ export async function GET(request: Request) {
 
     if (skillsFilter?.length) {
       where.skills = {
-        hasEvery: skillsFilter,
+        hasSome: skillsFilter,
       };
     }
 
-    // Build pricing filter
+    // Apply price filters
     if (minPrice !== undefined || maxPrice !== undefined) {
       where.pricing = {
         OR: [
-          // Fixed price
           {
-            type: 'fixed',
-            minPrice: minPrice !== undefined ? { gte: minPrice } : undefined,
-            ...(maxPrice !== undefined ? { minPrice: { lte: maxPrice } } : {}),
+            type: { in: ['fixed', 'hourly'] },
+            minPrice: {
+              gte: minPrice,
+              ...(maxPrice ? { lte: maxPrice } : {})
+            }
           },
-          // Hourly rate
-          {
-            type: 'hourly',
-            minPrice: minPrice !== undefined ? { gte: minPrice } : undefined,
-            ...(maxPrice !== undefined ? { minPrice: { lte: maxPrice } } : {}),
-          },
-          // Price range
           {
             type: 'range',
-            AND: [
-              minPrice !== undefined ? { minPrice: { gte: minPrice } } : {},
-              maxPrice !== undefined ? { maxPrice: { lte: maxPrice } } : {},
-            ],
-          },
-        ],
+            minPrice: { gte: minPrice || 0 },
+            ...(maxPrice ? { maxPrice: { lte: maxPrice } } : {})
+          }
+        ]
       };
     }
 
     // Build orderBy clause
-    let orderBy: any = { createdAt: 'desc' };
+    let orderBy: Prisma.ServiceOrderByWithRelationInput;
+    
     switch (sortBy) {
       case 'price_high':
         orderBy = { pricing: { minPrice: 'desc' } };
@@ -78,12 +110,23 @@ export async function GET(request: Request) {
       case 'most_liked':
         orderBy = { likesCount: 'desc' };
         break;
+      case 'best_rated':
+        orderBy = {
+          ratings: {
+            _avg: {
+              rating: 'desc'
+            }
+          }
+        };
+        break;
+      default:
+        orderBy = { createdAt: 'desc' };
     }
 
     // Get total count for pagination
     const total = await prisma.service.count({ where });
 
-    // Get services with pagination
+    // Get services with pagination and eager loading of related data
     const services = await prisma.service.findMany({
       where,
       orderBy,
@@ -95,21 +138,61 @@ export async function GET(request: Request) {
             displayName: true,
             avatar: true,
             rating: true,
+            completedProjects: true,
           },
         },
         pricing: true,
+        _count: {
+          select: {
+            ratings: true
+          }
+        },
       },
     });
 
+    // Transform the response
+    const transformedServices = services.map(service => ({
+      id: service.id,
+      title: service.title,
+      description: service.description,
+      category: service.category,
+      skills: service.skills,
+      portfolio: service.portfolio,
+      availability: service.availability,
+      pricing: {
+        type: service.pricing?.type,
+        minPrice: service.pricing?.minPrice,
+        maxPrice: service.pricing?.maxPrice,
+        currency: service.pricing?.currency,
+      },
+      provider: {
+        displayName: service.provider.displayName,
+        avatar: service.provider.avatar,
+        rating: service.provider.rating,
+        completedProjects: service.provider.completedProjects,
+      },
+      stats: {
+        likesCount: service.likesCount,
+        dislikesCount: service.dislikesCount,
+        ratingCount: service._count.ratings,
+      },
+      createdAt: service.createdAt,
+      updatedAt: service.updatedAt,
+    }));
+
     return NextResponse.json({
-      services,
+      services: transformedServices,
       total,
       page,
       totalPages: Math.ceil(total / limit),
+      hasMore: page < Math.ceil(total / limit),
     });
   } catch (error) {
     console.error('Error fetching services:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Failed to fetch services', details: error instanceof Error ? error.message : 'Unknown error' },
+      { status: 500 }
+    );
   }
 }
 
@@ -124,7 +207,15 @@ export async function POST(request: Request) {
     }
 
     const data = await request.json();
-    const { pricing: pricingData, ...serviceData } = data;
+    
+    // Validate input data
+    const validatedData = serviceCreateSchema.safeParse(data);
+    if (!validatedData.success) {
+      return NextResponse.json(
+        { error: 'Invalid service data', details: validatedData.error.errors },
+        { status: 400 }
+      );
+    }
 
     // Get user profile
     const userProfile = await prisma.userProfile.findUnique({
@@ -138,12 +229,21 @@ export async function POST(request: Request) {
     // Create service with pricing
     const service = await prisma.service.create({
       data: {
-        ...serviceData,
+        title: data.title,
+        description: data.description,
+        category: data.category,
+        skills: data.skills,
+        portfolio: data.portfolio,
         provider: {
           connect: { id: userProfile.id },
         },
         pricing: {
-          create: pricingData,
+          create: {
+            type: data.pricing.type,
+            minPrice: data.pricing.minPrice,
+            maxPrice: data.pricing.maxPrice,
+            currency: data.pricing.currency,
+          },
         },
       },
       include: {
@@ -176,7 +276,7 @@ export async function PUT(request: Request) {
     }
 
     const data = await request.json();
-    const { serviceId, pricing: pricingData, ...serviceData } = data;
+    const { serviceId, ...updateData } = data;
 
     if (!serviceId) {
       return NextResponse.json({ error: 'Service ID is required' }, { status: 400 });
@@ -207,10 +307,12 @@ export async function PUT(request: Request) {
     const updatedService = await prisma.service.update({
       where: { id: serviceId },
       data: {
-        ...serviceData,
-        pricing: {
-          update: pricingData,
-        },
+        ...updateData,
+        ...(updateData.pricing && {
+          pricing: {
+            update: updateData.pricing,
+          },
+        }),
       },
       include: {
         pricing: true,
@@ -269,7 +371,7 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ error: 'Service not found or unauthorized' }, { status: 404 });
     }
 
-    // Delete service (this will cascade delete pricing and ratings)
+    // Delete service (this will cascade delete pricing due to the schema relation)
     await prisma.service.delete({
       where: { id: serviceId },
     });

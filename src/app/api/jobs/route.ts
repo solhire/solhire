@@ -1,14 +1,38 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { prisma } from '@/lib/prisma';
+import { z } from 'zod';
+import { Prisma } from '@prisma/client';
+import NotificationCenter from '@/components/notifications/NotificationCenter';
+
+// Input validation schema
+const searchParamsSchema = z.object({
+  q: z.string().optional(),
+  category: z.string().optional(),
+  skills: z.string().optional(),
+  minBudget: z.string().optional(),
+  maxBudget: z.string().optional(),
+  sortBy: z.enum(['newest', 'budget_high', 'budget_low', 'most_proposals']).optional(),
+  page: z.string().optional()
+});
 
 // Get all jobs with optional filters and search
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
+    
+    // Validate input parameters
+    const validatedParams = searchParamsSchema.safeParse(Object.fromEntries(searchParams.entries()));
+    if (!validatedParams.success) {
+      return NextResponse.json(
+        { error: 'Invalid search parameters', details: validatedParams.error.errors },
+        { status: 400 }
+      );
+    }
+
     const query = searchParams.get('q');
     const category = searchParams.get('category');
-    const skillsFilter = searchParams.get('skills')?.split(',');
+    const skillsFilter = searchParams.get('skills')?.split(',').filter(Boolean);
     const minBudget = searchParams.get('minBudget') ? Number(searchParams.get('minBudget')) : undefined;
     const maxBudget = searchParams.get('maxBudget') ? Number(searchParams.get('maxBudget')) : undefined;
     const sortBy = searchParams.get('sortBy') || 'newest';
@@ -17,10 +41,11 @@ export async function GET(request: Request) {
     const offset = (page - 1) * limit;
 
     // Build where clause
-    const where: any = {
+    const where: Prisma.JobWhereInput = {
       status: 'open', // Only show open jobs
     };
 
+    // Full-text search on title and description
     if (query) {
       where.OR = [
         { title: { contains: query, mode: 'insensitive' } },
@@ -32,28 +57,26 @@ export async function GET(request: Request) {
       where.category = category;
     }
 
+    // Changed from hasEvery to hasSome for more flexible skill matching
     if (skillsFilter?.length) {
       where.skills = {
-        hasEvery: skillsFilter,
+        hasSome: skillsFilter,
       };
     }
 
-    if (minBudget !== undefined) {
+    // Apply budget filters
+    if (minBudget !== undefined && !isNaN(minBudget)) {
       where.budget = {
-        ...where.budget,
         gte: minBudget,
+        ...(maxBudget !== undefined && !isNaN(maxBudget) ? { lte: maxBudget } : {}),
       };
+    } else if (maxBudget !== undefined && !isNaN(maxBudget)) {
+      where.budget = { lte: maxBudget };
     }
 
-    if (maxBudget !== undefined) {
-      where.budget = {
-        ...where.budget,
-        lte: maxBudget,
-      };
-    }
-
-    // Build orderBy clause
-    let orderBy: any = { createdAt: 'desc' };
+    // Build orderBy clause with type safety
+    let orderBy: Prisma.JobOrderByWithRelationInput;
+    
     switch (sortBy) {
       case 'budget_high':
         orderBy = { budget: 'desc' };
@@ -62,14 +85,20 @@ export async function GET(request: Request) {
         orderBy = { budget: 'asc' };
         break;
       case 'most_proposals':
-        orderBy = { proposals: 'desc' };
+        orderBy = {
+          proposalsList: {
+            _count: 'desc'
+          }
+        };
         break;
+      default:
+        orderBy = { createdAt: 'desc' };
     }
 
     // Get total count for pagination
     const total = await prisma.job.count({ where });
 
-    // Get jobs with pagination
+    // Get jobs with pagination and eager loading of related data
     const jobs = await prisma.job.findMany({
       where,
       orderBy,
@@ -83,18 +112,49 @@ export async function GET(request: Request) {
             rating: true,
           },
         },
+        _count: {
+          select: {
+            proposalsList: true
+          }
+        }
       },
     });
 
+    // Transform the response
+    const transformedJobs = jobs.map(job => ({
+      id: job.id,
+      title: job.title,
+      description: job.description,
+      category: job.category,
+      budget: job.budget,
+      timeframe: job.timeframe,
+      skills: job.skills,
+      requirements: job.requirements,
+      attachments: job.attachments,
+      status: job.status,
+      createdAt: job.createdAt,
+      updatedAt: job.updatedAt,
+      client: {
+        displayName: job.client.displayName,
+        avatar: job.client.avatar,
+        rating: job.client.rating,
+      },
+      proposalCount: job._count.proposalsList
+    }));
+
     return NextResponse.json({
-      jobs,
+      jobs: transformedJobs,
       total,
       page,
       totalPages: Math.ceil(total / limit),
+      hasMore: page < Math.ceil(total / limit),
     });
   } catch (error) {
     console.error('Error fetching jobs:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Failed to fetch jobs', details: error instanceof Error ? error.message : 'Unknown error' },
+      { status: 500 }
+    );
   }
 }
 
@@ -236,4 +296,32 @@ export async function DELETE(request: Request) {
     console.error('Error deleting job:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
-} 
+}
+
+// Send a message with attachments
+const sendMessage = async (content: string, files: File[]) => {
+  // Upload files first
+  const uploadPromises = files.map(async (file) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    const response = await fetch('/api/upload', {
+      method: 'POST',
+      body: formData,
+    });
+    const data = await response.json();
+    return data.url;
+  });
+
+  const attachments = await Promise.all(uploadPromises);
+
+  // Send message with attachments
+  await fetch('/api/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      conversationId,
+      content,
+      attachments,
+    }),
+  });
+}; 
