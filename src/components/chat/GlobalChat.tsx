@@ -243,9 +243,9 @@ export default function GlobalChat({ isOpen, onClose }: { isOpen: boolean; onClo
 
   const containerVariants = {
     mobile: {
-      initial: { y: '100%' },
-      animate: { y: 0 },
-      exit: { y: '100%' },
+      initial: { opacity: 0 },
+      animate: { opacity: 1 },
+      exit: { opacity: 0 },
     },
     desktop: {
       initial: { y: 600, opacity: 0 },
@@ -333,10 +333,13 @@ export default function GlobalChat({ isOpen, onClose }: { isOpen: boolean; onClo
       transition={{ type: 'spring', damping: 20 }}
       className={`fixed bg-background-dark border border-primary/20 shadow-lg flex flex-col z-[100] ${
         isMobile
-          ? 'inset-0'
+          ? 'top-[48px] bottom-0 left-0 right-0'
           : 'bottom-0 right-4 w-96 h-[600px] max-h-[90vh] rounded-t-xl'
       }`}
-      style={{ maxHeight: isMobile ? '100%' : '90vh' }}
+      style={{ 
+        maxHeight: isMobile ? 'calc(100vh - 48px)' : '90vh',
+        height: isMobile ? 'calc(100vh - 48px)' : 'auto'
+      }}
     >
       {/* Chat Header */}
       <div className="p-4 border-b border-primary/20 flex items-center justify-between bg-background-dark">
