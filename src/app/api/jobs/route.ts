@@ -299,7 +299,7 @@ export async function DELETE(request: Request) {
 }
 
 // Send a message with attachments
-const sendMessage = async (content: string, files: File[]) => {
+const sendMessage = async (job: { conversationId: string }, content: string, files: File[]) => {
   // Upload files first
   const uploadPromises = files.map(async (file) => {
     const formData = new FormData();
@@ -319,7 +319,7 @@ const sendMessage = async (content: string, files: File[]) => {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      conversationId,
+      conversationId: job.conversationId,
       content,
       attachments,
     }),

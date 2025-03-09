@@ -1,19 +1,19 @@
 import React from 'react';
 
-const Form = () => {
+export const Form = ({ children, ...props }: React.FormHTMLAttributes<HTMLFormElement>) => {
   return (
-    <form>
-      {/* Form implementation */}
-      <p>Form Component</p>
+    <form {...props}>
+      {children}
     </form>
   );
 };
 
+// Also export as default for compatibility with both import styles
 export default Form;
 
-export const FormField = () => <div>FormField Component</div>;
-export const FormItem = () => <div>FormItem Component</div>;
-export const FormLabel = () => <div>FormLabel Component</div>;
-export const FormControl = () => <div>FormControl Component</div>;
-export const FormDescription = () => <div>FormDescription Component</div>;
-export const FormMessage = () => <div>FormMessage Component</div>; 
+export const FormField = ({ children, ...props }: React.HTMLAttributes<HTMLDivElement>) => <div {...props}>{children}</div>;
+export const FormItem = ({ children, ...props }: React.HTMLAttributes<HTMLDivElement>) => <div {...props}>{children}</div>;
+export const FormLabel = ({ children, ...props }: React.LabelHTMLAttributes<HTMLLabelElement>) => <label {...props}>{children}</label>;
+export const FormControl = ({ children, ...props }: React.HTMLAttributes<HTMLDivElement>) => <div {...props}>{children}</div>;
+export const FormDescription = ({ children, ...props }: React.HTMLAttributes<HTMLParagraphElement>) => <p {...props}>{children}</p>;
+export const FormMessage = ({ children, ...props }: React.HTMLAttributes<HTMLParagraphElement>) => <p {...props}>{children}</p>; 

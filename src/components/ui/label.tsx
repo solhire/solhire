@@ -1,12 +1,13 @@
 import React from 'react';
 
-const Label = ({ text }: { text: string }) => {
+export const Label = ({ children, ...props }: React.LabelHTMLAttributes<HTMLLabelElement>) => {
   return (
-    <label>
+    <label {...props}>
       {/* Label implementation */}
-      {text}
+      {children}
     </label>
   );
 };
 
+// Also export as default for compatibility with both import styles
 export default Label; 
