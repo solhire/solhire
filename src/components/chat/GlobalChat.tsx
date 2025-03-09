@@ -331,14 +331,14 @@ export default function GlobalChat({ isOpen, onClose }: { isOpen: boolean; onClo
       exit={isMobile ? 'mobile.exit' : 'desktop.exit'}
       variants={containerVariants}
       transition={{ type: 'spring', damping: 20 }}
-      className={`fixed bg-gradient-to-br from-background-dark to-background border border-primary/20 shadow-lg flex flex-col z-50 ${
+      className={`fixed bg-background-dark border border-primary/20 shadow-lg flex flex-col z-50 ${
         isMobile
           ? 'inset-0'
           : 'bottom-0 right-4 w-96 h-[600px] rounded-t-xl'
       }`}
     >
       {/* Chat Header */}
-      <div className="p-4 border-b border-primary/20 flex items-center justify-between bg-background-dark/50">
+      <div className="p-4 border-b border-primary/20 flex items-center justify-between bg-background-dark">
         <div className="flex items-center space-x-2">
           <h3 className="font-semibold text-white">Global Chat</h3>
           <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
@@ -368,7 +368,7 @@ export default function GlobalChat({ isOpen, onClose }: { isOpen: boolean; onClo
       ) : (
         <>
           {/* Messages Area */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-background">
             {messages.length === 0 ? (
               <div className="flex items-center justify-center h-full">
                 <p className="text-gray-400 text-center">No messages yet. Be the first to say hello!</p>
@@ -407,7 +407,7 @@ export default function GlobalChat({ isOpen, onClose }: { isOpen: boolean; onClo
           </div>
 
           {/* Message Input */}
-          <form onSubmit={sendMessage} className="p-4 border-t border-primary/20 bg-background-dark/30">
+          <form onSubmit={sendMessage} className="p-4 border-t border-primary/20 bg-background-dark">
             {!isFirebaseConnected && (
               <div className="mb-2 px-3 py-2 bg-yellow-500/10 border border-yellow-500/30 rounded-lg text-yellow-400 text-sm flex justify-between items-center">
                 <span>You appear to be offline. Messages may not be sent until connection is restored.</span>
