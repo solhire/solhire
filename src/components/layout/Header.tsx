@@ -115,7 +115,7 @@ const Header = () => {
 
   return (
     <header
-      className={`fixed top-0 sm:top-[48px] left-0 right-0 z-40 transition-all duration-300 ${
+      className={`fixed top-0 sm:top-[48px] left-0 right-0 z-[90] transition-all duration-300 ${
         isScrolled ? 'bg-background/95 backdrop-blur-lg shadow-lg' : 'bg-background/80 backdrop-blur-sm sm:bg-transparent'
       }`}
     >
@@ -237,11 +237,12 @@ const Header = () => {
 
       {/* Mobile Menu */}
       <div 
-        className={`md:hidden fixed inset-x-0 top-[48px] bottom-0 z-50 bg-gradient-to-b from-background-dark to-black/95 backdrop-blur-md border-t border-gray-800/50 overflow-y-auto transition-all duration-300 ease-in-out shadow-2xl ${
+        className={`md:hidden fixed inset-x-0 top-[48px] bottom-0 z-[100] bg-gradient-to-b from-background-dark to-black/95 backdrop-blur-md border-t border-gray-800/50 overflow-y-auto transition-all duration-300 ease-in-out shadow-2xl ${
           isMobileMenuOpen 
             ? 'opacity-100 translate-y-0' 
             : 'opacity-0 translate-y-4 pointer-events-none'
         }`}
+        style={{ height: 'calc(100vh - 48px)' }}
       >
         <div className="container-custom mx-auto px-4 py-6">
           <nav className="flex flex-col">
