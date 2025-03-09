@@ -210,113 +210,127 @@ const Header = () => {
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden text-gray-300 hover:text-primary"
+            className="md:hidden p-2 rounded-full bg-gray-800/50 hover:bg-primary/20 text-gray-300 hover:text-primary transition-all duration-200"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
           >
             {isMobileMenuOpen ? (
-              <FiX className="w-6 h-6" />
+              <FiX className="w-5 h-5" />
             ) : (
-              <FiMenu className="w-6 h-6" />
+              <FiMenu className="w-5 h-5" />
             )}
           </button>
         </div>
       </div>
 
       {/* Mobile Menu */}
-      {isMobileMenuOpen && (
-        <div className="md:hidden fixed inset-x-0 top-[48px] bottom-0 z-50 bg-background-dark border-t border-gray-800 overflow-y-auto transition-transform duration-300 ease-in-out">
-          <div className="container-custom mx-auto px-4 py-4">
-            <nav className="flex flex-col space-y-4">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.name}
-                  href={link.href}
-                  className={`text-base font-medium ${
-                    pathname === link.href
-                      ? 'text-primary'
-                      : 'text-gray-300 hover:text-primary'
-                  } ${
-                    link.requiresWallet && !connected ? 'opacity-50 pointer-events-none' : ''
-                  }`}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  {link.name}
-                </Link>
-              ))}
+      <div 
+        className={`md:hidden fixed inset-x-0 top-[48px] bottom-0 z-50 bg-gradient-to-b from-background-dark to-black/95 backdrop-blur-md border-t border-gray-800/50 overflow-y-auto transition-all duration-300 ease-in-out shadow-2xl ${
+          isMobileMenuOpen 
+            ? 'opacity-100 translate-y-0' 
+            : 'opacity-0 translate-y-4 pointer-events-none'
+        }`}
+      >
+        <div className="container-custom mx-auto px-4 py-6">
+          <nav className="flex flex-col">
+            {navLinks.map((link, index) => (
+              <Link
+                key={link.name}
+                href={link.href}
+                className={`text-base font-medium py-3 px-4 rounded-lg mb-2 transition-all duration-200 ${
+                  pathname === link.href
+                    ? 'bg-primary/10 text-primary border-l-4 border-primary pl-3'
+                    : 'text-gray-300 hover:bg-gray-800/50 hover:text-primary'
+                } ${
+                  link.requiresWallet && !connected ? 'opacity-50 pointer-events-none' : ''
+                }`}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                {link.name}
+              </Link>
+            ))}
 
-              <div className="pt-4 border-t border-gray-700">
-                <div className="flex flex-col space-y-4">
-                  {mockUser ? (
-                    <>
-                      <Link
-                        href="/profile"
-                        className="flex items-center text-gray-300 hover:text-primary"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        <FiUser className="mr-2" />
-                        Profile
-                      </Link>
-                      <button
-                        onClick={() => {
-                          mockLogout();
-                          setIsMobileMenuOpen(false);
-                        }}
-                        className="flex items-center text-gray-300 hover:text-primary"
-                      >
-                        <FiLogOut className="mr-2" />
-                        Logout
-                      </button>
-                    </>
-                  ) : isLoaded && !isSignedIn ? (
-                    authLinks.map((link) => (
+            <div className="mt-6 pt-6 border-t border-gray-800/50">
+              <div className="flex flex-col space-y-2">
+                {mockUser ? (
+                  <>
+                    <Link
+                      href="/profile"
+                      className="flex items-center text-gray-300 hover:text-primary bg-gray-800/30 hover:bg-gray-800/50 py-3 px-4 rounded-lg transition-all duration-200"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <div className="bg-primary/10 p-2 rounded-full mr-3">
+                        <FiUser className="w-5 h-5 text-primary" />
+                      </div>
+                      Profile
+                    </Link>
+                    <button
+                      onClick={() => {
+                        mockLogout();
+                        setIsMobileMenuOpen(false);
+                      }}
+                      className="flex items-center text-gray-300 hover:text-primary bg-gray-800/30 hover:bg-gray-800/50 py-3 px-4 rounded-lg transition-all duration-200"
+                    >
+                      <div className="bg-primary/10 p-2 rounded-full mr-3">
+                        <FiLogOut className="w-5 h-5 text-primary" />
+                      </div>
+                      Logout
+                    </button>
+                  </>
+                ) : isLoaded && !isSignedIn ? (
+                  <div className="space-y-3">
+                    {authLinks.map((link) => (
                       <Link
                         key={link.name}
                         href={link.href}
-                        className={`text-base font-medium ${
+                        className={`block text-base font-medium transition-all duration-200 ${
                           link.name === 'Register'
                             ? 'btn btn-primary w-full text-center'
-                            : 'text-gray-300 hover:text-primary'
+                            : 'bg-gray-800/30 hover:bg-gray-800/50 text-gray-300 hover:text-primary py-3 px-4 rounded-lg'
                         }`}
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
                         {link.name}
                       </Link>
-                    ))
-                  ) : (
-                    <>
-                      <Link
-                        href="/profile"
-                        className="flex items-center text-gray-300 hover:text-primary"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        <FiUser className="mr-2" />
-                        Profile
-                      </Link>
-                      <button
-                        onClick={() => {
-                          handleLogout();
-                          setIsMobileMenuOpen(false);
-                        }}
-                        className="flex items-center text-gray-300 hover:text-primary"
-                      >
-                        <FiLogOut className="mr-2" />
-                        Logout
-                      </button>
-                    </>
-                  )}
-                  
-                  <div className="pt-2">
-                    {(isLoaded && isSignedIn || mockUser) && (
-                      <WalletButtonWrapper />
-                    )}
+                    ))}
                   </div>
+                ) : (
+                  <>
+                    <Link
+                      href="/profile"
+                      className="flex items-center text-gray-300 hover:text-primary bg-gray-800/30 hover:bg-gray-800/50 py-3 px-4 rounded-lg transition-all duration-200"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <div className="bg-primary/10 p-2 rounded-full mr-3">
+                        <FiUser className="w-5 h-5 text-primary" />
+                      </div>
+                      Profile
+                    </Link>
+                    <button
+                      onClick={() => {
+                        handleLogout();
+                        setIsMobileMenuOpen(false);
+                      }}
+                      className="flex items-center text-gray-300 hover:text-primary bg-gray-800/30 hover:bg-gray-800/50 py-3 px-4 rounded-lg transition-all duration-200"
+                    >
+                      <div className="bg-primary/10 p-2 rounded-full mr-3">
+                        <FiLogOut className="w-5 h-5 text-primary" />
+                      </div>
+                      Logout
+                    </button>
+                  </>
+                )}
+                
+                <div className="pt-4 flex justify-center">
+                  {(isLoaded && isSignedIn || mockUser) && (
+                    <WalletButtonWrapper />
+                  )}
                 </div>
               </div>
-            </nav>
-          </div>
+            </div>
+          </nav>
         </div>
-      )}
+      </div>
 
       {/* Global Chat Component */}
       <GlobalChat 
