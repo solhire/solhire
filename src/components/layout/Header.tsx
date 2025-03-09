@@ -116,13 +116,13 @@ const Header = () => {
   return (
     <header
       className={`fixed top-0 sm:top-[48px] left-0 right-0 z-40 transition-all duration-300 ${
-        isScrolled ? 'bg-background/90 backdrop-blur-lg shadow-lg' : 'bg-transparent'
+        isScrolled ? 'bg-background/95 backdrop-blur-lg shadow-lg' : 'bg-background/80 backdrop-blur-sm sm:bg-transparent'
       }`}
     >
       <div className="container-custom mx-auto px-4 py-3 sm:py-4">
         <div className="flex items-center justify-between min-h-[48px]">
           {/* Logo */}
-          <Link href="/" className="flex items-center">
+          <Link href="/" className="flex items-center z-50 relative">
             <span className="text-lg md:text-xl lg:text-2xl font-bold text-white">Sol<span className="text-primary">Hire</span></span>
           </Link>
 

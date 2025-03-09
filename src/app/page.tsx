@@ -26,7 +26,7 @@ export default function Home() {
         
         <div className="container-custom relative z-20">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
+            <div className="pt-10 sm:pt-0">
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
                 <span className="text-white">Hire Top Creatives with </span>
                 <span className="bg-gradient-to-br from-purple-400 to-purple-900 text-transparent bg-clip-text [text-shadow:0_0_25px_rgba(168,85,247,0.4)]">Solana</span>
@@ -46,7 +46,7 @@ export default function Home() {
             </div>
             
             {/* Hero Image */}
-            <div className="relative h-[500px] w-full rounded-2xl overflow-hidden border border-primary/30">
+            <div className="relative h-[500px] w-full rounded-2xl overflow-hidden border border-primary/30 mt-8 sm:mt-0">
               <div className="absolute -bottom-20 -left-20 -right-20 h-60 bg-gradient-to-t from-primary/40 via-primary/20 to-transparent blur-3xl z-0" />
               <div className="absolute -bottom-10 -left-10 -right-10 h-40 bg-primary/30 blur-2xl z-0" />
               <Image
