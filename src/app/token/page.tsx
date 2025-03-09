@@ -48,11 +48,19 @@ export default function TokenPage() {
               href="https://pump.fun/profile/DNqyWhH499KoR9QTitR8Uqdv4ATv7iH26YVzCFaEgiPE" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="flex items-center text-[#FF9900] hover:text-[#FFAA33] mb-6 font-mono text-sm break-all"
+              className="flex items-center text-[#FF9900] hover:text-[#FFAA33] mb-4 font-mono text-sm break-all"
             >
               https://pump.fun/profile/DNqyWhH499KoR9QTitR8Uqdv4ATv7iH26YVzCFaEgiPE
               <FiExternalLink className="ml-2 flex-shrink-0" />
             </a>
+            
+            <div className="mb-6 bg-[#FF9900]/10 p-4 rounded-lg border border-[#FF9900]/30">
+              <h3 className="text-lg font-bold text-[#FF9900] mb-2">Official Contract Address:</h3>
+              <p className="font-mono text-sm break-all text-white">
+                8C2rdnbLkuyQdk24s2hb1WZxMpfQLV1c1hai2c1xpump
+              </p>
+            </div>
+            
             <div className="bg-red-900/20 p-4 rounded-lg border border-red-800/30">
               <p className="text-lg font-bold text-red-400 mb-2">⚠️ IMPORTANT</p>
               <p>
