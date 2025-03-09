@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import MainLayout from '@/components/layout/MainLayout';
 import { FiSearch, FiFilter, FiX, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
@@ -46,13 +46,13 @@ const availableSkills = [
 export default function SearchPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  
+
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
   const [showFilters, setShowFilters] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  
+
   const [filters, setFilters] = useState(() => ({
     query: searchParams.get('q') || '',
     category: searchParams.get('category') || '',
@@ -71,7 +71,7 @@ export default function SearchPage() {
     if (newFilters.maxBudget) queryParams.set('maxBudget', newFilters.maxBudget);
     if (newFilters.sortBy) queryParams.set('sortBy', newFilters.sortBy);
     if (page > 1) queryParams.set('page', page.toString());
-    
+
     router.push(`/search?${queryParams.toString()}`, { scroll: false });
   }, [router]);
 
@@ -85,7 +85,7 @@ export default function SearchPage() {
   const fetchJobs = async (currentFilters: typeof filters, pageNum: number) => {
     try {
       setLoading(true);
-      
+
       const queryParams = new URLSearchParams();
       if (currentFilters.query) queryParams.set('q', currentFilters.query);
       if (currentFilters.category) queryParams.set('category', currentFilters.category);
@@ -94,10 +94,10 @@ export default function SearchPage() {
       if (currentFilters.maxBudget) queryParams.set('maxBudget', currentFilters.maxBudget);
       if (currentFilters.sortBy) queryParams.set('sortBy', currentFilters.sortBy);
       queryParams.set('page', pageNum.toString());
-      
+
       const response = await fetch(`/api/jobs?${queryParams.toString()}`);
       if (!response.ok) throw new Error('Failed to fetch jobs');
-      
+
       const data = await response.json();
       setJobs(data.jobs);
       setTotalPages(Math.ceil(data.total / 10));
@@ -112,7 +112,7 @@ export default function SearchPage() {
   useEffect(() => {
     const page = Number(searchParams.get('page')) || 1;
     setCurrentPage(page);
-    
+
     const newFilters = {
       query: searchParams.get('q') || '',
       category: searchParams.get('category') || '',
@@ -121,7 +121,7 @@ export default function SearchPage() {
       maxBudget: searchParams.get('maxBudget') || '',
       sortBy: searchParams.get('sortBy') || 'newest'
     };
-    
+
     setFilters(newFilters);
     fetchJobs(newFilters, page);
   }, [searchParams]);
@@ -142,7 +142,7 @@ export default function SearchPage() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     setCurrentPage(1);
-    
+
     const queryParams = new URLSearchParams();
     if (filters.query) queryParams.set('q', filters.query);
     if (filters.category) queryParams.set('category', filters.category);
@@ -150,7 +150,7 @@ export default function SearchPage() {
     if (filters.minBudget) queryParams.set('minBudget', filters.minBudget);
     if (filters.maxBudget) queryParams.set('maxBudget', filters.maxBudget);
     if (filters.sortBy) queryParams.set('sortBy', filters.sortBy);
-    
+
     router.push(`/search?${queryParams.toString()}`);
   };
 
@@ -177,7 +177,7 @@ export default function SearchPage() {
   };
 
   return (
-    <MainLayout>
+    <Suspense fallback={<div>Loading...</div>}>
       <section className="py-20 bg-background-light min-h-screen">
         <div className="container-custom">
           <div className="flex flex-col lg:flex-row gap-8">
@@ -395,6 +395,6 @@ export default function SearchPage() {
           </div>
         </div>
       </section>
-    </MainLayout>
+    </Suspense>
   );
 } 
