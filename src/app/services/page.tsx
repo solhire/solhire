@@ -7,11 +7,6 @@ import { Card } from '@/components/ui/card';
 import { FiStar, FiArrowRight, FiFilter, FiSearch } from 'react-icons/fi';
 import { useState } from 'react';
 
-export const metadata = {
-  title: 'Services - Find Expert Freelancers',
-  description: 'Browse and hire talented freelancers offering professional services across various categories.',
-};
-
 export default function ServicesPage() {
   // Mock categories for filtering
   const categories = [
