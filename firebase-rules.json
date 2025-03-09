@@ -1,0 +1,30 @@
+{
+  "rules": {
+    ".read": "auth != null || true",  // Allow read access to all users for now (you can restrict this later)
+    ".write": "auth != null || true", // Allow write access to all users for now (you can restrict this later)
+    "global_chat_messages": {
+      ".read": true,  // Anyone can read chat messages
+      ".write": true, // Anyone can write chat messages
+      "$message_id": {
+        // Validate the structure of chat messages
+        ".validate": "newData.hasChildren([\"text\", \"timestamp\", \"color\", \"username\"])",
+        "text": {
+          ".validate": "newData.isString() && newData.val().length <= 500"
+        },
+        "timestamp": {
+          ".validate": "newData.isNumber()"
+        },
+        "color": {
+          ".validate": "newData.isString()"
+        },
+        "username": {
+          ".validate": "newData.isString() && newData.val().length <= 50"
+        }
+      }
+    },
+    "connection_test": {
+      ".read": true,
+      ".write": true
+    }
+  }
+} 

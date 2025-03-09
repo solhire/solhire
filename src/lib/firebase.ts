@@ -14,9 +14,10 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase with error handling
-let app;
-let database: Database;
-let storage;
+let app: any = null;
+// Initialize with a placeholder that will be replaced in the try block
+let database = {} as Database;
+let storage: any = null;
 
 try {
   console.log("Initializing Firebase with config:", {
@@ -52,7 +53,7 @@ try {
   console.error('Error initializing Firebase:', error);
   // Fallback to prevent app crashes
   if (!app) app = {} as any;
-  if (!database) database = {} as any;
+  // Database is already initialized with a placeholder
   if (!storage) storage = {} as any;
 }
 
