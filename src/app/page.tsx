@@ -29,7 +29,13 @@ export default function Home() {
             <div className="pt-10 sm:pt-0">
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
                 <span className="text-white">Hire Top Creatives with </span>
-                <span className="bg-gradient-to-br from-purple-400 to-purple-900 text-transparent bg-clip-text [text-shadow:0_0_25px_rgba(168,85,247,0.4)]">Solana</span>
+                <span className="relative inline-block">
+                  <span className="bg-gradient-to-br from-blue-400 to-blue-700 text-transparent bg-clip-text [text-shadow:0_0_25px_rgba(59,130,246,0.6)]">
+                    Solana
+                  </span>
+                  {/* Light swipe animation */}
+                  <span className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-300/30 to-transparent -skew-x-12 animate-shine"></span>
+                </span>
               </h1>
               <p className="text-lg md:text-xl text-gray-300 mb-8">
                 Connect with skilled video editors, graphic designers, and other creative professionals. Pay securely with Solana cryptocurrency.
