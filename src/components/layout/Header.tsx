@@ -115,15 +115,15 @@ const Header = () => {
 
   return (
     <header
-      className={`fixed top-[48px] left-0 right-0 z-40 transition-all duration-300 ${
+      className={`fixed top-0 sm:top-[48px] left-0 right-0 z-40 transition-all duration-300 ${
         isScrolled ? 'bg-background/90 backdrop-blur-lg shadow-lg' : 'bg-transparent'
       }`}
     >
-      <div className="container-custom mx-auto px-4 py-4">
+      <div className="container-custom mx-auto px-4 py-3 sm:py-4">
         <div className="flex items-center justify-between min-h-[48px]">
           {/* Logo */}
           <Link href="/" className="flex items-center">
-            <span className="text-xl md:text-2xl font-bold text-white">Sol<span className="text-primary">Hire</span></span>
+            <span className="text-lg md:text-xl lg:text-2xl font-bold text-white">Sol<span className="text-primary">Hire</span></span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -225,7 +225,7 @@ const Header = () => {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-background-dark border-t border-gray-800">
+        <div className="md:hidden fixed inset-x-0 top-[48px] bottom-0 z-50 bg-background-dark border-t border-gray-800 overflow-y-auto transition-transform duration-300 ease-in-out">
           <div className="container-custom mx-auto px-4 py-4">
             <nav className="flex flex-col space-y-4">
               {navLinks.map((link) => (

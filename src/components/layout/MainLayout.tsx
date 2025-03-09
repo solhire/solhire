@@ -13,7 +13,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
     <div className="min-h-screen flex flex-col">
       <DevelopmentBanner />
       <Header />
-      <main className="flex-1 pt-[calc(48px+64px)]">{children}</main>
+      <main className="flex-1 pt-16 sm:pt-24 md:pt-28">{children}</main>
       <Footer />
     </div>
   );
