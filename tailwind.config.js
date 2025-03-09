@@ -51,6 +51,8 @@ module.exports = {
       animation: {
         'fadeIn': 'fadeIn 0.5s ease-in-out',
         'shine': 'shine 2s infinite linear',
+        'token-pulse': 'token-pulse 2s infinite ease-in-out',
+        'glow': 'glow 1.5s ease-in-out infinite alternate',
       },
       keyframes: {
         fadeIn: {
@@ -60,6 +62,24 @@ module.exports = {
         shine: {
           '0%': { transform: 'translateX(-100%) skewX(-12deg)' },
           '100%': { transform: 'translateX(200%) skewX(-12deg)' },
+        },
+        'token-pulse': {
+          '0%, 100%': { 
+            opacity: '0.7',
+            transform: 'scale(1)',
+          },
+          '50%': { 
+            opacity: '1',
+            transform: 'scale(1.05)',
+          },
+        },
+        glow: {
+          '0%': { 
+            boxShadow: '0 0 5px rgba(255, 153, 0, 0.5), 0 0 10px rgba(255, 153, 0, 0.3)' 
+          },
+          '100%': { 
+            boxShadow: '0 0 10px rgba(255, 153, 0, 0.8), 0 0 20px rgba(255, 153, 0, 0.5), 0 0 30px rgba(255, 153, 0, 0.3)' 
+          },
         },
       },
       backgroundImage: {

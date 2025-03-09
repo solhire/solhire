@@ -62,4 +62,21 @@
   .container-custom {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
+  
+  /* Token button animations */
+  .token-glow {
+    @apply animate-token-pulse;
+    filter: drop-shadow(0 0 8px rgba(255, 153, 0, 0.8));
+  }
+  
+  @keyframes token-pulse {
+    0%, 100% {
+      opacity: 0.7;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.05);
+    }
+  }
 } 

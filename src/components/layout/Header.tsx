@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
-import { FiMenu, FiX, FiSearch, FiUser, FiBriefcase, FiLogOut, FiMessageSquare } from 'react-icons/fi';
+import { FiMenu, FiX, FiSearch, FiUser, FiBriefcase, FiLogOut, FiMessageSquare, FiDollarSign } from 'react-icons/fi';
 import { useUser } from '@clerk/nextjs';
 import Image from 'next/image';
 import GlobalChat from '@/components/chat/GlobalChat';
@@ -147,6 +147,18 @@ const Header = () => {
 
           {/* Desktop Right Section */}
           <div className="hidden md:flex items-center space-x-4">
+            {/* Token Button */}
+            <Link
+              href="/token"
+              className="relative group"
+            >
+              <div className="absolute -inset-1 bg-gradient-to-r from-[#FF9900] to-[#FFCC66] rounded-full blur-md opacity-70 group-hover:opacity-100 animate-token-pulse"></div>
+              <button className="relative px-4 py-2 bg-gradient-to-r from-[#FF9900]/90 to-[#FFCC66]/90 text-black font-bold rounded-full flex items-center shadow-[0_0_10px_rgba(255,153,0,0.5)] animate-glow">
+                <FiDollarSign className="mr-1" />
+                $HIRE Token
+              </button>
+            </Link>
+
             {/* Global Chat Button */}
             <button
               onClick={() => setShowGlobalChat(!showGlobalChat)}
@@ -233,6 +245,19 @@ const Header = () => {
       >
         <div className="container-custom mx-auto px-4 py-6">
           <nav className="flex flex-col">
+            {/* Token Button for Mobile */}
+            <Link
+              href="/token"
+              className="relative group mb-6 mx-auto"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <div className="absolute -inset-1 bg-gradient-to-r from-[#FF9900] to-[#FFCC66] rounded-full blur-md opacity-70 group-hover:opacity-100 animate-token-pulse"></div>
+              <button className="relative px-6 py-3 bg-gradient-to-r from-[#FF9900]/90 to-[#FFCC66]/90 text-black font-bold rounded-full flex items-center text-lg shadow-[0_0_10px_rgba(255,153,0,0.5)] animate-glow">
+                <FiDollarSign className="mr-2" />
+                $HIRE Token
+              </button>
+            </Link>
+
             {navLinks.map((link, index) => (
               <Link
                 key={link.name}
