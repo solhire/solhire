@@ -6,6 +6,12 @@ import FeaturedCreatives from '@/components/home/FeaturedCreatives';
 import PopularServices from '@/components/home/PopularServices';
 import HowItWorks from '@/components/home/HowItWorks';
 import Testimonials from '@/components/home/Testimonials';
+import TrendingCategories from '@/components/home/TrendingCategories';
+import StatsSection from '@/components/home/StatsSection';
+import SecurityFeatures from '@/components/home/SecurityFeatures';
+import CreatorBenefits from '@/components/home/CreatorBenefits';
+import ClientBenefits from '@/components/home/ClientBenefits';
+import HomeFAQ from '@/components/home/HomeFAQ';
 import { FiArrowRight, FiShield, FiZap } from 'react-icons/fi';
 
 export const metadata: Metadata = {
@@ -117,11 +123,31 @@ export default function Home() {
         </div>
       </section>
       
+      {/* New Stats Section */}
+      <StatsSection />
+      
       {/* Featured Sections */}
       <PopularServices />
+      <TrendingCategories />
       <FeaturedCreatives />
+      
+      {/* Client Benefits Section */}
+      <ClientBenefits />
+      
+      {/* Security Features Section */}
+      <SecurityFeatures />
+      
+      {/* Creator Benefits Section */}
+      <CreatorBenefits />
+      
+      {/* How It Works */}
       <HowItWorks />
+      
+      {/* Testimonials */}
       <Testimonials />
+      
+      {/* FAQ Section */}
+      <HomeFAQ />
       
       {/* CTA Section */}
       <section className="py-20 bg-background-light">
