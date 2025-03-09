@@ -1,5 +1,5 @@
 import { initializeApp, getApps } from 'firebase/app';
-import { getDatabase } from 'firebase/database';
+import { getDatabase, connectDatabaseEmulator, ref, onValue, set, get } from 'firebase/database';
 import { getStorage } from 'firebase/storage';
 
 const firebaseConfig = {
@@ -13,7 +13,41 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 };
 
-// Initialize Firebase only if it hasn't been initialized
-const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
-export const database = getDatabase(app);
-export const storage = getStorage(app); 
+// Initialize Firebase with error handling
+let app;
+let database;
+let storage;
+
+try {
+  app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+  database = getDatabase(app);
+  storage = getStorage(app);
+  
+  // Set up connection monitoring
+  const connectedRef = ref(database, '.info/connected');
+  onValue(connectedRef, (snap) => {
+    if (snap.val() === true) {
+      console.log('Connected to Firebase');
+    } else {
+      console.log('Disconnected from Firebase');
+    }
+  });
+
+  // Test connection by writing to a test node
+  const testConnectionRef = ref(database, 'connection_test');
+  set(testConnectionRef, {
+    timestamp: Date.now(),
+    status: 'online'
+  }).catch(error => {
+    console.error('Firebase connection test failed:', error);
+  });
+  
+} catch (error) {
+  console.error('Error initializing Firebase:', error);
+  // Fallback to prevent app crashes
+  if (!app) app = {} as any;
+  if (!database) database = {} as any;
+  if (!storage) storage = {} as any;
+}
+
+export { database, storage }; 
