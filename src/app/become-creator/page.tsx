@@ -127,9 +127,15 @@ export default function BecomeCreator() {
       </section>
 
       {/* Categories Section */}
-      <section className="py-20 bg-background-light">
-        <div className="container-custom">
-          <h2 className="text-3xl font-bold text-center mb-12">Creator Categories</h2>
+      <section className="py-20 bg-background-light relative overflow-hidden">
+        {/* Background decorative elements */}
+        <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+          <div className="absolute top-1/3 -right-20 w-96 h-96 rounded-full bg-primary/5 blur-3xl"></div>
+          <div className="absolute bottom-1/3 -left-20 w-96 h-96 rounded-full bg-accent/5 blur-3xl"></div>
+        </div>
+        
+        <div className="container-custom relative z-10">
+          <h2 className="text-3xl font-bold text-center mb-12 bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">Creator Categories</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {categories.map((category, index) => (
               <motion.div
@@ -137,11 +143,19 @@ export default function BecomeCreator() {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.2 }}
-                className="card group hover:border-primary/50 transition-colors"
+                className="card group hover:border-primary/50 transition-all duration-300 h-full flex flex-col items-center p-8 bg-gradient-to-br from-background to-background-dark border border-zinc-800 group-hover:shadow-lg group-hover:shadow-primary/10 relative overflow-hidden"
               >
-                <div className="text-4xl mb-4">{category.icon}</div>
-                <h3 className="text-xl font-semibold mb-2">{category.title}</h3>
-                <p className="text-gray-400">{category.description}</p>
+                {/* Glow effect on hover */}
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                
+                <div className="text-5xl mb-6 relative z-10 group-hover:scale-110 transition-transform duration-300">
+                  <div className="relative">
+                    <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary/30 to-accent/30 blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <span>{category.icon}</span>
+                  </div>
+                </div>
+                <h3 className="text-xl font-semibold mb-3 text-white relative z-10 group-hover:text-primary transition-colors duration-300">{category.title}</h3>
+                <p className="text-gray-400 text-center relative z-10">{category.description}</p>
               </motion.div>
             ))}
           </div>
@@ -149,9 +163,16 @@ export default function BecomeCreator() {
       </section>
 
       {/* Steps Section */}
-      <section className="py-20 bg-background">
-        <div className="container-custom">
-          <h2 className="text-3xl font-bold text-center mb-12">How It Works</h2>
+      <section className="py-20 bg-background relative overflow-hidden">
+        {/* Background decorative elements */}
+        <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+          <div className="absolute top-1/4 -left-20 w-80 h-80 rounded-full bg-primary/5 blur-3xl"></div>
+          <div className="absolute bottom-1/4 -right-20 w-80 h-80 rounded-full bg-accent/5 blur-3xl"></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full h-1/2 bg-gradient-radial from-primary/5 to-transparent opacity-50"></div>
+        </div>
+        
+        <div className="container-custom relative z-10">
+          <h2 className="text-3xl font-bold text-center mb-12 bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">How It Works</h2>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             {steps.map((step, index) => (
               <motion.div
@@ -159,16 +180,31 @@ export default function BecomeCreator() {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.2 }}
-                className="relative"
+                className="relative group"
               >
-                <div className="card h-full">
-                  <div className="text-4xl mb-4">{step.icon}</div>
-                  <h3 className="text-xl font-semibold mb-2">{step.title}</h3>
-                  <p className="text-gray-400">{step.description}</p>
+                {/* Step number */}
+                <div className="absolute -top-4 -left-4 w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white font-bold text-sm z-20 shadow-lg shadow-primary/20 group-hover:scale-110 transition-transform duration-300">
+                  {index + 1}
                 </div>
+                
+                <div className="card h-full flex flex-col items-center text-center p-8 border border-zinc-800 bg-gradient-to-br from-background to-background-dark/80 backdrop-blur-sm group-hover:border-primary/30 transition-all duration-300 relative overflow-hidden">
+                  {/* Glow effect on hover */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  
+                  <div className="text-5xl mb-6 relative z-10 group-hover:scale-110 transition-transform duration-300">
+                    <div className="relative">
+                      <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary/30 to-accent/30 blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                      <span>{step.icon}</span>
+                    </div>
+                  </div>
+                  <h3 className="text-xl font-semibold mb-3 text-white relative z-10 group-hover:text-primary transition-colors duration-300">{step.title}</h3>
+                  <p className="text-gray-400 relative z-10">{step.description}</p>
+                </div>
+                
                 {index < steps.length - 1 && (
-                  <div className="hidden md:block absolute top-1/2 -right-4 transform -translate-y-1/2">
-                    <FiArrowRight className="w-6 h-6 text-primary" />
+                  <div className="hidden md:block absolute top-1/2 -right-4 transform -translate-y-1/2 z-10">
+                    <div className="w-8 h-0.5 bg-gradient-to-r from-primary/50 to-accent/30"></div>
+                    <FiArrowRight className="w-6 h-6 text-primary absolute top-1/2 right-0 transform -translate-y-1/2 translate-x-1/2" />
                   </div>
                 )}
               </motion.div>
@@ -178,8 +214,13 @@ export default function BecomeCreator() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-20 bg-background-light">
-        <div className="container-custom">
+      <section className="py-20 bg-background-light relative overflow-hidden">
+        {/* Background decorative elements */}
+        <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-primary/5 blur-3xl"></div>
+        </div>
+        
+        <div className="container-custom relative z-10">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
               <motion.div
@@ -187,10 +228,15 @@ export default function BecomeCreator() {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="text-center"
+                className="text-center group"
               >
-                <stat.icon className="w-8 h-8 text-primary mx-auto mb-4" />
-                <div className="text-3xl font-bold mb-2">{stat.value}</div>
+                <div className="relative w-16 h-16 mx-auto mb-4">
+                  <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary/30 to-accent/30 blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="w-full h-full rounded-full bg-gradient-to-br from-background to-background-dark border border-zinc-800 group-hover:border-primary/30 flex items-center justify-center relative z-10">
+                    <stat.icon className="w-8 h-8 text-primary group-hover:scale-110 transition-transform duration-300" />
+                  </div>
+                </div>
+                <div className="text-3xl font-bold mb-2 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">{stat.value}</div>
                 <div className="text-gray-400">{stat.label}</div>
               </motion.div>
             ))}
