@@ -55,17 +55,17 @@ export default function TokenPage() {
             </a>
             
             <div className="mb-6 bg-[#FF9900]/10 p-4 rounded-lg border border-[#FF9900]/30">
-              <h3 className="text-lg font-bold text-[#FF9900] mb-2">Official Contract Address:</h3>
-              <p className="font-mono text-sm break-all text-white">
-                8C2rdnbLkuyQdk24s2hb1WZxMpfQLV1c1hai2c1xpump
+              <h3 className="text-lg font-bold text-[#FF9900] mb-2">Contract Address Status:</h3>
+              <p className="text-white">
+                No official contract address has been deployed yet. The official contract address will be announced here when the token launches.
               </p>
             </div>
             
             <div className="bg-red-900/20 p-4 rounded-lg border border-red-800/30">
               <p className="text-lg font-bold text-red-400 mb-2">⚠️ IMPORTANT</p>
               <p>
-                Any tokens claiming to be $HIRE from any other address are NOT official and should be considered fraudulent. 
-                Always verify the contract address before interacting with any token.
+                Any tokens claiming to be $HIRE from any address are NOT official and should be considered fraudulent at this time. 
+                Always verify the contract address on this page before interacting with any token.
               </p>
             </div>
           </div>
