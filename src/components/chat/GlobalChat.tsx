@@ -258,7 +258,7 @@ export default function GlobalChat({ isOpen, onClose }: { isOpen: boolean; onClo
     <motion.div
       initial={{ y: 600, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      className="fixed bottom-4 right-4 bg-gradient-to-br from-background-dark to-background border border-primary/20 rounded-full shadow-lg p-4 cursor-pointer z-50 hover:border-primary/50 transition-all duration-300 group"
+      className="fixed bottom-4 right-4 bg-gradient-to-br from-background-dark to-background border border-primary/20 rounded-full shadow-lg p-4 cursor-pointer z-[100] hover:border-primary/50 transition-all duration-300 group"
       onClick={() => setIsMinimized(false)}
     >
       <div className="flex items-center space-x-2">
@@ -331,11 +331,12 @@ export default function GlobalChat({ isOpen, onClose }: { isOpen: boolean; onClo
       exit={isMobile ? 'mobile.exit' : 'desktop.exit'}
       variants={containerVariants}
       transition={{ type: 'spring', damping: 20 }}
-      className={`fixed bg-background-dark border border-primary/20 shadow-lg flex flex-col z-50 ${
+      className={`fixed bg-background-dark border border-primary/20 shadow-lg flex flex-col z-[100] ${
         isMobile
           ? 'inset-0'
-          : 'bottom-0 right-4 w-96 h-[600px] rounded-t-xl'
+          : 'bottom-0 right-4 w-96 h-[600px] max-h-[90vh] rounded-t-xl'
       }`}
+      style={{ maxHeight: isMobile ? '100%' : '90vh' }}
     >
       {/* Chat Header */}
       <div className="p-4 border-b border-primary/20 flex items-center justify-between bg-background-dark">
