@@ -45,19 +45,19 @@ export default function TokenPage() {
               The $HIRE token will ONLY be deployed from the official PumpFun profile:
             </p>
             <a 
-              href="https://pump.fun/profile/DNqyWhH499KoR9QTitR8Uqdv4ATv7iH26YVzCFaEgiPE" 
+              href="https://pump.fun/profile/GGXrfcU9DWCweJR9UDbhyPzF57aaSy9JSqT1NNDmTLzB" 
               target="_blank" 
               rel="noopener noreferrer"
               className="flex items-center text-[#FF9900] hover:text-[#FFAA33] mb-4 font-mono text-sm break-all"
             >
-              https://pump.fun/profile/DNqyWhH499KoR9QTitR8Uqdv4ATv7iH26YVzCFaEgiPE
+              https://pump.fun/profile/GGXrfcU9DWCweJR9UDbhyPzF57aaSy9JSqT1NNDmTLzB
               <FiExternalLink className="ml-2 flex-shrink-0" />
             </a>
             
             <div className="mb-6 bg-[#FF9900]/10 p-4 rounded-lg border border-[#FF9900]/30">
               <h3 className="text-lg font-bold text-[#FF9900] mb-2">Contract Address Status:</h3>
               <p className="text-white">
-                No official contract address has been deployed yet. The official contract address will be announced here when the token launches.
+                No official contract address has been deployed yet. The official contract address will be announced on our <a href="https://twitter.com/solhire" target="_blank" rel="noopener noreferrer" className="text-[#FF9900] hover:text-[#FFAA33] underline">Twitter</a> first, and then updated here when the token launches.
               </p>
             </div>
             
