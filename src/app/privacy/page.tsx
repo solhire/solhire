@@ -168,7 +168,7 @@ export default function Privacy() {
               <p className="text-gray-300 leading-relaxed">
                 If you have any questions or concerns about our Privacy Policy or data practices, please contact us at:
               </p>
-              <p className="text-primary mt-4 font-medium">privacy@solhire.com</p>
+              <p className="text-primary mt-4 font-medium">contact@solhire.net</p>
             </div>
 
             <div className="text-sm text-gray-400 mt-12 pt-8 border-t border-gray-800">

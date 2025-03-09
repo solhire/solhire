@@ -197,7 +197,7 @@ export default function Terms() {
             <div className="mb-12">
               <h2 className="text-2xl font-bold mb-4 text-primary">16. Contact Information</h2>
               <p className="text-gray-300">
-                If you have any questions about these Terms, please contact us at [contact email].
+                If you have any questions about these Terms, please contact us at contact@solhire.net.
               </p>
             </div>
 

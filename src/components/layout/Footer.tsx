@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { FiGithub, FiTwitter, FiInstagram, FiLinkedin, FiYoutube, FiDollarSign } from 'react-icons/fi';
+import { FiTwitter, FiInstagram } from 'react-icons/fi';
 import Image from 'next/image';
 
 const Footer = () => {
@@ -43,9 +43,6 @@ const Footer = () => {
   const socialLinks = [
     { name: 'Twitter', icon: <FiTwitter className="w-5 h-5" />, href: 'https://twitter.com/solhire' },
     { name: 'Instagram', icon: <FiInstagram className="w-5 h-5" />, href: 'https://instagram.com/solhireus' },
-    { name: 'LinkedIn', icon: <FiLinkedin className="w-5 h-5" />, href: 'https://linkedin.com' },
-    { name: 'YouTube', icon: <FiYoutube className="w-5 h-5" />, href: 'https://youtube.com' },
-    { name: 'GitHub', icon: <FiGithub className="w-5 h-5" />, href: 'https://github.com' },
   ];
 
   return (
@@ -96,7 +93,6 @@ const Footer = () => {
         {/* Bottom Bar */}
         <div className="mt-12 pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center">
           <div className="flex items-center mb-4 md:mb-0">
-            <FiDollarSign className="text-primary mr-2 h-4 w-4" />
             <span className="text-sm text-gray-400">
               Powered by Solana Blockchain
             </span>

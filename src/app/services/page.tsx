@@ -157,19 +157,19 @@ export default function ServicesPage() {
         <div className="container mx-auto px-4 py-12 relative z-10">
           {/* Header */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12">
-            <div>
+        <div>
               <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">Services</h1>
               <p className="text-gray-400 max-w-2xl">
                 Find and hire talented freelancers for your projects. Browse through our marketplace of skilled professionals.
-              </p>
-            </div>
+          </p>
+        </div>
             <Link href="/services/create" className="mt-4 md:mt-0">
               <Button className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white px-6 py-2 rounded-full transition-all duration-300 shadow-lg shadow-primary/20 group">
                 <span>Create Service</span>
                 <FiArrowRight className="ml-2 group-hover:translate-x-1 transition-transform duration-300" />
               </Button>
-            </Link>
-          </div>
+        </Link>
+      </div>
 
           {/* Search and Filter Bar */}
           <div className="bg-gradient-to-br from-background to-background-dark p-6 rounded-2xl shadow-lg border border-zinc-800 mb-10 relative overflow-hidden group">
