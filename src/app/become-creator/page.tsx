@@ -97,8 +97,12 @@ export default function BecomeCreator() {
               className="text-5xl md:text-6xl font-bold mb-6"
             >
               Become a Creator on{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary-dark">
-                SolHire
+              <span className="relative">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-purple-700 [text-shadow:0_0_25px_rgba(168,85,247,0.4)]">
+                  SolHire
+                </span>
+                {/* Light swipe animation */}
+                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 animate-shine"></span>
               </span>
             </motion.h1>
             <motion.p 

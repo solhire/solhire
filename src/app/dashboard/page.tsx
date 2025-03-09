@@ -61,8 +61,8 @@ export default function Dashboard() {
               onClick={() => setView('creator')}
               className={`px-4 py-2 rounded-full transition-all ${
                 view === 'creator'
-                  ? 'bg-primary text-white'
-                  : 'bg-background-light text-gray-400 hover:text-white'
+                  ? 'bg-gradient-to-r from-primary to-accent text-white shadow-md shadow-primary/20'
+                  : 'bg-background-dark text-gray-400 hover:text-white hover:bg-background-light/30'
               }`}
             >
               Creator View
@@ -71,8 +71,8 @@ export default function Dashboard() {
               onClick={() => setView('client')}
               className={`px-4 py-2 rounded-full transition-all ${
                 view === 'client'
-                  ? 'bg-primary text-white'
-                  : 'bg-background-light text-gray-400 hover:text-white'
+                  ? 'bg-gradient-to-r from-primary to-accent text-white shadow-md shadow-primary/20'
+                  : 'bg-background-dark text-gray-400 hover:text-white hover:bg-background-light/30'
               }`}
             >
               Client View
@@ -81,13 +81,13 @@ export default function Dashboard() {
           
           {/* Quick Actions */}
           <div className="flex space-x-4">
-            <button className="btn btn-primary btn-sm">
+            <button className="btn btn-primary btn-sm px-4 py-2 rounded-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white shadow-lg shadow-primary/20 transition-all duration-300">
               {view === 'creator' ? 'Create Service' : 'Post a Job'}
             </button>
-            <button className="p-2 rounded-full bg-background-light text-gray-400 hover:text-white">
+            <button className="p-2 rounded-full bg-background-dark text-gray-400 hover:text-white hover:bg-primary/10 transition-all duration-300 border border-zinc-800 hover:border-primary/50">
               <FiBell className="w-5 h-5" />
             </button>
-            <button className="p-2 rounded-full bg-background-light text-gray-400 hover:text-white">
+            <button className="p-2 rounded-full bg-background-dark text-gray-400 hover:text-white hover:bg-primary/10 transition-all duration-300 border border-zinc-800 hover:border-primary/50">
               <FiSettings className="w-5 h-5" />
             </button>
           </div>
@@ -101,13 +101,15 @@ export default function Dashboard() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="card bg-gradient-to-br from-primary/20 via-primary/10 to-background"
+                className="card bg-gradient-to-br from-primary/20 via-primary/10 to-background border border-zinc-800 p-6 rounded-xl hover:border-primary/30 transition-all duration-300 shadow-lg shadow-primary/5"
               >
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-gray-400">Total Earnings</h3>
-                  <FiDollarSign className="w-5 h-5 text-primary" />
+                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                    <FiDollarSign className="w-5 h-5 text-primary" />
+                  </div>
                 </div>
-                <p className="text-3xl font-bold">{mockData.earnings.total} SOL</p>
+                <p className="text-3xl font-bold text-white">{mockData.earnings.total} SOL</p>
                 <p className="text-sm text-gray-400 mt-2">
                   +{mockData.earnings.thisMonth} SOL this month
                 </p>
@@ -117,13 +119,15 @@ export default function Dashboard() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className="card"
+                className="card bg-gradient-to-br from-background to-background-dark border border-zinc-800 p-6 rounded-xl hover:border-primary/30 transition-all duration-300 shadow-lg shadow-primary/5"
               >
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-gray-400">Active Projects</h3>
-                  <FiBriefcase className="w-5 h-5 text-primary" />
+                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                    <FiBriefcase className="w-5 h-5 text-primary" />
+                  </div>
                 </div>
-                <p className="text-3xl font-bold">{mockData.stats.activeProjects}</p>
+                <p className="text-3xl font-bold text-white">{mockData.stats.activeProjects}</p>
                 <p className="text-sm text-gray-400 mt-2">
                   {mockData.stats.completionRate}% completion rate
                 </p>
@@ -133,13 +137,15 @@ export default function Dashboard() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="card"
+                className="card bg-gradient-to-br from-background to-background-dark border border-zinc-800 p-6 rounded-xl hover:border-primary/30 transition-all duration-300 shadow-lg shadow-primary/5"
               >
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-gray-400">Response Time</h3>
-                  <FiClock className="w-5 h-5 text-primary" />
+                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                    <FiClock className="w-5 h-5 text-primary" />
+                  </div>
                 </div>
-                <p className="text-3xl font-bold">{mockData.stats.responseTime}</p>
+                <p className="text-3xl font-bold text-white">{mockData.stats.responseTime}</p>
                 <p className="text-sm text-gray-400 mt-2">Average response time</p>
               </motion.div>
 
@@ -147,23 +153,26 @@ export default function Dashboard() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="card"
+                className="card bg-gradient-to-br from-background to-background-dark border border-zinc-800 p-6 rounded-xl hover:border-primary/30 transition-all duration-300 shadow-lg shadow-primary/5"
               >
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-gray-400">Reviews</h3>
-                  <FiStar className="w-5 h-5 text-primary" />
+                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                    <FiStar className="w-5 h-5 text-primary" />
+                  </div>
                 </div>
-                <p className="text-3xl font-bold">{mockData.stats.totalReviews}</p>
+                <p className="text-3xl font-bold text-white">{mockData.stats.totalReviews}</p>
                 <p className="text-sm text-gray-400 mt-2">Total client reviews</p>
               </motion.div>
             </div>
 
             {/* Active Orders */}
-            <div className="card">
+            <div className="card bg-gradient-to-br from-background to-background-dark border border-zinc-800 p-6 rounded-xl hover:border-primary/30 transition-all duration-300 shadow-lg shadow-primary/5">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold">Active Orders</h2>
-                <Link href="/orders" className="text-primary hover:text-primary-light flex items-center">
-                  View All <FiArrowRight className="ml-2 w-4 h-4" />
+                <h2 className="text-xl font-bold text-white">Active Orders</h2>
+                <Link href="/orders" className="text-primary hover:text-primary-light flex items-center group">
+                  <span>View All</span>
+                  <FiArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
                 </Link>
               </div>
               {mockData.activeOrders.length === 0 ? (
@@ -202,10 +211,10 @@ export default function Dashboard() {
                           </td>
                           <td className="py-4">
                             <div className="flex space-x-2">
-                              <button className="p-2 rounded-full bg-background-light text-gray-400 hover:text-white">
+                              <button className="p-2 rounded-full bg-background-dark text-gray-400 hover:text-white hover:bg-primary/10 transition-all duration-300 border border-zinc-800 hover:border-primary/50">
                                 <FiEye className="w-4 h-4" />
                               </button>
-                              <button className="p-2 rounded-full bg-background-light text-gray-400 hover:text-white">
+                              <button className="p-2 rounded-full bg-background-dark text-gray-400 hover:text-white hover:bg-primary/10 transition-all duration-300 border border-zinc-800 hover:border-primary/50">
                                 <FiMessageSquare className="w-4 h-4" />
                               </button>
                             </div>
@@ -219,10 +228,10 @@ export default function Dashboard() {
             </div>
 
             {/* Recommended Jobs */}
-            <div className="card">
+            <div className="card bg-gradient-to-br from-background to-background-dark border border-zinc-800 p-6 rounded-xl hover:border-primary/30 transition-all duration-300 shadow-lg shadow-primary/5">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold">Recommended Jobs</h2>
-                <button className="text-primary hover:text-primary-light">
+                <h2 className="text-xl font-bold text-white">Recommended Jobs</h2>
+                <button className="text-primary hover:text-primary-light p-2 rounded-full hover:bg-primary/10 transition-all duration-300">
                   <FiRefreshCw className="w-5 h-5" />
                 </button>
               </div>
@@ -238,9 +247,9 @@ export default function Dashboard() {
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {mockData.recommendedJobs.map((job) => (
-                    <div key={job.id} className="p-4 rounded-xl bg-background-light border border-gray-800 hover:border-primary/50 transition-colors">
+                    <div key={job.id} className="p-4 rounded-xl bg-background-dark border border-zinc-800 hover:border-primary/50 transition-all duration-300 shadow-md">
                       <div className="flex justify-between items-start mb-3">
-                        <h3 className="font-semibold">{job.title}</h3>
+                        <h3 className="font-semibold text-white">{job.title}</h3>
                         <span className="text-xs bg-primary/20 text-primary px-2 py-1 rounded-full">
                           {job.matchScore}% Match
                         </span>
@@ -248,7 +257,9 @@ export default function Dashboard() {
                       <p className="text-gray-400 text-sm mb-3">Budget: {job.budget}</p>
                       <div className="flex justify-between items-center">
                         <span className="text-xs text-gray-400">Posted {job.postedDate}</span>
-                        <button className="btn btn-primary btn-sm">Apply Now</button>
+                        <button className="text-xs px-3 py-1 rounded-full bg-primary text-white hover:bg-primary/90 transition-colors">
+                          Apply
+                        </button>
                       </div>
                     </div>
                   ))}

@@ -50,11 +50,16 @@ module.exports = {
       },
       animation: {
         'fadeIn': 'fadeIn 0.5s ease-in-out',
+        'shine': 'shine 2s infinite linear',
       },
       keyframes: {
         fadeIn: {
           '0%': { opacity: '0' },
           '100%': { opacity: '1' },
+        },
+        shine: {
+          '0%': { transform: 'translateX(-100%) skewX(-12deg)' },
+          '100%': { transform: 'translateX(200%) skewX(-12deg)' },
         },
       },
       backgroundImage: {
