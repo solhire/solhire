@@ -1,16 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Metadata } from 'next';
 import MainLayout from '@/components/layout/MainLayout';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiChevronDown, FiSearch } from 'react-icons/fi';
 import Link from 'next/link';
-
-export const metadata: Metadata = {
-  title: 'Frequently Asked Questions | SolHire',
-  description: 'Find answers to common questions about using SolHire, payments, creator services, and more.',
-};
 
 interface FAQItem {
   question: string;

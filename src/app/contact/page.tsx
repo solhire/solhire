@@ -1,15 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Metadata } from 'next';
 import MainLayout from '@/components/layout/MainLayout';
 import { motion } from 'framer-motion';
 import { FiMail, FiMapPin, FiMessageCircle, FiPhone, FiSend, FiUser } from 'react-icons/fi';
-
-export const metadata: Metadata = {
-  title: 'Contact Us | SolHire',
-  description: 'Get in touch with the SolHire team for support, partnerships, or general inquiries',
-};
 
 const ContactPage = () => {
   const [formState, setFormState] = useState({
