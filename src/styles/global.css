@@ -3,7 +3,7 @@
 .logo {
   position: relative; /* Ensure it's not absolute or fixed */
   z-index: 1; /* Lower z-index to ensure it doesn't overlay text */
-  margin-bottom: 20px; /* Add margin to separate from headings */
+  margin-bottom: 40px; /* Increase margin to separate from headings */
 }
 
 .header {
