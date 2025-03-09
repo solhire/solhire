@@ -14,9 +14,9 @@ const DevelopmentBanner = () => {
         <div className="container-custom flex flex-col sm:flex-row items-center justify-between">
           <div className="flex items-center mb-2 sm:mb-0">
             <FiAlertTriangle className="h-5 w-5 mr-2 flex-shrink-0 text-yellow-300" aria-hidden="true" />
-            <p className="text-xs sm:text-sm md:text-base font-medium truncate">
-              <span className="mr-1 font-bold">Development Preview:</span>
-              This site is under development.
+            <p className="text-xs sm:text-sm md:text-base font-medium">
+              <span className="mr-1 font-bold">Test Build:</span>
+              This is a demo version with limited functionality. Creating services and jobs is not fully operational yet.
             </p>
           </div>
           <button
