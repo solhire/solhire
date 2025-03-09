@@ -4,48 +4,24 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 3.9%;
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
+    --card: 0 0% 3%;
+    --card-foreground: 0 0% 100%;
+    --popover: 0 0% 3%;
+    --popover-foreground: 0 0% 100%;
     --primary: 265 89% 78%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 10%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 65%;
     --accent: 273 100% 71%;
-    --accent-foreground: 0 0% 9%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
+    --accent-foreground: 0 0% 100%;
+    --border: 0 0% 15%;
+    --input: 0 0% 15%;
     --ring: 265 89% 78%;
     --radius: 0.75rem;
-  }
-
-  .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 265 89% 78%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 273 100% 71%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 265 89% 78%;
   }
 }
 
@@ -54,7 +30,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-black text-white;
   }
 }
 
@@ -64,23 +40,23 @@
   }
   
   .btn-primary {
-    @apply bg-primary text-primary-foreground hover:bg-primary/90;
+    @apply bg-primary text-white hover:bg-primary/90;
   }
   
   .btn-outline {
-    @apply border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground;
+    @apply border-2 border-primary text-primary hover:bg-primary hover:text-white;
   }
   
   .btn-secondary {
-    @apply bg-accent text-accent-foreground hover:bg-accent/90;
+    @apply bg-accent text-white hover:bg-accent/90;
   }
   
   .card {
-    @apply bg-card text-card-foreground rounded-2xl border shadow-sm;
+    @apply bg-[#111] text-white rounded-2xl border border-zinc-800 shadow-lg;
   }
   
   .input {
-    @apply bg-background border border-input rounded-md px-4 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2;
+    @apply bg-[#111] border border-zinc-800 rounded-md px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary;
   }
   
   .container-custom {

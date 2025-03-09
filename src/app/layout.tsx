@@ -5,7 +5,6 @@ import '@/styles/globals.css'
 import { Providers } from './providers'
 import { useState, useEffect } from 'react'
 import PasswordProtection from '@/components/auth/PasswordProtection'
-import { ThemeProvider } from '@/components/theme/theme-provider'
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -30,14 +29,12 @@ export default function RootLayout({
   }
 
   return (
-    <html lang="en" className={inter.variable} suppressHydrationWarning>
-      <body className={`min-h-screen bg-background font-sans antialiased ${inter.className}`}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <Providers>
-            {!isUnlocked && <PasswordProtection onUnlock={handleUnlock} />}
-            {children}
-          </Providers>
-        </ThemeProvider>
+    <html lang="en" className={inter.variable}>
+      <body className={`min-h-screen bg-black font-sans antialiased ${inter.className}`}>
+        <Providers>
+          {!isUnlocked && <PasswordProtection onUnlock={handleUnlock} />}
+          {children}
+        </Providers>
       </body>
     </html>
   )
