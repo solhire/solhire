@@ -1,122 +1,99 @@
+'use client';
+
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import Image from 'next/image';
 
-interface PasswordProtectionProps {
-  onUnlock: () => void;
-}
-
-export default function PasswordProtection({ onUnlock }: PasswordProtectionProps) {
+// This is a simple password protection component that protects the entire site
+export default function PasswordProtection({ children }: { children: React.ReactNode }) {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
-  const [error, setError] = useState(false);
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // The correct password - in a real app, this would be stored securely on the server
+  const CORRECT_PASSWORD = 'SolHire2023!'; // You can change this to any password you want
+
+  useEffect(() => {
+    // Check if already authenticated
+    const authenticated = localStorage.getItem('solhire_authenticated');
+    if (authenticated === 'true') {
+      setIsAuthenticated(true);
+    }
+    setIsLoading(false);
+  }, []);
+
+  const handlePasswordSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (password === 'solhire888') {
-      localStorage.setItem('site_unlocked', 'true');
-      onUnlock();
+    
+    if (password === CORRECT_PASSWORD) {
+      localStorage.setItem('solhire_authenticated', 'true');
+      setIsAuthenticated(true);
+      setError('');
     } else {
-      setError(true);
-      setTimeout(() => setError(false), 2000);
+      setError('Incorrect password. Please try again.');
+      // Optional: clear password field on error
+      setPassword('');
     }
   };
 
-  return (
-    <main className="fixed inset-0 z-[100] overflow-hidden flex items-center justify-center">
-      {/* Background Elements */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-r from-background-dark to-background/90" />
-        <div className="absolute top-0 left-0 w-full h-full bg-background/40" />
-        <motion.div
-          className="absolute top-1/4 left-1/4 w-64 md:w-96 h-64 md:h-96 rounded-full bg-primary/20 blur-3xl"
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.3, 0.5, 0.3],
-          }}
-          transition={{
-            duration: 4,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-        />
-        <motion.div
-          className="absolute bottom-1/4 right-1/4 w-64 md:w-96 h-64 md:h-96 rounded-full bg-accent/20 blur-3xl"
-          animate={{
-            scale: [1.2, 1, 1.2],
-            opacity: [0.5, 0.3, 0.5],
-          }}
-          transition={{
-            duration: 4,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-        />
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="w-12 h-12 rounded-full border-4 border-primary border-t-transparent animate-spin"></div>
       </div>
+    );
+  }
 
-      {/* Content */}
-      <div className="relative z-10 w-[90%] max-w-md mx-auto px-4">
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="bg-background-dark/80 backdrop-blur-xl rounded-2xl p-6 md:p-8 border border-primary/20"
+          transition={{ duration: 0.5 }}
+          className="w-full max-w-md bg-background-dark p-8 rounded-2xl border border-gray-800 shadow-2xl"
         >
-          {/* Logo */}
-          <div className="mb-6 md:mb-8 text-center">
-            <Image
-              src="/logo.svg"
-              alt="SolHire"
-              width={120}
-              height={32}
-              className="mx-auto md:hidden"
-            />
-            <Image
-              src="/logo.svg"
-              alt="SolHire"
-              width={150}
-              height={40}
-              className="mx-auto hidden md:block"
-            />
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold mb-2">
+              <span className="text-white">Sol</span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-blue-600">Hire</span>
+            </h1>
+            <p className="text-gray-400">This site is password protected</p>
           </div>
 
-          <h1 className="text-xl md:text-2xl lg:text-3xl font-bold mb-6 text-center">
-            <span className="bg-gradient-to-br from-purple-400 to-purple-900 text-transparent bg-clip-text">
-              Enter Password
-            </span>
-          </h1>
-
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
+          <form onSubmit={handlePasswordSubmit}>
+            <div className="mb-6">
+              <label htmlFor="password" className="block text-sm font-medium mb-2">
+                Password
+              </label>
               <input
                 type="password"
+                id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className={`w-full px-4 py-3 rounded-xl bg-background/50 border ${
-                  error ? 'border-red-500' : 'border-primary/30'
-                } text-white placeholder-gray-400 focus:outline-none focus:border-primary transition-colors`}
-                placeholder="Enter password to unlock"
-                autoFocus
+                className="w-full px-4 py-3 bg-background border border-gray-700 rounded-lg focus:border-primary focus:ring-1 focus:ring-primary/30 outline-none"
+                placeholder="Enter site password"
+                required
               />
-              {error && (
-                <motion.p
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="mt-2 text-sm text-red-500"
-                >
-                  Incorrect password
-                </motion.p>
-              )}
             </div>
+
+            {error && (
+              <div className="mb-4 p-3 bg-red-900/20 border border-red-800/40 rounded-lg text-red-400 text-sm">
+                {error}
+              </div>
+            )}
+
             <button
               type="submit"
-              className="w-full btn btn-primary py-3 relative group overflow-hidden text-sm md:text-base"
+              className="w-full bg-gradient-to-r from-purple-500 to-blue-600 text-white py-3 rounded-lg font-medium hover:from-purple-600 hover:to-blue-700 transition-all"
             >
-              Unlock Site
-              <div className="absolute inset-0 rounded-full bg-primary/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              Enter Site
             </button>
           </form>
         </motion.div>
       </div>
-    </main>
-  );
+    );
+  }
+
+  return <>{children}</>;
 } 
