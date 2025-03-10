@@ -16,7 +16,7 @@ import { FiArrowRight, FiShield, FiZap } from 'react-icons/fi';
 
 export const metadata: Metadata = {
   title: 'SolHire | Home',
-  description: 'Find and hire top creative professionals and pay with Solana cryptocurrency',
+  description: 'Find and hire top creative professionals and pay with SOL cryptocurrency',
 };
 
 export default function Home() {
@@ -39,16 +39,29 @@ export default function Home() {
               </div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
                 <span className="text-white">Hire Top Creatives with </span>
-                <span className="relative inline-block">
-                  <span className="bg-gradient-to-br from-blue-400 to-blue-700 text-transparent bg-clip-text [text-shadow:0_0_25px_rgba(59,130,246,0.6)]">
-                    Solana
+                <span className="relative inline-flex items-center">
+                  {/* Solana Logo */}
+                  <svg className="w-10 h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 mr-2" viewBox="0 0 397 311" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      d="M64.6 237.9c2.4-2.4 5.7-3.8 9.2-3.8h317.4c5.8 0 8.7 7 4.6 11.1l-62.7 62.7c-2.4 2.4-5.7 3.8-9.2 3.8H6.5c-5.8 0-8.7-7-4.6-11.1l62.7-62.7zM64.6 3.8C67.1 1.4 70.4 0 73.8 0h317.4c5.8 0 8.7 7 4.6 11.1l-62.7 62.7c-2.4 2.4-5.7 3.8-9.2 3.8H6.5c-5.8 0-8.7-7-4.6-11.1L64.6 3.8zM333.1 120.1c-2.4-2.4-5.7-3.8-9.2-3.8H6.5c-5.8 0-8.7 7-4.6 11.1l62.7 62.7c2.4 2.4 5.7 3.8 9.2 3.8h317.4c5.8 0 8.7-7 4.6-11.1l-62.7-62.7z"
+                      fill="url(#solana-logo-gradient)"
+                    />
+                    <defs>
+                      <linearGradient id="solana-logo-gradient" x1="0" y1="0" x2="397" y2="311" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%" stopColor="#9333EA" /> {/* purple-600 */}
+                        <stop offset="100%" stopColor="#2563EB" /> {/* blue-600 */}
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                  <span className="bg-gradient-to-br from-purple-500 to-blue-600 text-transparent bg-clip-text [text-shadow:0_0_25px_rgba(124,58,237,0.6)] animate-pulse">
+                    SOL
                   </span>
                   {/* Light swipe animation */}
-                  <span className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-300/30 to-transparent -skew-x-12 animate-shine"></span>
+                  <span className="absolute inset-0 bg-gradient-to-r from-transparent via-purple-300/30 to-transparent -skew-x-12 animate-shine"></span>
                 </span>
               </h1>
               <p className="text-lg md:text-xl text-gray-300 mb-8">
-                Connect with skilled video editors, graphic designers, and other creative professionals. Pay securely with Solana cryptocurrency.
+                Connect with skilled video editors, graphic designers, and other creative professionals. Pay securely with SOL cryptocurrency.
               </p>
               <div className="flex flex-wrap gap-4">
                 <Link href="/services" className="btn btn-primary px-8 py-3 text-lg">
@@ -93,7 +106,7 @@ export default function Home() {
                 <FiZap className="text-primary text-xl" />
               </div>
               <h3 className="text-xl font-bold mb-2">Lightning Fast Payments</h3>
-              <p className="text-gray-400">Instant payments with Solana. No waiting for bank transfers or dealing with payment processors.</p>
+              <p className="text-gray-400">Instant payments with SOL. No waiting for bank transfers or dealing with payment processors.</p>
             </div>
             
             <div className="bg-background-dark p-6 rounded-xl border border-primary/20 hover:border-primary/40 transition-all">
@@ -117,7 +130,7 @@ export default function Home() {
                 </svg>
               </div>
               <h3 className="text-xl font-bold mb-2">Web3 Native</h3>
-              <p className="text-gray-400">Built for the decentralized web. Connect with your favorite Solana wallet and start working immediately.</p>
+              <p className="text-gray-400">Built for the decentralized web. Connect with your favorite SOL wallet and start working immediately.</p>
             </div>
           </div>
         </div>
