@@ -45,15 +45,8 @@ export default function TokenPage() {
             <div className="mb-6 bg-blue-500/10 p-4 rounded-lg border border-blue-500/30">
               <h3 className="text-lg font-bold text-blue-500 mb-2">Token Status:</h3>
               <div className="text-md text-gray-300">
-                <p className="mb-4">The $HIRE token is now live on the Solana blockchain.</p>
-                <div className="bg-background/50 p-4 rounded-lg mb-4 overflow-hidden">
-                  <h4 className="font-semibold mb-2">Official Contract Address:</h4>
-                  <div className="font-mono text-sm bg-background p-3 rounded border border-blue-500/30 break-all">
-                    GNR9QKUtbEvedGep5CedsodzZpM4dsS5ve8ekfqapump
-                  </div>
-                </div>
-                <p className="mb-4 text-yellow-500 font-medium">⚠️ Always verify this contract address when interacting with the $HIRE token. Be vigilant about scams.</p>
-                <p className="mb-0">Follow our <a href="https://twitter.com/solhire" target="_blank" rel="noopener noreferrer" className="text-purple-500 hover:text-blue-500 underline">Twitter</a> for the latest updates and announcements about the token.</p>
+                <p className="mb-4">We are carefully designing the token mechanics to ensure it provides real utility to the platform. Updates on the token launch will be shared on our <a href="https://twitter.com/solhire" target="_blank" rel="noopener noreferrer" className="text-purple-500 hover:text-blue-500 underline">Twitter</a> first, and then updated here.</p>
+                <p className="mb-0">Please be vigilant about scams. The official token will only be announced through our official channels.</p>
               </div>
             </div>
             
