@@ -52,9 +52,13 @@ export default function TokenPage() {
             
             <div className="bg-red-900/20 p-4 rounded-lg border border-red-800/30">
               <p className="text-lg font-bold text-red-400 mb-2">⚠️ WARNING</p>
-              <p>
+              <p className="mb-4">
                 Any tokens currently claiming to be $HIRE are NOT official and should be considered fraudulent. 
                 Do not interact with any tokens claiming to be $HIRE at this time.
+              </p>
+              <p className="text-sm text-red-300">
+                The official $HIRE token launch will be announced first on our Twitter account (@solhire). 
+                Follow us to receive the earliest updates and avoid potential scams.
               </p>
             </div>
           </div>
