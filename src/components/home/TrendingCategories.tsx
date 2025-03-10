@@ -38,7 +38,7 @@ const categories = [
     name: 'Social Media',
     icon: '📱',
     count: 186,
-    color: 'bg-orange-500/10 text-orange-500 border-orange-500/30',
+    color: 'bg-indigo-500/10 text-indigo-500 border-indigo-500/30',
     href: '/services?category=social-media'
   },
   {
@@ -52,7 +52,7 @@ const categories = [
     name: 'Content Writing',
     icon: '✍️',
     count: 208,
-    color: 'bg-amber-500/10 text-amber-500 border-amber-500/30',
+    color: 'bg-blue-500/10 text-blue-500 border-blue-500/30',
     href: '/services?category=content-writing'
   },
   {

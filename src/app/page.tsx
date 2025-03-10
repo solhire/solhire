@@ -61,7 +61,7 @@ export default function Home() {
               </div>
               
               <div className="mt-8 flex items-center">
-                <Link href="/token" className="flex items-center text-[#FF9900] hover:text-[#FFAA33] group transition-all">
+                <Link href="/token" className="flex items-center text-purple-500 hover:text-blue-500 group transition-all">
                   <span className="mr-2">Learn about $HIRE token</span>
                   <FiArrowRight className="group-hover:translate-x-1 transition-transform" />
                 </Link>
@@ -97,8 +97,8 @@ export default function Home() {
             </div>
             
             <div className="bg-background-dark p-6 rounded-xl border border-primary/20 hover:border-primary/40 transition-all">
-              <div className="w-12 h-12 rounded-full bg-[#FF9900]/20 flex items-center justify-center mb-4">
-                <FiShield className="text-[#FF9900] text-xl" />
+              <div className="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center mb-4">
+                <FiShield className="text-purple-500 text-xl" />
               </div>
               <h3 className="text-xl font-bold mb-2">Secure Escrow</h3>
               <p className="text-gray-400">Funds held in secure smart contracts until work is completed, protecting both clients and creators.</p>

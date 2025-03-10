@@ -72,7 +72,7 @@ const faqCategories: FAQCategory[] = [
       },
       {
         question: 'How much does it cost to be a creator?',
-        answer: 'Creating an account and becoming a creator is free. SolHire charges a 5% fee on completed transactions, which is significantly lower than traditional freelance platforms. $HIRE token holders can get reduced fees based on their token holdings and platform activity.'
+        answer: 'Creating an account and becoming a creator is free. SolHire charges a 5% fee on completed transactions, which is significantly lower than traditional freelance platforms. The platform offers options to reduce fees for long-term users and active community members.'
       },
       {
         question: 'When and how do I get paid?',
@@ -80,7 +80,7 @@ const faqCategories: FAQCategory[] = [
       },
       {
         question: 'How do I get more clients?',
-        answer: 'Complete your profile with high-quality portfolio items, encourage satisfied clients to leave reviews, respond promptly to inquiries, and maintain high-quality work. Participating in the SolHire community and holding $HIRE tokens can also increase your visibility in search results.'
+        answer: 'Complete your profile with high-quality portfolio items, encourage satisfied clients to leave reviews, respond promptly to inquiries, and maintain high-quality work. Participating in the SolHire community and being active on the platform can also increase your visibility.'
       }
     ]
   },
@@ -98,11 +98,11 @@ const faqCategories: FAQCategory[] = [
       },
       {
         question: 'What fees does SolHire charge?',
-        answer: 'SolHire charges a 5% fee on completed transactions, which is significantly lower than traditional freelance platforms. $HIRE token holders can get reduced fees based on their token holdings and platform activity.'
+        answer: 'SolHire charges a 5% fee on completed transactions, which is significantly lower than traditional freelance platforms. The platform offers options to reduce fees for long-term users and active community members.'
       },
       {
         question: 'How are disputes handled?',
-        answer: 'We have a comprehensive dispute resolution system. If there\'s a disagreement between a client and creator, our team will review the case and mediate a fair solution. For complex disputes, we also have a community-driven dispute resolution mechanism powered by $HIRE token holders.'
+        answer: 'We have a comprehensive dispute resolution system. If there\'s a disagreement between a client and creator, our team will review the case and mediate a fair solution. For complex disputes, we also have a community-driven resolution mechanism to ensure fairness.'
       }
     ]
   },
@@ -112,19 +112,19 @@ const faqCategories: FAQCategory[] = [
     faqs: [
       {
         question: 'What is the $HIRE token?',
-        answer: 'The $HIRE token is SolHire\'s native utility token built on the Solana blockchain. It provides various benefits to holders, including reduced platform fees, access to premium features, participation in governance, and staking rewards.'
+        answer: 'The $HIRE token is SolHire\'s native utility token built on the Solana blockchain. It provides various benefits to users, including reduced platform fees and access to premium features on the platform.'
       },
       {
         question: 'How do I get $HIRE tokens?',
-        answer: 'You can acquire $HIRE tokens by purchasing them on supported exchanges, earning them through platform activities (completing projects, receiving positive reviews, etc.), or participating in promotional events and referral programs.'
+        answer: 'You can acquire $HIRE tokens by purchasing them on supported exchanges or participating in community events. More details will be provided when the token officially launches.'
       },
       {
         question: 'What benefits do $HIRE tokens provide?',
-        answer: 'The $HIRE token provides multiple benefits on our platform, including reduced transaction fees, access to premium features, participation in platform governance, and staking rewards. Token holders also get priority visibility in search results and special creator badges.'
+        answer: 'The $HIRE token enables various platform functionalities, including reduced transaction fees and access to advanced features. The token plays an important role in the platform\'s ecosystem and governance.'
       },
       {
         question: 'Can I stake my $HIRE tokens?',
-        answer: 'Yes, you can stake your $HIRE tokens to earn additional rewards and gain platform benefits. Staking demonstrates your commitment to the ecosystem and grants you voting rights in platform governance decisions.'
+        answer: 'The token will support various participation mechanisms, which will be detailed once the token is officially launched. Our focus is on creating sustainable utility within the SolHire ecosystem.'
       }
     ]
   }

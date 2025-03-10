@@ -70,8 +70,8 @@ const PricingTiers = ({ serviceName, creatorId, tiers, hireTokenDiscount = 5 }: 
                   <span className="ml-1 text-sm text-gray-400">SOL</span>
                 </div>
                 {hireTokenDiscount > 0 && (
-                  <div className="text-xs text-green-400 mt-1 flex items-center">
-                    <span>-{hireTokenDiscount}% with $HIRE tokens</span>
+                  <div className="text-xs text-blue-400 mt-1 flex items-center">
+                    <span>-{hireTokenDiscount}% with platform tokens</span>
                     <button className="ml-1 text-gray-400 hover:text-white transition-colors">
                       <FiInfo className="w-3 h-3" />
                     </button>

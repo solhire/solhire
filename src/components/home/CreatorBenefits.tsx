@@ -87,15 +87,15 @@ const CreatorBenefits = () => {
               </div>
             </div>
             <div className="flex-1 text-center md:text-left">
-              <h3 className="text-xl font-bold mb-2">Earn $HIRE Tokens for Your Activity</h3>
+              <h3 className="text-xl font-bold mb-2">$HIRE Token Utility</h3>
               <p className="text-gray-400 mb-4">
-                Every successful project completed, client review received, and timely delivery earns you valuable $HIRE tokens that provide platform benefits.
+                The platform token provides benefits like reduced fees and enhanced features to improve your experience on SolHire.
               </p>
               <Link 
                 href="/token" 
                 className="text-primary hover:text-primary/80 inline-flex items-center group"
               >
-                <span>Learn more about token rewards</span>
+                <span>Learn more about platform tokens</span>
                 <FiArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
               </Link>
             </div>

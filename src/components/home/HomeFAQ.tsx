@@ -16,15 +16,15 @@ const faqs = [
   },
   {
     question: 'What fees does SolHire charge?',
-    answer: 'SolHire charges a 5% fee on completed transactions, which is significantly lower than traditional freelance platforms. $HIRE token holders can get reduced fees based on their token holdings and platform activity.'
+    answer: 'SolHire charges a 5% fee on completed transactions, which is significantly lower than traditional freelance platforms. The platform offers options to reduce fees for long-term users and active community members.'
   },
   {
     question: 'How are disputes handled?',
-    answer: 'We have a comprehensive dispute resolution system. If there\'s a disagreement between a client and creator, our team will review the case and mediate a fair solution. For complex disputes, we also have a community-driven dispute resolution mechanism powered by $HIRE token holders.'
+    answer: 'We have a comprehensive dispute resolution system. If there\'s a disagreement between a client and creator, our team will review the case and mediate a fair solution. For complex disputes, we also have a community-driven resolution mechanism to ensure fairness.'
   },
   {
     question: 'What is the $HIRE token used for?',
-    answer: 'The $HIRE token provides multiple benefits on our platform, including reduced transaction fees, access to premium features, participation in platform governance, and staking rewards. Token holders also get priority visibility in search results and special creator badges.'
+    answer: 'The $HIRE token is a utility token that enables various platform functions, including reduced transaction fees and access to advanced features. The token plays an important role in the platform\'s ecosystem and governance.'
   },
   {
     question: 'How do I become a verified creator?',
