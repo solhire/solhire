@@ -66,7 +66,7 @@ export default function SecretLogoPage() {
   };
 
   // Logo sections
-  const SolanaNeoLogo = () => (
+  const SolanaLogo = () => (
     <motion.div
       className="relative w-32 h-32 md:w-48 md:h-48 mx-auto mb-10"
       onClick={handleLogoClick}
@@ -272,7 +272,7 @@ export default function SecretLogoPage() {
         whileHover={{ scale: 1.05 }}
         transition={{ type: "spring", stiffness: 300, damping: 10 }}
       >
-        <SolanaNeoLogo />
+        <SolanaLogo />
         
         <motion.div 
           className="text-5xl md:text-7xl font-bold relative cursor-pointer"
@@ -281,7 +281,7 @@ export default function SecretLogoPage() {
           }}
           onClick={handleLogoClick}
         >
-          <span className="text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)] font-[system-ui]">NEO</span>
+          <span className="text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)] font-[system-ui]">SOL</span>
           <span className="relative">
             <span 
               className="text-transparent bg-clip-text ml-2 font-[system-ui]"
