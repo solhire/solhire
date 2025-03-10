@@ -61,6 +61,34 @@ export default function TokenPage() {
         </div>
       </section>
 
+      {/* Official Source Warning */}
+      <div className="container-custom relative">
+        <div className="max-w-4xl mx-auto bg-background/50 p-6 rounded-xl border border-purple-500/30 mb-12">
+          <div className="flex items-center gap-3 mb-4">
+            <FiShield className="text-purple-500 text-xl" />
+            <h2 className="text-xl font-bold text-white">Official Token Deployment</h2>
+          </div>
+          <p className="text-gray-300 mb-4">
+            The official $HIRE token will be deployed from our verified Pump.fun profile:
+          </p>
+          <a 
+            href="https://pump.fun/profile/solhire1" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 text-purple-400 hover:text-purple-300 transition-colors"
+          >
+            <span>@solhire1</span>
+            <FiExternalLink className="w-4 h-4" />
+          </a>
+          <div className="mt-4 p-4 bg-purple-500/10 rounded-lg border border-purple-500/20">
+            <p className="text-sm text-purple-300">
+              ⚠️ Always verify the token address and ensure you're interacting with our official contract. 
+              The only official deployment will be from our verified Pump.fun profile.
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* Token Utility */}
       <section className="py-12 bg-background-dark">
         <div className="container-custom">
