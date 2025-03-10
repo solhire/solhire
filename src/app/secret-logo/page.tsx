@@ -72,86 +72,151 @@ export default function SecretLogoPage() {
       onClick={handleLogoClick}
       whileHover={{ scale: 1.05 }}
       animate={{
-        rotateY: mousePosition.x * 10,
-        rotateX: mousePosition.y * -10,
+        rotateY: mousePosition.x * 15,
+        rotateX: mousePosition.y * -15,
       }}
     >
       {/* Sol Hire Logo - Modern Design */}
       <motion.div 
-        className={`absolute inset-0 rounded-xl bg-black border-2 shadow-[0_0_30px_rgba(147,51,234,0.7)] ${isExploding ? 'animate-ping' : ''}`}
+        className={`absolute inset-0 rounded-xl bg-black border-[3px] shadow-[0_0_50px_rgba(147,51,234,0.7)] ${isExploding ? 'animate-ping' : ''}`}
         style={{
-          borderColor: `hsla(${hue}, 80%, 60%, 1)`,
-          boxShadow: `0 0 30px hsla(${hue}, 80%, 70%, 0.7)`,
+          borderColor: `hsla(${hue}, 90%, 60%, 1)`,
+          boxShadow: `0 0 50px hsla(${hue}, 90%, 70%, ${intensity})`,
         }}
       />
       
-      {/* Inner geometric design */}
       <svg 
         viewBox="0 0 100 100" 
         className="absolute inset-0 w-full h-full"
       >
+        {/* Hexagonal base with glow effect */}
+        <filter id="glow">
+          <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+          <feMerge>
+            <feMergeNode in="coloredBlur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+        
         {/* Hexagonal base */}
-        <polygon 
+        <motion.polygon 
           points="50,20 80,40 80,70 50,90 20,70 20,40" 
           fill="transparent" 
-          strokeWidth="2" 
+          strokeWidth="2.5" 
           strokeLinecap="round" 
           strokeLinejoin="round"
-          stroke={`hsla(${hue}, 80%, 70%, 1)`}
+          stroke={`hsla(${hue}, 90%, 70%, 1)`}
+          filter="url(#glow)"
+          animate={{
+            strokeDasharray: ["0,1000", "1000,0"],
+            strokeDashoffset: [0, -1000]
+          }}
+          transition={{
+            duration: 3,
+            ease: "linear",
+            repeat: Infinity
+          }}
         />
         
-        {/* Blockchain-inspired connections */}
-        <path
+        {/* Blockchain-inspired connections with animation */}
+        <motion.path
           d="M20,40 L50,20 L80,40"
           fill="none"
-          stroke={`hsla(${hue}, 80%, 70%, 0.6)`}
-          strokeWidth="1"
+          stroke={`hsla(${hue}, 90%, 70%, 0.8)`}
+          strokeWidth="1.5"
           strokeDasharray="4,4"
+          animate={{
+            strokeDashoffset: [0, -32]
+          }}
+          transition={{
+            duration: 3,
+            repeat: Infinity,
+            ease: "linear"
+          }}
         />
-        <path
+        <motion.path
           d="M20,70 L50,90 L80,70"
           fill="none"
-          stroke={`hsla(${hue}, 80%, 70%, 0.6)`}
-          strokeWidth="1"
+          stroke={`hsla(${hue}, 90%, 70%, 0.8)`}
+          strokeWidth="1.5"
           strokeDasharray="4,4"
+          animate={{
+            strokeDashoffset: [0, 32]
+          }}
+          transition={{
+            duration: 3,
+            repeat: Infinity,
+            ease: "linear"
+          }}
         />
         
-        {/* Central elements */}
-        <circle 
+        {/* Central elements with pulse animation */}
+        <motion.circle 
           cx="50" cy="50" r="15" 
           fill="transparent" 
-          stroke={`hsla(${hue}, 80%, 70%, 1)`} 
-          strokeWidth="2"
+          stroke={`hsla(${hue}, 90%, 70%, 1)`} 
+          strokeWidth="2.5"
+          animate={{
+            scale: [1, 1.1, 1],
+            opacity: [0.8, 1, 0.8]
+          }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
         />
-        <circle 
+        <motion.circle 
           cx="50" cy="50" r="5" 
-          fill={`hsla(${hue}, 80%, 70%, 1)`}
+          fill={`hsla(${hue}, 90%, 70%, 1)`}
+          animate={{
+            scale: [1, 1.2, 1],
+            opacity: [0.8, 1, 0.8]
+          }}
+          transition={{
+            duration: 1.5,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
         />
         
-        {/* Blockchain nodes */}
-        <circle 
-          cx="20" cy="40" r="3" 
-          fill={`hsla(${hue}, 80%, 70%, 1)`}
-        />
-        <circle 
-          cx="80" cy="40" r="3" 
-          fill={`hsla(${hue}, 80%, 70%, 1)`}
-        />
-        <circle 
-          cx="20" cy="70" r="3" 
-          fill={`hsla(${hue}, 80%, 70%, 1)`}
-        />
-        <circle 
-          cx="80" cy="70" r="3" 
-          fill={`hsla(${hue}, 80%, 70%, 1)`}
-        />
+        {/* Blockchain nodes with glow */}
+        {[
+          [20, 40],
+          [80, 40],
+          [20, 70],
+          [80, 70]
+        ].map(([cx, cy], i) => (
+          <g key={i}>
+            <circle 
+              cx={cx} cy={cy} r="4" 
+              fill={`hsla(${hue}, 90%, 70%, 0.3)`}
+              filter="url(#glow)"
+            />
+            <motion.circle 
+              cx={cx} cy={cy} r="2.5" 
+              fill={`hsla(${hue}, 90%, 70%, 1)`}
+              animate={{
+                scale: [1, 1.3, 1],
+                opacity: [0.8, 1, 0.8]
+              }}
+              transition={{
+                duration: 2,
+                delay: i * 0.5,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            />
+          </g>
+        ))}
       </svg>
     </motion.div>
   );
 
+  // Enhanced particle styles
   const getParticleStyles = (i: number) => {
-    const size = Math.random() * 2 + 1;
-    const speed = Math.random() * 20 + (i % 6 === 0 ? 30 : 10);
+    const size = Math.random() * 3 + 1;
+    const speed = Math.random() * 25 + (i % 6 === 0 ? 35 : 15);
     const startPosX = Math.random() * 100;
     const startPosY = Math.random() * 100;
     const initOpacity = Math.random() * 0.5 + 0.3;
@@ -162,8 +227,8 @@ export default function SecretLogoPage() {
       top: `${startPosY}%`,
       left: `${startPosX}%`,
       opacity: initOpacity,
-      backgroundColor: `hsla(${hue}, 80%, 70%, ${Math.random() * 0.5 + 0.5})`,
-      boxShadow: i % 5 === 0 ? `0 0 ${size * 2}px hsla(${hue}, 80%, 70%, 0.8)` : 'none',
+      backgroundColor: `hsla(${hue}, 90%, 70%, ${Math.random() * 0.5 + 0.5})`,
+      boxShadow: i % 4 === 0 ? `0 0 ${size * 3}px hsla(${hue}, 90%, 70%, 0.8)` : 'none',
       animation: `float ${speed}s linear infinite`,
       animationDelay: `${Math.random() * 10}s`,
     };
@@ -208,70 +273,94 @@ export default function SecretLogoPage() {
     );
   };
 
-  // Digital grid background
-  const GridBackground = () => {
-    return (
-      <motion.div 
-        className="absolute inset-0 z-0 overflow-hidden"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 0.15 }}
-        transition={{ duration: 1 }}
-      >
-        <div className="relative w-full h-full">
-          {/* Horizontal lines */}
-          {Array.from({ length: 20 }).map((_, i) => (
-            <motion.div 
-              key={`h-${i}`}
-              className="absolute h-px w-full bg-purple-500/50"
-              style={{ top: `${(i / 20) * 100}%` }}
-              initial={{ scaleX: 0, opacity: 0 }}
-              animate={{ scaleX: 1, opacity: 0.5 }}
-              transition={{ duration: 1.5, delay: i * 0.05 }}
-            />
-          ))}
-          
-          {/* Vertical lines */}
-          {Array.from({ length: 20 }).map((_, i) => (
-            <motion.div 
-              key={`v-${i}`}
-              className="absolute w-px h-full bg-purple-500/50"
-              style={{ left: `${(i / 20) * 100}%` }}
-              initial={{ scaleY: 0, opacity: 0 }}
-              animate={{ scaleY: 1, opacity: 0.5 }}
-              transition={{ duration: 1.5, delay: i * 0.05 }}
-            />
-          ))}
-        </div>
-      </motion.div>
-    );
-  };
-
   return (
     <div 
       ref={containerRef}
       className="min-h-screen bg-gray-950 flex flex-col items-center justify-center overflow-hidden relative"
       style={{
-        perspective: '1000px',
+        perspective: '1200px',
       }}
     >
-      {/* Grid Background */}
-      {showGrid && <GridBackground />}
+      {/* Enhanced grid background */}
+      {showGrid && (
+        <motion.div 
+          className="absolute inset-0 z-0"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.15 }}
+          transition={{ duration: 1.5 }}
+        >
+          <div className="relative w-full h-full">
+            {Array.from({ length: 24 }).map((_, i) => (
+              <>
+                <motion.div 
+                  key={`h-${i}`}
+                  className="absolute h-px w-full"
+                  style={{ 
+                    top: `${(i / 24) * 100}%`,
+                    background: `linear-gradient(90deg, 
+                      transparent 0%, 
+                      hsla(${hue}, 90%, 70%, 0.3) 50%,
+                      transparent 100%
+                    )`
+                  }}
+                  initial={{ scaleX: 0, opacity: 0 }}
+                  animate={{ scaleX: 1, opacity: 0.5 }}
+                  transition={{ duration: 1.5, delay: i * 0.05 }}
+                />
+                <motion.div 
+                  key={`v-${i}`}
+                  className="absolute w-px h-full"
+                  style={{ 
+                    left: `${(i / 24) * 100}%`,
+                    background: `linear-gradient(180deg, 
+                      transparent 0%, 
+                      hsla(${hue}, 90%, 70%, 0.3) 50%,
+                      transparent 100%
+                    )`
+                  }}
+                  initial={{ scaleY: 0, opacity: 0 }}
+                  animate={{ scaleY: 1, opacity: 0.5 }}
+                  transition={{ duration: 1.5, delay: i * 0.05 }}
+                />
+              </>
+            ))}
+          </div>
+        </motion.div>
+      )}
       
-      {/* Background glow effects */}
+      {/* Enhanced background glow effects */}
       <motion.div 
-        className="absolute w-[600px] h-[600px] rounded-full blur-[100px] z-0"
+        className="absolute w-[800px] h-[800px] rounded-full blur-[120px] z-0"
         animate={{
-          scale: [1, 1.05, 1],
-          opacity: [intensity * 0.5, intensity * 0.7, intensity * 0.5],
+          scale: [1, 1.1, 1],
+          opacity: [intensity * 0.4, intensity * 0.6, intensity * 0.4],
         }}
         transition={{
-          duration: 5,
+          duration: 6,
           repeat: Infinity,
           repeatType: "reverse",
         }}
         style={{ 
-          backgroundColor: `hsla(${hue}, 80%, 40%, 0.2)`,
-          transform: `translate(${mousePosition.x * -20}px, ${mousePosition.y * -20}px)`,
+          backgroundColor: `hsla(${hue}, 90%, 40%, 0.2)`,
+          transform: `translate(${mousePosition.x * -30}px, ${mousePosition.y * -30}px)`,
+        }}
+      />
+      
+      {/* Secondary glow */}
+      <motion.div 
+        className="absolute w-[400px] h-[400px] rounded-full blur-[80px] z-0"
+        animate={{
+          scale: [0.9, 1.1, 0.9],
+          opacity: [intensity * 0.3, intensity * 0.5, intensity * 0.3],
+        }}
+        transition={{
+          duration: 4,
+          repeat: Infinity,
+          repeatType: "reverse",
+        }}
+        style={{ 
+          backgroundColor: `hsla(${hue + 30}, 90%, 50%, 0.2)`,
+          transform: `translate(${mousePosition.x * 20}px, ${mousePosition.y * 20}px)`,
         }}
       />
       
@@ -279,26 +368,27 @@ export default function SecretLogoPage() {
       <div className="relative z-10 text-center">
         <SolanaLogo />
         <motion.h1 
-          className="text-4xl md:text-6xl font-bold mb-6 text-white"
+          className="text-5xl md:text-7xl font-bold mb-6 text-white"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
+          transition={{ delay: 0.5, duration: 0.8 }}
         >
-          Sol Hire
+          <span className="text-white">Sol</span>
+          <span className="bg-gradient-to-r from-purple-400 to-purple-600 text-transparent bg-clip-text">Hire</span>
         </motion.h1>
         <motion.p 
-          className="text-lg md:text-xl text-purple-300 mb-8 max-w-2xl mx-auto"
+          className="text-xl md:text-2xl text-purple-300 mb-8 max-w-2xl mx-auto font-light"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.7 }}
+          transition={{ delay: 0.7, duration: 0.8 }}
         >
           Revolutionizing Talent Acquisition on the Blockchain
         </motion.p>
       </div>
       
-      {/* Floating particles */}
+      {/* Enhanced floating particles */}
       <div className="absolute inset-0 pointer-events-none">
-        {Array.from({ length: 20 }).map((_, i) => (
+        {Array.from({ length: 30 }).map((_, i) => (
           <motion.div
             key={i}
             className="absolute rounded-full"
