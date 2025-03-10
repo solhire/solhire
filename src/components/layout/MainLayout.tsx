@@ -1,22 +1,24 @@
 'use client';
 
+import { ReactNode } from 'react';
 import Header from './Header';
 import Footer from './Footer';
-import DevelopmentBanner from './DevelopmentBanner';
+import PasswordProtection from '../auth/PasswordProtection';
 
 interface MainLayoutProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
-const MainLayout = ({ children }: MainLayoutProps) => {
+export default function MainLayout({ children }: MainLayoutProps) {
   return (
-    <div className="min-h-screen flex flex-col">
-      <DevelopmentBanner />
-      <Header />
-      <main className="flex-1 pt-16 sm:pt-24 md:pt-28">{children}</main>
-      <Footer />
-    </div>
+    <PasswordProtection>
+      <div className="min-h-screen bg-background flex flex-col">
+        <Header />
+        <main className="flex-grow">
+          {children}
+        </main>
+        <Footer />
+      </div>
+    </PasswordProtection>
   );
-};
-
-export default MainLayout; 
+} 

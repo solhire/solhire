@@ -11,13 +11,23 @@ export default function PasswordProtection({ children }: { children: React.React
   const [isLoading, setIsLoading] = useState(true);
 
   // The correct password - in a real app, this would be stored securely on the server
-  const CORRECT_PASSWORD = 'SolHire2023!'; // You can change this to any password you want
+  const CORRECT_PASSWORD = 'SolHire2024!'; // Updated password
 
   useEffect(() => {
     // Check if already authenticated
     const authenticated = localStorage.getItem('solhire_authenticated');
-    if (authenticated === 'true') {
-      setIsAuthenticated(true);
+    const authExpiry = localStorage.getItem('solhire_auth_expiry');
+    
+    // Check if authentication has expired (24 hours)
+    if (authenticated === 'true' && authExpiry) {
+      const expiryTime = parseInt(authExpiry);
+      if (Date.now() < expiryTime) {
+        setIsAuthenticated(true);
+      } else {
+        // Clear expired authentication
+        localStorage.removeItem('solhire_authenticated');
+        localStorage.removeItem('solhire_auth_expiry');
+      }
     }
     setIsLoading(false);
   }, []);
@@ -26,7 +36,9 @@ export default function PasswordProtection({ children }: { children: React.React
     e.preventDefault();
     
     if (password === CORRECT_PASSWORD) {
+      // Set authentication with 24-hour expiry
       localStorage.setItem('solhire_authenticated', 'true');
+      localStorage.setItem('solhire_auth_expiry', (Date.now() + 24 * 60 * 60 * 1000).toString());
       setIsAuthenticated(true);
       setError('');
     } else {
