@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 
 export default function SecretLogoPage() {
   const [intensity, setIntensity] = useState(0.5);
-  const [hue, setHue] = useState(180); // New teal base hue instead of purple
+  const [hue, setHue] = useState(270); // Changed to purple base hue
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isExploding, setIsExploding] = useState(false);
   const [showGrid, setShowGrid] = useState(false);
@@ -48,9 +48,9 @@ export default function SecretLogoPage() {
     // Subtle hue shift effect
     const hueInterval = setInterval(() => {
       setHue(prev => {
-        // Shift between 160 (teal) and 200 (blue)
+        // Shift between 260 (deep purple) and 280 (bright purple)
         const newHue = prev + (Math.random() * 1 - 0.5);
-        return newHue > 200 ? 160 : newHue < 160 ? 200 : newHue;
+        return newHue > 280 ? 260 : newHue < 260 ? 280 : newHue;
       });
     }, 200);
     
@@ -76,9 +76,9 @@ export default function SecretLogoPage() {
         rotateX: mousePosition.y * -10,
       }}
     >
-      {/* Neo Solana Logo - Hexagonal Shape */}
+      {/* Sol Hire Logo - Modern Design */}
       <motion.div 
-        className={`absolute inset-0 rounded-xl bg-black border-2 shadow-[0_0_30px_rgba(56,224,231,0.7)] ${isExploding ? 'animate-ping' : ''}`}
+        className={`absolute inset-0 rounded-xl bg-black border-2 shadow-[0_0_30px_rgba(147,51,234,0.7)] ${isExploding ? 'animate-ping' : ''}`}
         style={{
           borderColor: `hsla(${hue}, 80%, 60%, 1)`,
           boxShadow: `0 0 30px hsla(${hue}, 80%, 70%, 0.7)`,
@@ -90,6 +90,7 @@ export default function SecretLogoPage() {
         viewBox="0 0 100 100" 
         className="absolute inset-0 w-full h-full"
       >
+        {/* Hexagonal base */}
         <polygon 
           points="50,20 80,40 80,70 50,90 20,70 20,40" 
           fill="transparent" 
@@ -98,16 +99,24 @@ export default function SecretLogoPage() {
           strokeLinejoin="round"
           stroke={`hsla(${hue}, 80%, 70%, 1)`}
         />
-        <line 
-          x1="20" y1="40" x2="80" y2="70" 
-          stroke={`hsla(${hue}, 80%, 70%, 0.6)`} 
-          strokeWidth="1" 
+        
+        {/* Blockchain-inspired connections */}
+        <path
+          d="M20,40 L50,20 L80,40"
+          fill="none"
+          stroke={`hsla(${hue}, 80%, 70%, 0.6)`}
+          strokeWidth="1"
+          strokeDasharray="4,4"
         />
-        <line 
-          x1="20" y1="70" x2="80" y2="40" 
-          stroke={`hsla(${hue}, 80%, 70%, 0.6)`} 
-          strokeWidth="1" 
+        <path
+          d="M20,70 L50,90 L80,70"
+          fill="none"
+          stroke={`hsla(${hue}, 80%, 70%, 0.6)`}
+          strokeWidth="1"
+          strokeDasharray="4,4"
         />
+        
+        {/* Central elements */}
         <circle 
           cx="50" cy="50" r="15" 
           fill="transparent" 
@@ -116,6 +125,24 @@ export default function SecretLogoPage() {
         />
         <circle 
           cx="50" cy="50" r="5" 
+          fill={`hsla(${hue}, 80%, 70%, 1)`}
+        />
+        
+        {/* Blockchain nodes */}
+        <circle 
+          cx="20" cy="40" r="3" 
+          fill={`hsla(${hue}, 80%, 70%, 1)`}
+        />
+        <circle 
+          cx="80" cy="40" r="3" 
+          fill={`hsla(${hue}, 80%, 70%, 1)`}
+        />
+        <circle 
+          cx="20" cy="70" r="3" 
+          fill={`hsla(${hue}, 80%, 70%, 1)`}
+        />
+        <circle 
+          cx="80" cy="70" r="3" 
           fill={`hsla(${hue}, 80%, 70%, 1)`}
         />
       </svg>
@@ -195,7 +222,7 @@ export default function SecretLogoPage() {
           {Array.from({ length: 20 }).map((_, i) => (
             <motion.div 
               key={`h-${i}`}
-              className="absolute h-px w-full bg-cyan-500/50"
+              className="absolute h-px w-full bg-purple-500/50"
               style={{ top: `${(i / 20) * 100}%` }}
               initial={{ scaleX: 0, opacity: 0 }}
               animate={{ scaleX: 1, opacity: 0.5 }}
@@ -207,7 +234,7 @@ export default function SecretLogoPage() {
           {Array.from({ length: 20 }).map((_, i) => (
             <motion.div 
               key={`v-${i}`}
-              className="absolute w-px h-full bg-cyan-500/50"
+              className="absolute w-px h-full bg-purple-500/50"
               style={{ left: `${(i / 20) * 100}%` }}
               initial={{ scaleY: 0, opacity: 0 }}
               animate={{ scaleY: 1, opacity: 0.5 }}
@@ -248,120 +275,40 @@ export default function SecretLogoPage() {
         }}
       />
       
-      {/* Secondary glow */}
-      <motion.div 
-        className="absolute w-[300px] h-[300px] rounded-full blur-[80px] z-0"
-        animate={{
-          scale: [0.95, 1.05, 0.95],
-        }}
-        transition={{
-          duration: 4,
-          repeat: Infinity,
-          repeatType: "reverse",
-        }}
-        style={{ 
-          opacity: intensity * 0.6,
-          backgroundColor: `hsla(${hue + 20}, 80%, 50%, 0.25)`,
-          transform: `translate(${mousePosition.x * 30}px, ${mousePosition.y * 30}px)`,
-        }}
-      />
-      
-      {/* Logo */}
-      <motion.div 
-        className="relative z-10"
-        whileHover={{ scale: 1.05 }}
-        transition={{ type: "spring", stiffness: 300, damping: 10 }}
-      >
+      {/* Main content */}
+      <div className="relative z-10 text-center">
         <SolanaLogo />
-        
-        <motion.div 
-          className="text-5xl md:text-7xl font-bold relative cursor-pointer"
-          style={{
-            transform: `rotateX(${mousePosition.y * 5}deg) rotateY(${mousePosition.x * 5}deg)`,
-          }}
-          onClick={handleLogoClick}
-        >
-          <span className="text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)] font-[system-ui]">SOL</span>
-          <span className="relative">
-            <span 
-              className="text-transparent bg-clip-text ml-2 font-[system-ui]"
-              style={{
-                backgroundImage: `linear-gradient(to bottom right, hsla(${hue - 5}, 80%, 70%, 1), hsla(${hue + 5}, 80%, 40%, 1))`,
-                textShadow: `0 0 30px hsla(${hue}, 80%, 70%, 0.7)`,
-              }}
-            >
-              HIRE
-            </span>
-          </span>
-        </motion.div>
-        
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 0.7, y: 0 }}
+        <motion.h1 
+          className="text-4xl md:text-6xl font-bold mb-6 text-white"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="text-center mt-6 text-cyan-400/70 font-light tracking-widest text-sm"
         >
-          BLOCKCHAIN TALENT MARKETPLACE
-        </motion.div>
-      </motion.div>
+          Sol Hire
+        </motion.h1>
+        <motion.p 
+          className="text-lg md:text-xl text-purple-300 mb-8 max-w-2xl mx-auto"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.7 }}
+        >
+          Revolutionizing Talent Acquisition on the Blockchain
+        </motion.p>
+      </div>
       
-      {/* Explosion effect */}
-      {isExploding && <ExplosionParticles />}
-      
-      {/* Data stream effects - digital rain */}
-      <div className="absolute inset-0 z-0 opacity-15 overflow-hidden">
-        {Array.from({ length: 40 }).map((_, i) => (
-          <div 
+      {/* Floating particles */}
+      <div className="absolute inset-0 pointer-events-none">
+        {Array.from({ length: 20 }).map((_, i) => (
+          <motion.div
             key={i}
-            className="absolute w-px rounded-full"
-            style={{
-              height: `${20 + Math.random() * 30}px`,
-              top: `-20px`,
-              left: `${Math.random() * 100}%`,
-              backgroundColor: `hsla(${hue}, 80%, 70%, ${Math.random() * 0.5 + 0.3})`,
-              boxShadow: `0 0 4px hsla(${hue}, 80%, 70%, 0.8)`,
-              animation: `dataStream ${3 + Math.random() * 10}s linear infinite`,
-              animationDelay: `${Math.random() * 10}s`,
-            }}
+            className="absolute rounded-full"
+            style={getParticleStyles(i)}
           />
         ))}
       </div>
       
-      <style jsx>{`
-        @keyframes float {
-          0% {
-            transform: translateY(100vh) translateX(0);
-            opacity: 0;
-          }
-          10% {
-            opacity: 0.8;
-          }
-          90% {
-            opacity: 0.8;
-          }
-          100% {
-            transform: translateY(-100vh) translateX(${Math.random() * 100 - 50}px);
-            opacity: 0;
-          }
-        }
-        
-        @keyframes dataStream {
-          0% {
-            transform: translateY(-30px);
-            opacity: 0;
-          }
-          10% {
-            opacity: 0.8;
-          }
-          90% {
-            opacity: 0.8;
-          }
-          100% {
-            transform: translateY(100vh);
-            opacity: 0;
-          }
-        }
-      `}</style>
+      {/* Explosion effect */}
+      {isExploding && <ExplosionParticles />}
     </div>
   );
 } 
