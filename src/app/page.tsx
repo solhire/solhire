@@ -12,7 +12,7 @@ import SecurityFeatures from '@/components/home/SecurityFeatures';
 import CreatorBenefits from '@/components/home/CreatorBenefits';
 import ClientBenefits from '@/components/home/ClientBenefits';
 import HomeFAQ from '@/components/home/HomeFAQ';
-import { FiArrowRight, FiShield, FiZap } from 'react-icons/fi';
+import { FiArrowRight, FiShield, FiZap, FiExternalLink } from 'react-icons/fi';
 
 export const metadata: Metadata = {
   title: 'SolHire | Home',
@@ -37,6 +37,35 @@ export default function Home() {
               <div className="flex items-center mb-4">
                 <span className="bg-primary/20 text-primary text-sm font-medium py-1 px-3 rounded-full">Web3 Marketplace</span>
               </div>
+              
+              {/* Token Launch Announcement */}
+              <div className="mb-6 bg-green-500/10 p-4 rounded-lg border border-green-500/30">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-green-400">🎉</span>
+                  <h2 className="text-lg font-bold text-green-400">$HIRE Token Launched!</h2>
+                </div>
+                <p className="text-gray-300 mb-3">The official $HIRE token is now live on Solana!</p>
+                <div className="bg-background/50 p-3 rounded-lg border border-green-500/30 mb-3">
+                  <p className="font-mono text-sm break-all">EkMks5gxnGywxVFnuK7gnq5X9XuzJbXBeo7FU9Ydpump</p>
+                  <a 
+                    href="https://solscan.io/token/EkMks5gxnGywxVFnuK7gnq5X9XuzJbXBeo7FU9Ydpump" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-green-400 hover:text-green-300 mt-2 text-sm"
+                  >
+                    View on Solscan
+                    <FiExternalLink className="w-4 h-4" />
+                  </a>
+                </div>
+                <Link 
+                  href="/token" 
+                  className="inline-flex items-center gap-2 text-green-400 hover:text-green-300 text-sm"
+                >
+                  Learn more about $HIRE
+                  <FiArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
                 <span className="text-white">Hire Top Creatives with </span>
                 <span className="relative inline-flex items-center">
