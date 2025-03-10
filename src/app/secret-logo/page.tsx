@@ -181,17 +181,8 @@ export default function SecretLogoPage() {
             >
               Hire
             </span>
-            {/* Light swipe animation */}
-            <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -skew-x-12 animate-shine"></span>
           </span>
         </div>
-        
-        <motion.div 
-          className="mt-4 text-center text-gray-400 text-sm md:text-base cursor-pointer"
-          whileHover={{ scale: 1.1, color: `hsla(${hue}, 89%, 78%, 1)` }}
-        >
-          Click for details
-        </motion.div>
       </motion.div>
       
       {/* Brand Details Section */}
