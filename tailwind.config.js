@@ -53,6 +53,7 @@ module.exports = {
         'shine': 'shine 2s infinite linear',
         'token-pulse': 'token-pulse 2s infinite ease-in-out',
         'glow': 'glow 1.5s ease-in-out infinite alternate',
+        'gradient': 'gradient 4s ease infinite alternate',
       },
       keyframes: {
         fadeIn: {
@@ -79,6 +80,17 @@ module.exports = {
           },
           '100%': { 
             boxShadow: '0 0 10px rgba(255, 153, 0, 0.8), 0 0 20px rgba(255, 153, 0, 0.5), 0 0 30px rgba(255, 153, 0, 0.3)' 
+          },
+        },
+        gradient: {
+          '0%': { 
+            backgroundPosition: '0% 50%' 
+          },
+          '50%': { 
+            backgroundPosition: '100% 50%' 
+          },
+          '100%': { 
+            backgroundPosition: '0% 50%' 
           },
         },
       },
