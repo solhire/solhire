@@ -55,7 +55,7 @@ const SecurityFeatures = () => {
               We leverage the power of Solana blockchain technology to ensure that every transaction on SolHire is secure, transparent, and efficient.
             </p>
             
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div className="space-y-4">
               {features.map((feature, index) => (
                 <motion.div 
                   key={feature.title}
@@ -80,45 +80,71 @@ const SecurityFeatures = () => {
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7 }}
             viewport={{ once: true }}
-            className="relative h-[500px] w-full rounded-2xl overflow-hidden border border-blue-500/30"
+            className="relative h-[500px] w-full rounded-2xl overflow-hidden border border-primary/20 bg-background-dark p-6"
           >
-            {/* Solana Logo */}
-            <div className="absolute top-4 right-4 z-20">
-              <Image
-                src="/assets/solana-logo.svg"
-                alt="Solana Logo"
-                width={48}
-                height={48}
-                className="opacity-90 hover:opacity-100 transition-opacity"
-              />
-            </div>
-            {/* Background Gradient */}
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-background to-blue-500/20" />
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/90 z-10" />
-            <div className="absolute bottom-0 left-0 right-0 p-6 z-20">
-              <div className="bg-background/80 backdrop-blur-lg border border-blue-500/30 rounded-xl p-4 shadow-lg">
-                <div className="flex items-center mb-2">
-                  <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center mr-3">
-                    <FiShield className="w-4 h-4 text-blue-500" />
+            {/* Transaction Demo Interface */}
+            <div className="h-full flex flex-col">
+              {/* Header */}
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center space-x-2">
+                  <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+                    <FiShield className="w-4 h-4 text-primary" />
                   </div>
-                  <span className="font-semibold">Transaction Completed</span>
+                  <span className="font-semibold text-white">Live Transaction Demo</span>
                 </div>
-                <div className="text-sm text-gray-400 mb-3">
-                  Payment of 3.5 SOL has been securely transferred to creator after job completion.
+                <div className="flex items-center space-x-2">
+                  <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                  <span className="text-sm text-green-500">Connected to Solana</span>
                 </div>
-                <div className="text-xs px-2 py-1 bg-green-500/10 text-green-500 rounded-full inline-block">
-                  Verified on Solana blockchain
+              </div>
+
+              {/* Transaction Flow */}
+              <div className="flex-1 space-y-4">
+                {/* Transaction Steps */}
+                <div className="bg-background/40 rounded-xl p-4 border border-primary/10">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm text-gray-400">Step 1: Escrow Created</span>
+                    <FiCheckCircle className="text-green-500" />
+                  </div>
+                  <div className="text-sm font-mono bg-background/40 p-2 rounded">
+                    Contract: 8x4n...j29m
+                  </div>
+                </div>
+
+                <div className="bg-background/40 rounded-xl p-4 border border-primary/10">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm text-gray-400">Step 2: Payment Locked</span>
+                    <FiCheckCircle className="text-green-500" />
+                  </div>
+                  <div className="text-sm font-mono bg-background/40 p-2 rounded">
+                    Amount: 3.5 SOL
+                  </div>
+                </div>
+
+                <div className="bg-background/40 rounded-xl p-4 border border-primary/10">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm text-gray-400">Step 3: Work Delivered</span>
+                    <div className="w-4 h-4 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+                  </div>
+                  <div className="text-sm font-mono bg-background/40 p-2 rounded">
+                    Status: In Progress
+                  </div>
+                </div>
+              </div>
+
+              {/* Transaction Status */}
+              <div className="mt-4">
+                <div className="bg-green-500/10 text-green-500 p-4 rounded-xl border border-green-500/20">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="font-medium">Transaction Protected</span>
+                    <FiShield className="w-5 h-5" />
+                  </div>
+                  <p className="text-sm opacity-90">
+                    Funds are securely held in escrow until work is completed and approved
+                  </p>
                 </div>
               </div>
             </div>
-            <Image
-              src="/assets/security-illustration.jpg"
-              alt="Secure blockchain transactions"
-              fill
-              className="object-cover"
-              placeholder="blur"
-              blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mN88P7jfwAI+QOoF8YQhgAAAABJRU5ErkJggg=="
-            />
           </motion.div>
         </div>
       </div>
