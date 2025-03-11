@@ -74,7 +74,7 @@ export default function TokenPage() {
             When the $HIRE token is ready, it will be deployed from our verified Pump.fun profile:
           </p>
           <a 
-            href="https://pump.fun/profile/solhire1" 
+            href="https://pump.fun/profile/SolHire?include-nsfw=true" 
             target="_blank" 
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 text-purple-400 hover:text-purple-300 transition-colors"

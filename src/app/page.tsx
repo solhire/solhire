@@ -81,7 +81,7 @@ export default function Home() {
                 </Link>
                 
                 <a 
-                  href="https://pump.fun/profile/solhire1" 
+                  href="https://pump.fun/profile/SolHire?include-nsfw=true" 
                   target="_blank" 
                   rel="noopener noreferrer" 
                   className="inline-flex items-center px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-sm hover:bg-cyan-500/20 transition-colors"
