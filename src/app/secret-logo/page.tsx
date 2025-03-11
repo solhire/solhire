@@ -1,11 +1,11 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 
 export default function SecretLogoPage() {
   const [intensity, setIntensity] = useState(0.5);
-  const [hue, setHue] = useState(270); // Changed to purple base hue
+  const [hue, setHue] = useState(270); // Purple base hue
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isExploding, setIsExploding] = useState(false);
   const [showGrid, setShowGrid] = useState(false);
@@ -65,10 +65,10 @@ export default function SecretLogoPage() {
     setTimeout(() => setIsExploding(false), 1500);
   };
 
-  // Logo sections
+  // Updated Logo component to match header style
   const SolanaLogo = () => (
     <motion.div
-      className="relative w-32 h-32 md:w-48 md:h-48 mx-auto mb-10"
+      className="relative w-40 h-40 md:w-64 md:h-64 mx-auto mb-10"
       onClick={handleLogoClick}
       whileHover={{ scale: 1.05 }}
       animate={{
@@ -76,139 +76,126 @@ export default function SecretLogoPage() {
         rotateX: mousePosition.y * -15,
       }}
     >
-      {/* Sol Hire Logo - Modern Design */}
-      <motion.div 
-        className={`absolute inset-0 rounded-xl bg-black border-[3px] shadow-[0_0_50px_rgba(147,51,234,0.7)] ${isExploding ? 'animate-ping' : ''}`}
-        style={{
-          borderColor: `hsla(${hue}, 90%, 60%, 1)`,
-          boxShadow: `0 0 50px hsla(${hue}, 90%, 70%, ${intensity})`,
-        }}
-      />
-      
-      <svg 
-        viewBox="0 0 100 100" 
+      <div className="absolute -inset-4 bg-gradient-to-r from-purple-600/70 to-indigo-600/70 rounded-full blur-md opacity-75 group-hover:opacity-100 animate-pulse"></div>
+      <svg
+        viewBox="0 0 100 100"
         className="absolute inset-0 w-full h-full"
+        xmlns="http://www.w3.org/2000/svg"
       >
-        {/* Hexagonal base with glow effect */}
-        <filter id="glow">
-          <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
-          <feMerge>
-            <feMergeNode in="coloredBlur"/>
-            <feMergeNode in="SourceGraphic"/>
-          </feMerge>
-        </filter>
+        <defs>
+          <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#9333EA">
+              <animate attributeName="stop-color" values="#9333EA; #A855F7; #9333EA" dur="4s" repeatCount="indefinite" />
+            </stop>
+            <stop offset="50%" stopColor="#8B5CF6">
+              <animate attributeName="stop-color" values="#8B5CF6; #6366F1; #8B5CF6" dur="4s" repeatCount="indefinite" />
+            </stop>
+            <stop offset="100%" stopColor="#4F46E5">
+              <animate attributeName="stop-color" values="#4F46E5; #818CF8; #4F46E5" dur="4s" repeatCount="indefinite" />
+            </stop>
+          </linearGradient>
+          <linearGradient id="logoGradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#A855F7">
+              <animate attributeName="stop-color" values="#A855F7; #C084FC; #A855F7" dur="4s" repeatCount="indefinite" />
+            </stop>
+            <stop offset="100%" stopColor="#6366F1">
+              <animate attributeName="stop-color" values="#6366F1; #818CF8; #6366F1" dur="4s" repeatCount="indefinite" />
+            </stop>
+          </linearGradient>
+          <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+          </filter>
+          <filter id="innerShadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="2" result="blur" />
+            <feOffset in="blur" dx="1" dy="1" result="offsetBlur" />
+            <feComposite in="SourceGraphic" in2="offsetBlur" operator="over" />
+          </filter>
+          <filter id="neonGlow" x="-20%" y="-20%" width="140%" height="140%">
+            <feFlood floodColor="#A855F7" floodOpacity="0.5" result="flood" />
+            <feComposite in="flood" in2="SourceGraphic" operator="in" result="mask" />
+            <feGaussianBlur in="mask" stdDeviation="3" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+          </filter>
+        </defs>
         
-        {/* Hexagonal base */}
-        <motion.polygon 
-          points="50,20 80,40 80,70 50,90 20,70 20,40" 
-          fill="transparent" 
-          strokeWidth="2.5" 
-          strokeLinecap="round" 
-          strokeLinejoin="round"
-          stroke={`hsla(${hue}, 90%, 70%, 1)`}
+        {/* Background Circle */}
+        <circle 
+          cx="50" 
+          cy="50" 
+          r="40" 
+          fill="black" 
+          stroke="url(#logoGradient)" 
+          strokeWidth="2"
+        >
+          <animate attributeName="r" values="40; 41; 40" dur="3s" repeatCount="indefinite" />
+        </circle>
+        
+        {/* Outer Glow */}
+        <circle 
+          cx="50" 
+          cy="50" 
+          r="42" 
+          stroke="url(#logoGradient)" 
+          strokeWidth="1"
+          strokeOpacity="0.5"
+          fill="none"
+        >
+          <animate attributeName="r" values="42; 44; 42" dur="3s" repeatCount="indefinite" />
+          <animate attributeName="stroke-opacity" values="0.5; 0.8; 0.5" dur="3s" repeatCount="indefinite" />
+        </circle>
+        
+        {/* S Shape */}
+        <path
+          d="M35 35C35 32.24 37.24 30 40 30H55C57.76 30 60 32.24 60 35V40C60 42.76 57.76 45 55 45H45C42.24 45 40 47.24 40 50V50C40 52.76 42.24 55 45 55H60C62.76 55 65 57.24 65 60V65C65 67.76 62.76 70 60 70H45C42.24 70 40 67.76 40 65V60"
+          stroke="url(#logoGradient)"
+          strokeWidth="4"
+          strokeLinecap="round"
+          filter="url(#neonGlow)"
+        >
+          <animate attributeName="stroke-width" values="4; 4.5; 4" dur="3s" repeatCount="indefinite" />
+        </path>
+        
+        {/* H Shape */}
+        <path
+          d="M30 30V70M70 30V70M30 50H70"
+          stroke="url(#logoGradient2)"
+          strokeWidth="4"
+          strokeLinecap="round"
+          filter="url(#neonGlow)"
+        >
+          <animate attributeName="stroke-width" values="4; 4.5; 4" dur="3s" repeatCount="indefinite" />
+        </path>
+        
+        {/* Decorative Elements */}
+        <circle cx="30" cy="30" r="3" fill="url(#logoGradient)" filter="url(#glow)">
+          <animate attributeName="r" values="3; 3.5; 3" dur="2s" repeatCount="indefinite" />
+        </circle>
+        <circle cx="70" cy="30" r="3" fill="url(#logoGradient2)" filter="url(#glow)">
+          <animate attributeName="r" values="3; 3.5; 3" dur="2.5s" repeatCount="indefinite" />
+        </circle>
+        <circle cx="30" cy="70" r="3" fill="url(#logoGradient2)" filter="url(#glow)">
+          <animate attributeName="r" values="3; 3.5; 3" dur="2.2s" repeatCount="indefinite" />
+        </circle>
+        <circle cx="70" cy="70" r="3" fill="url(#logoGradient)" filter="url(#glow)">
+          <animate attributeName="r" values="3; 3.5; 3" dur="1.8s" repeatCount="indefinite" />
+        </circle>
+        
+        {/* Solana Symbol */}
+        <path
+          d="M50 20L53 23H47L50 20Z"
+          fill="url(#logoGradient)"
           filter="url(#glow)"
-          animate={{
-            strokeDasharray: ["0,1000", "1000,0"],
-            strokeDashoffset: [0, -1000]
-          }}
-          transition={{
-            duration: 3,
-            ease: "linear",
-            repeat: Infinity
-          }}
-        />
-        
-        {/* Blockchain-inspired connections with animation */}
-        <motion.path
-          d="M20,40 L50,20 L80,40"
-          fill="none"
-          stroke={`hsla(${hue}, 90%, 70%, 0.8)`}
-          strokeWidth="1.5"
-          strokeDasharray="4,4"
-          animate={{
-            strokeDashoffset: [0, -32]
-          }}
-          transition={{
-            duration: 3,
-            repeat: Infinity,
-            ease: "linear"
-          }}
-        />
-        <motion.path
-          d="M20,70 L50,90 L80,70"
-          fill="none"
-          stroke={`hsla(${hue}, 90%, 70%, 0.8)`}
-          strokeWidth="1.5"
-          strokeDasharray="4,4"
-          animate={{
-            strokeDashoffset: [0, 32]
-          }}
-          transition={{
-            duration: 3,
-            repeat: Infinity,
-            ease: "linear"
-          }}
-        />
-        
-        {/* Central elements with pulse animation */}
-        <motion.circle 
-          cx="50" cy="50" r="15" 
-          fill="transparent" 
-          stroke={`hsla(${hue}, 90%, 70%, 1)`} 
-          strokeWidth="2.5"
-          animate={{
-            scale: [1, 1.1, 1],
-            opacity: [0.8, 1, 0.8]
-          }}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-        />
-        <motion.circle 
-          cx="50" cy="50" r="5" 
-          fill={`hsla(${hue}, 90%, 70%, 1)`}
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.8, 1, 0.8]
-          }}
-          transition={{
-            duration: 1.5,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-        />
-        
-        {/* Blockchain nodes with glow */}
-        {[
-          [20, 40],
-          [80, 40],
-          [20, 70],
-          [80, 70]
-        ].map(([cx, cy], i) => (
-          <g key={i}>
-            <circle 
-              cx={cx} cy={cy} r="4" 
-              fill={`hsla(${hue}, 90%, 70%, 0.3)`}
-              filter="url(#glow)"
-            />
-            <motion.circle 
-              cx={cx} cy={cy} r="2.5" 
-              fill={`hsla(${hue}, 90%, 70%, 1)`}
-              animate={{
-                scale: [1, 1.3, 1],
-                opacity: [0.8, 1, 0.8]
-              }}
-              transition={{
-                duration: 2,
-                delay: i * 0.5,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-            />
-          </g>
-        ))}
+        >
+          <animate attributeName="fill-opacity" values="1; 0.8; 1" dur="2s" repeatCount="indefinite" />
+        </path>
+        <path
+          d="M50 80L53 77H47L50 80Z"
+          fill="url(#logoGradient2)"
+          filter="url(#glow)"
+        >
+          <animate attributeName="fill-opacity" values="1; 0.8; 1" dur="2s" repeatCount="indefinite" />
+        </path>
       </svg>
     </motion.div>
   );
@@ -221,14 +208,18 @@ export default function SecretLogoPage() {
     const startPosY = Math.random() * 100;
     const initOpacity = Math.random() * 0.5 + 0.3;
     
+    // Use the gradient colors for particles
+    const colors = ['#9333EA', '#8B5CF6', '#6366F1', '#A855F7'];
+    const color = colors[i % colors.length];
+    
     return {
       width: `${size}px`,
       height: `${size}px`,
       top: `${startPosY}%`,
       left: `${startPosX}%`,
       opacity: initOpacity,
-      backgroundColor: `hsla(${hue}, 90%, 70%, ${Math.random() * 0.5 + 0.5})`,
-      boxShadow: i % 4 === 0 ? `0 0 ${size * 3}px hsla(${hue}, 90%, 70%, 0.8)` : 'none',
+      backgroundColor: color,
+      boxShadow: i % 4 === 0 ? `0 0 ${size * 3}px ${color}` : 'none',
       animation: `float ${speed}s linear infinite`,
       animationDelay: `${Math.random() * 10}s`,
     };
@@ -236,13 +227,17 @@ export default function SecretLogoPage() {
 
   // Generate exploding particles for the effect
   const ExplosionParticles = () => {
+    // Use the gradient colors for explosion particles
+    const colors = ['#9333EA', '#8B5CF6', '#6366F1', '#A855F7'];
+    
     return (
       <div className="absolute inset-0 pointer-events-none">
-        {Array.from({ length: 30 }).map((_, i) => {
-          const angle = (i / 30) * 360;
-          const distance = 100 + Math.random() * 100;
+        {Array.from({ length: 40 }).map((_, i) => {
+          const angle = (i / 40) * 360;
+          const distance = 100 + Math.random() * 150;
           const size = 2 + Math.random() * 5;
           const duration = 0.5 + Math.random() * 1;
+          const color = colors[i % colors.length];
           
           return (
             <motion.div
@@ -254,8 +249,8 @@ export default function SecretLogoPage() {
                 opacity: 1,
                 width: `${size}px`,
                 height: `${size}px`,
-                backgroundColor: `hsla(${hue}, 80%, 70%, 1)`,
-                boxShadow: `0 0 ${size * 2}px hsla(${hue}, 80%, 70%, 0.8)` 
+                backgroundColor: color,
+                boxShadow: `0 0 ${size * 2}px ${color}` 
               }}
               animate={{ 
                 x: Math.cos(angle * Math.PI / 180) * distance,
@@ -291,15 +286,14 @@ export default function SecretLogoPage() {
         >
           <div className="relative w-full h-full">
             {Array.from({ length: 24 }).map((_, i) => (
-              <>
+              <React.Fragment key={i}>
                 <motion.div 
-                  key={`h-${i}`}
                   className="absolute h-px w-full"
                   style={{ 
                     top: `${(i / 24) * 100}%`,
                     background: `linear-gradient(90deg, 
                       transparent 0%, 
-                      hsla(${hue}, 90%, 70%, 0.3) 50%,
+                      #9333EA 50%,
                       transparent 100%
                     )`
                   }}
@@ -308,13 +302,12 @@ export default function SecretLogoPage() {
                   transition={{ duration: 1.5, delay: i * 0.05 }}
                 />
                 <motion.div 
-                  key={`v-${i}`}
                   className="absolute w-px h-full"
                   style={{ 
                     left: `${(i / 24) * 100}%`,
                     background: `linear-gradient(180deg, 
                       transparent 0%, 
-                      hsla(${hue}, 90%, 70%, 0.3) 50%,
+                      #9333EA 50%,
                       transparent 100%
                     )`
                   }}
@@ -322,7 +315,7 @@ export default function SecretLogoPage() {
                   animate={{ scaleY: 1, opacity: 0.5 }}
                   transition={{ duration: 1.5, delay: i * 0.05 }}
                 />
-              </>
+              </React.Fragment>
             ))}
           </div>
         </motion.div>
@@ -341,7 +334,8 @@ export default function SecretLogoPage() {
           repeatType: "reverse",
         }}
         style={{ 
-          backgroundColor: `hsla(${hue}, 90%, 40%, 0.2)`,
+          backgroundColor: '#9333EA',
+          opacity: 0.2,
           transform: `translate(${mousePosition.x * -30}px, ${mousePosition.y * -30}px)`,
         }}
       />
@@ -359,7 +353,8 @@ export default function SecretLogoPage() {
           repeatType: "reverse",
         }}
         style={{ 
-          backgroundColor: `hsla(${hue + 30}, 90%, 50%, 0.2)`,
+          backgroundColor: '#6366F1',
+          opacity: 0.2,
           transform: `translate(${mousePosition.x * 20}px, ${mousePosition.y * 20}px)`,
         }}
       />
