@@ -16,7 +16,7 @@ const PopularServices = () => {
       price: 200,
       rating: 4.9,
       reviews: 127,
-      image: '/cz.jpg',
+      image: '/profile.png',
       creator: {
         name: 'VideoWizard',
         image: '/placeholder-avatar.jpg',
@@ -35,7 +35,7 @@ const PopularServices = () => {
       price: 150,
       rating: 4.8,
       reviews: 98,
-      image: '/cz.jpg',
+      image: '/profile.png',
       creator: {
         name: 'DesignStudio',
         image: '/placeholder-avatar.jpg',
@@ -53,7 +53,7 @@ const PopularServices = () => {
       price: 350,
       rating: 4.7,
       reviews: 64,
-      image: '/cz.jpg',
+      image: '/profile.png',
       creator: {
         name: '3DArtist',
         image: '/placeholder-avatar.jpg',
@@ -71,7 +71,7 @@ const PopularServices = () => {
       price: 500,
       rating: 4.9,
       reviews: 112,
-      image: '/cz.jpg',
+      image: '/profile.png',
       creator: {
         name: 'WebDev Pro',
         image: '/placeholder-avatar.jpg',
@@ -90,7 +90,7 @@ const PopularServices = () => {
       price: 300,
       rating: 4.6,
       reviews: 87,
-      image: '/cz.jpg',
+      image: '/profile.png',
       creator: {
         name: 'AnimationStudio',
         image: '/placeholder-avatar.jpg',
@@ -108,7 +108,7 @@ const PopularServices = () => {
       price: 250,
       rating: 4.8,
       reviews: 76,
-      image: '/cz.jpg',
+      image: '/profile.png',
       creator: {
         name: 'IllustrationArt',
         image: '/placeholder-avatar.jpg',
@@ -238,13 +238,11 @@ const PopularServices = () => {
                     {/* Service Image */}
                     <div className="aspect-video relative overflow-hidden">
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10"></div>
-                      <Image
-                        src={service.image}
-                        alt={service.title}
-                        width={400}
-                        height={225}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
+                      <div className="flex items-center justify-center w-full h-full bg-background-dark">
+                        <div className="text-center p-6">
+                          <p className="text-gray-400 text-sm">Service preview not available</p>
+                        </div>
+                      </div>
                       
                       {/* Featured Badge */}
                       {service.featured && (

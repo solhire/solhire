@@ -14,11 +14,18 @@ import EmptyState from '@/components/EmptyState';
 import { useRouter } from 'next/navigation';
 import { useMockAuth } from '@/context/MockAuthContext';
 
+interface PortfolioItem {
+  id: number;
+  title: string;
+  image: string;
+  category: string;
+}
+
 // Mock profile data
 const mockProfile = {
   username: 'demo_user',
   displayName: 'Demo User',
-  avatar: '/placeholder-avatar.jpg',
+  avatar: '/profile.png',
   location: 'Global',
   timeZone: 'UTC',
   isVerified: true,
@@ -27,13 +34,13 @@ const mockProfile = {
   rating: 0,
   isOnline: true,
   bio: 'This is a demo account for testing purposes.',
-  skills: ['Web Development', 'UI/UX Design', 'Smart Contracts'],
-  interests: ['Blockchain', 'DeFi', 'Web3'],
-  languages: ['English'],
-  portfolio: [],
-  reviews: [],
-  recentActivity: [],
-  walletAddress: '7xKXVg...3cUb'
+  skills: [] as string[],
+  interests: [] as string[],
+  languages: [] as string[],
+  portfolio: [] as PortfolioItem[],
+  reviews: [] as Array<{ id: string; title: string; category: string }>,
+  recentActivity: [] as Array<{ id: string; title: string; date: string }>,
+  walletAddress: ''
 };
 
 export default function Profile() {

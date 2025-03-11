@@ -190,7 +190,7 @@ export function SellerProfileExample() {
     id: 'seller-1',
     name: 'Alex Johnson',
     username: 'alexcreates',
-    avatar: '/placeholder-avatar.jpg',
+    avatar: '/profile.png',
     level: 'Top Rated',
     location: 'New York, USA',
     description: 'Professional video editor with over 5 years of experience. Specialized in creating engaging content for YouTube, social media, and corporate videos. I work with Adobe Premiere Pro, After Effects, and DaVinci Resolve to deliver high-quality videos that meet your specific needs. My goal is to help you tell your story through compelling visual content.',

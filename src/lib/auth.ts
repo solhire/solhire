@@ -52,7 +52,7 @@ export function withAuth(Component: React.ComponentType) {
     useEffect(() => {
       // If not authenticated, redirect to login
       if (isAuthenticated === false) {
-        router.push('/login?message=Please log in to access this page');
+        router.push('/mock-login?message=Please log in to access this page');
       }
     }, [isAuthenticated, router]);
     

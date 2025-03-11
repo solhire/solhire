@@ -33,7 +33,7 @@ const MOCK_USER: MockUser = {
   id: 'mock-user-1',
   username: 'demo_user',
   email: 'demo@solhire.com',
-  avatar: '/placeholder-avatar.jpg',
+  avatar: '/profile.png',
   role: 'creator',
   isVerified: true,
   walletAddress: '7xKXVg...3cUb',

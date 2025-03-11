@@ -82,6 +82,18 @@ const SecurityFeatures = () => {
             viewport={{ once: true }}
             className="relative h-[500px] w-full rounded-2xl overflow-hidden border border-blue-500/30"
           >
+            {/* Solana Logo */}
+            <div className="absolute top-4 right-4 z-20">
+              <Image
+                src="/assets/solana-logo.svg"
+                alt="Solana Logo"
+                width={48}
+                height={48}
+                className="opacity-90 hover:opacity-100 transition-opacity"
+              />
+            </div>
+            {/* Background Gradient */}
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-background to-blue-500/20" />
             <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/90 z-10" />
             <div className="absolute bottom-0 left-0 right-0 p-6 z-20">
               <div className="bg-background/80 backdrop-blur-lg border border-blue-500/30 rounded-xl p-4 shadow-lg">

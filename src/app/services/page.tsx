@@ -7,6 +7,7 @@ import { Card } from '@/components/ui/card';
 import { FiStar, FiArrowRight, FiFilter, FiSearch } from 'react-icons/fi';
 import { useState } from 'react';
 import MainLayout from '@/components/layout/MainLayout';
+import Image from 'next/image';
 
 export default function ServicesPage() {
   // Mock categories for filtering
@@ -50,7 +51,7 @@ export default function ServicesPage() {
       category: 'Video Editing',
       provider: {
         name: 'Alex Johnson',
-        avatar: '/placeholder-avatar.jpg',
+        avatar: '/profile.png',
         level: 'Top Rated'
       },
       tags: ['YouTube', 'Social Media', 'Motion Graphics']
@@ -65,7 +66,7 @@ export default function ServicesPage() {
       category: 'Graphic Design',
       provider: {
         name: 'Sarah Williams',
-        avatar: '/placeholder-avatar.jpg',
+        avatar: '/profile.png',
         level: 'Rising Talent'
       },
       tags: ['Logo Design', 'Branding', 'Vector Art']
@@ -80,7 +81,7 @@ export default function ServicesPage() {
       category: 'Web Development',
       provider: {
         name: 'Michael Chen',
-        avatar: '/placeholder-avatar.jpg',
+        avatar: '/profile.png',
         level: 'Expert'
       },
       tags: ['React', 'Next.js', 'Tailwind CSS']
@@ -95,7 +96,7 @@ export default function ServicesPage() {
       category: '3D Modeling',
       provider: {
         name: 'Jessica Lee',
-        avatar: '/placeholder-avatar.jpg',
+        avatar: '/profile.png',
         level: 'Professional'
       },
       tags: ['3D Modeling', 'Character Design', 'Game Assets']
@@ -110,7 +111,7 @@ export default function ServicesPage() {
       category: 'Illustration',
       provider: {
         name: 'David Rodriguez',
-        avatar: '/placeholder-avatar.jpg',
+        avatar: '/profile.png',
         level: 'Top Rated'
       },
       tags: ['Illustration', 'Book Design', 'Digital Art']
@@ -125,7 +126,7 @@ export default function ServicesPage() {
       category: 'Animation',
       provider: {
         name: 'Emily Thompson',
-        avatar: '/placeholder-avatar.jpg',
+        avatar: '/profile.png',
         level: 'Expert'
       },
       tags: ['2D Animation', 'Motion Graphics', 'Explainer Videos']
@@ -277,8 +278,14 @@ export default function ServicesPage() {
                     {/* Provider Info */}
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center">
-                        <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary text-xs font-bold mr-2">
-                          {service.provider.name.charAt(0)}
+                        <div className="relative w-8 h-8 rounded-full overflow-hidden">
+                          <Image
+                            src={service.provider.avatar}
+                            alt={service.provider.name}
+                            width={32}
+                            height={32}
+                            className="object-cover"
+                          />
                         </div>
                         <div>
                           <p className="text-sm font-medium text-white">{service.provider.name}</p>

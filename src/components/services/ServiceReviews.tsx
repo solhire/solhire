@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { FiStar, FiThumbsUp, FiFilter, FiChevronDown } from 'react-icons/fi';
 import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
+import { Progress } from "@/components/ui/progress";
 import { Badge } from '@/components/ui/badge';
 
 interface Review {
@@ -242,7 +242,7 @@ export function ServiceReviewsExample() {
       id: '1',
       user: {
         name: 'John Smith',
-        avatar: '/placeholder-avatar.jpg',
+        avatar: '/profile.png',
         country: 'United States',
         totalOrders: 12,
       },
@@ -260,7 +260,7 @@ export function ServiceReviewsExample() {
       id: '2',
       user: {
         name: 'Sarah Chen',
-        avatar: '/placeholder-avatar.jpg',
+        avatar: '/profile.png',
         country: 'Canada',
         totalOrders: 5,
       },

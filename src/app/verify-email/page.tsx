@@ -43,7 +43,7 @@ function VerifyEmailContent() {
           
           // Redirect to login after 3 seconds
           setTimeout(() => {
-            router.push('/login?message=Email verified successfully. You can now log in.');
+            router.push('/mock-login?message=Email verified successfully. You can now log in.');
           }, 3000);
         } else {
           setStatus('error');

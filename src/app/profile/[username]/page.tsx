@@ -14,11 +14,29 @@ import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import MainLayout from '@/components/layout/MainLayout';
 
+interface PortfolioItem {
+  id: number;
+  title: string;
+  image: string;
+  category: string;
+  completionDate?: string;
+}
+
+interface Review {
+  id: string;
+  from: string;
+  rating: number;
+  comment: string;
+  date: string;
+  role: 'creator' | 'buyer';
+  categories: Record<string, number>;
+}
+
 // Mock data - Replace with API calls
 const mockProfile = {
   username: '',
   displayName: '',
-  avatar: '/placeholder-avatar.jpg',
+  avatar: '/profile.png',
   location: '',
   timeZone: '',
   isVerified: false,
@@ -27,12 +45,12 @@ const mockProfile = {
   rating: 0,
   isOnline: true,
   bio: '',
-  skills: [],
-  interests: [],
-  languages: [],
-  portfolio: [],
-  reviews: [],
-  recentActivity: [],
+  skills: [] as string[],
+  interests: [] as string[],
+  languages: [] as string[],
+  portfolio: [] as PortfolioItem[],
+  reviews: [] as Review[],
+  recentActivity: [] as { id: string; title: string; date: string }[],
   walletAddress: ''
 };
 

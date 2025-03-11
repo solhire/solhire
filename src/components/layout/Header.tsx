@@ -105,7 +105,7 @@ const WalletButtonWrapper = () => {
 
 // Auth links for login/register
 const authLinks = [
-  { name: 'Login', href: '/login' },
+  { name: 'Login', href: '/mock-login' },
   { name: 'Register', href: '/register' },
 ];
 
