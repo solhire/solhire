@@ -2,106 +2,105 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { FiArrowRight } from 'react-icons/fi';
+import { FiArrowRight, FiVideo, FiPenTool, FiBox, FiCode, FiPlay, FiFeather, FiLayout, FiMusic } from 'react-icons/fi';
 
 const TrendingCategories = () => {
   const categories = [
     {
       id: 1,
       name: 'Video Editing',
-      icon: '/icons/video-editing.svg',
-      image: '/category-video.jpg',
+      icon: FiVideo,
       description: 'Professional video editing services for content creators',
       count: 120,
       color: 'from-purple-500/20 to-blue-500/20',
       borderColor: 'border-purple-500/30',
       textColor: 'text-purple-400',
+      iconColor: 'text-purple-400',
       url: '/services?category=video-editing',
     },
     {
       id: 2,
       name: 'Graphic Design',
-      icon: '/icons/graphic-design.svg',
-      image: '/category-design.jpg',
+      icon: FiPenTool,
       description: 'Logo design, branding, and visual identity services',
       count: 95,
       color: 'from-pink-500/20 to-red-500/20',
       borderColor: 'border-pink-500/30',
       textColor: 'text-pink-400',
+      iconColor: 'text-pink-400',
       url: '/services?category=graphic-design',
     },
     {
       id: 3,
       name: '3D Modeling',
-      icon: '/icons/3d-modeling.svg',
-      image: '/category-3d.jpg',
+      icon: FiBox,
       description: 'Character modeling, environments, and 3D assets',
       count: 78,
       color: 'from-blue-500/20 to-cyan-500/20',
       borderColor: 'border-blue-500/30',
       textColor: 'text-blue-400',
+      iconColor: 'text-blue-400',
       url: '/services?category=3d-modeling',
     },
     {
       id: 4,
       name: 'Web Development',
-      icon: '/icons/web-dev.svg',
-      image: '/category-web.jpg',
+      icon: FiCode,
       description: 'Website development, web apps, and frontend services',
       count: 110,
       color: 'from-green-500/20 to-emerald-500/20',
       borderColor: 'border-green-500/30',
       textColor: 'text-green-400',
+      iconColor: 'text-green-400',
       url: '/services?category=web-development',
     },
     {
       id: 5,
       name: 'Animation',
-      icon: '/icons/animation.svg',
-      image: '/category-animation.jpg',
+      icon: FiPlay,
       description: '2D and 3D animation for explainer videos and more',
       count: 65,
       color: 'from-orange-500/20 to-amber-500/20',
       borderColor: 'border-orange-500/30',
       textColor: 'text-orange-400',
+      iconColor: 'text-orange-400',
       url: '/services?category=animation',
     },
     {
       id: 6,
       name: 'Illustration',
-      icon: '/icons/illustration.svg',
-      image: '/category-illustration.jpg',
+      icon: FiFeather,
       description: 'Digital illustrations for books, games, and media',
       count: 82,
       color: 'from-indigo-500/20 to-violet-500/20',
       borderColor: 'border-indigo-500/30',
       textColor: 'text-indigo-400',
+      iconColor: 'text-indigo-400',
       url: '/services?category=illustration',
     },
     {
       id: 7,
       name: 'UI/UX Design',
-      icon: '/icons/ui-design.svg',
-      image: '/category-ui.jpg',
+      icon: FiLayout,
       description: 'User interface and experience design for apps and websites',
       count: 93,
       color: 'from-teal-500/20 to-cyan-500/20',
       borderColor: 'border-teal-500/30',
       textColor: 'text-teal-400',
+      iconColor: 'text-teal-400',
       url: '/services?category=ui-ux-design',
     },
     {
       id: 8,
       name: 'Music & Audio',
-      icon: '/icons/music.svg',
-      image: '/category-music.jpg',
+      icon: FiMusic,
       description: 'Music production, sound effects, and voice overs',
       count: 70,
       color: 'from-red-500/20 to-rose-500/20',
       borderColor: 'border-red-500/30',
       textColor: 'text-red-400',
+      iconColor: 'text-red-400',
       url: '/services?category=music-audio',
     },
   ];
@@ -143,40 +142,26 @@ const TrendingCategories = () => {
               onMouseLeave={() => setHoveredCategory(null)}
             >
               <motion.div 
-                className={`relative h-64 rounded-xl overflow-hidden border ${category.borderColor} bg-gradient-to-br ${category.color} transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 hover:border-primary/50`}
+                className={`relative h-full rounded-xl overflow-hidden border ${category.borderColor} bg-gradient-to-br ${category.color} transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 hover:border-primary/50 p-6`}
                 initial={{ opacity: 0.9, y: 10 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
                 viewport={{ once: true }}
               >
-                {/* Background Image with Overlay */}
-                <div className="absolute inset-0 z-0">
-                  <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/70 to-transparent z-10"></div>
-                  <Image
-                    src={category.image}
-                    alt={category.name}
-                    fill
-                    className="object-cover opacity-40 group-hover:opacity-50 transition-opacity duration-500 group-hover:scale-105 transition-transform"
-                  />
+                {/* Icon */}
+                <div className="mb-4">
+                  <div className={`w-12 h-12 rounded-xl bg-background/80 backdrop-blur-sm flex items-center justify-center ${category.iconColor} group-hover:scale-110 transition-transform duration-300`}>
+                    <category.icon size={24} />
+                  </div>
                 </div>
                 
                 {/* Content */}
-                <div className="relative z-10 h-full flex flex-col justify-end p-6">
-                  <div className="mb-4 w-12 h-12 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center">
-                    <Image
-                      src={category.icon}
-                      alt={`${category.name} icon`}
-                      width={24}
-                      height={24}
-                      className="opacity-90"
-                    />
-                  </div>
-                  
+                <div className="relative z-10">
                   <h3 className="text-xl font-bold mb-2 text-white group-hover:text-primary transition-colors">
                     {category.name}
                   </h3>
                   
-                  <p className="text-sm text-gray-400 mb-3 line-clamp-2">
+                  <p className="text-sm text-gray-400 mb-4 line-clamp-2">
                     {category.description}
                   </p>
                   
@@ -198,6 +183,9 @@ const TrendingCategories = () => {
                     </motion.span>
                   </div>
                 </div>
+
+                {/* Hover effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </motion.div>
             </Link>
           ))}
