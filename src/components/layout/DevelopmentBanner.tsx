@@ -15,8 +15,8 @@ const DevelopmentBanner = () => {
           <div className="flex items-center mb-2 sm:mb-0">
             <FiAlertTriangle className="h-5 w-5 mr-2 flex-shrink-0 text-yellow-300" aria-hidden="true" />
             <p className="text-xs sm:text-sm md:text-base font-medium">
-              <span className="mr-1 font-bold">Test Build:</span>
-              This is a demo version with limited functionality. Account creation is disabled and creating services/jobs is not fully operational.
+              <span className="mr-1 font-bold">Demo Version:</span>
+              This is a demo with placeholder services and reviews. Account creation, transactions, and service creation are not fully operational.
             </p>
           </div>
           <button
