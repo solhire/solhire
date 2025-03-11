@@ -56,6 +56,9 @@ export default function TokenPage() {
               <p className="mb-4">
                 The official $HIRE token is still in development. Any token claiming to be $HIRE at this time is not official.
               </p>
+              <p className="text-sm text-yellow-300 mb-2">
+                The official contract address will be announced first on our Twitter (@solhire) - always verify the contract address there before interacting with any token.
+              </p>
               <p className="text-sm text-yellow-300">
                 For the latest updates and announcements, follow us on Twitter (@solhire).
               </p>
