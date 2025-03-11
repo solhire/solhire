@@ -52,12 +52,12 @@ export default function TokenPage() {
             </div>
             
             <div className="bg-yellow-900/20 p-4 rounded-lg border border-yellow-800/30">
-              <p className="text-lg font-bold text-yellow-400 mb-2">⚠️ Token In Development</p>
-              <p className="mb-4">
-                The official $HIRE token is still in development. Any token claiming to be $HIRE at this time is not official.
+              <p className="text-lg font-bold text-yellow-400 mb-2">🔒 Official Contract Address</p>
+              <p className="mb-4 font-mono bg-black/30 p-2 rounded border border-yellow-800/30 break-all">
+                HWqYyKE5Q6fi5Y99KHLCS4jpQdxGUcBSgeQYh2Cspump
               </p>
               <p className="text-sm text-yellow-300 mb-2">
-                The official contract address will be announced first on our Twitter (@solhire) - always verify the contract address there before interacting with any token.
+                ⚠️ Always verify this contract address matches the one announced on our Twitter (@solhire).
               </p>
               <p className="text-sm text-yellow-300">
                 For the latest updates and announcements, follow us on Twitter (@solhire).

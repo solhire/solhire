@@ -68,35 +68,10 @@ export default function Home() {
                   <span className="mr-2">Learn about $HIRE token</span>
                   <FiArrowRight className="group-hover:translate-x-1 transition-transform" />
                 </Link>
-                
-                <a 
-                  href="https://pump.fun/profile/SolHire?include-nsfw=true" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="inline-flex items-center px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-sm hover:bg-cyan-500/20 transition-colors"
-                >
-                  <svg 
-                    width="16" 
-                    height="16" 
-                    viewBox="0 0 24 24" 
-                    fill="none" 
-                    xmlns="http://www.w3.org/2000/svg" 
-                    className="mr-1"
-                  >
-                    <path 
-                      d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" 
-                      stroke="currentColor" 
-                      strokeWidth="2" 
-                      strokeLinecap="round" 
-                      strokeLinejoin="round"
-                    />
-                    <path 
-                      d="M14 12L11 10V14L14 12Z" 
-                      fill="currentColor"
-                    />
-                  </svg>
-                  SolHire on PumpFun
-                </a>
+                <div className="flex items-center text-sm text-gray-400">
+                  <FiShield className="mr-2 text-yellow-500" />
+                  <span className="font-mono">HWqYyKE5Q6fi5Y99KHLCS4jpQdxGUcBSgeQYh2Cspump</span>
+                </div>
               </div>
             </div>
             
