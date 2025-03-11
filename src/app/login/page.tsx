@@ -45,19 +45,23 @@ function LoginForm() {
   );
 }
 
-export default function Login() {
+function LoginRedirect() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const message = searchParams.get('message');
-  
+
   useEffect(() => {
-    // Redirect to mock login, preserving any message parameter
-    const redirectUrl = message 
-      ? `/mock-login?message=${encodeURIComponent(message)}`
-      : '/mock-login';
+    const redirectUrl = message ? `/mock-login?message=${message}` : '/mock-login';
     router.replace(redirectUrl);
   }, [router, message]);
 
-  // Return null since we're redirecting
   return null;
+}
+
+export default function Login() {
+  return (
+    <Suspense fallback={null}>
+      <LoginRedirect />
+    </Suspense>
+  );
 } 
