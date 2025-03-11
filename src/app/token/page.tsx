@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import MainLayout from '@/components/layout/MainLayout';
 import Link from 'next/link';
 import { FiExternalLink, FiShield, FiDollarSign, FiUsers, FiStar, FiAward, FiLock } from 'react-icons/fi';
+import SolanaLogo from '@/components/icons/SolanaLogo';
 
 export const metadata: Metadata = {
   title: '$HIRE Token | SolHire',
@@ -79,7 +80,7 @@ export default function TokenPage() {
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 text-purple-400 hover:text-purple-300 transition-colors"
           >
-            <span>@solhire1</span>
+            <span>@SolHire</span>
             <FiExternalLink className="w-4 h-4" />
           </a>
           <div className="mt-4 p-4 bg-purple-500/10 rounded-lg border border-purple-500/20">

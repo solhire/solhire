@@ -12,6 +12,7 @@ import SecurityFeatures from '@/components/home/SecurityFeatures';
 import CreatorBenefits from '@/components/home/CreatorBenefits';
 import ClientBenefits from '@/components/home/ClientBenefits';
 import HomeFAQ from '@/components/home/HomeFAQ';
+import SolanaLogo from '@/components/icons/SolanaLogo';
 import { FiArrowRight, FiShield, FiZap, FiExternalLink } from 'react-icons/fi';
 
 export const metadata: Metadata = {
@@ -41,19 +42,7 @@ export default function Home() {
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
                 <span className="text-white">Hire Top Creatives with </span>
                 <span className="relative inline-flex items-center">
-                  {/* Solana Logo */}
-                  <svg className="w-10 h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 mr-2" viewBox="0 0 397 311" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                      d="M64.6 237.9c2.4-2.4 5.7-3.8 9.2-3.8h317.4c5.8 0 8.7 7 4.6 11.1l-62.7 62.7c-2.4 2.4-5.7 3.8-9.2 3.8H6.5c-5.8 0-8.7-7-4.6-11.1l62.7-62.7zM64.6 3.8C67.1 1.4 70.4 0 73.8 0h317.4c5.8 0 8.7 7 4.6 11.1l-62.7 62.7c-2.4 2.4-5.7 3.8-9.2 3.8H6.5c-5.8 0-8.7-7-4.6-11.1L64.6 3.8zM333.1 120.1c-2.4-2.4-5.7-3.8-9.2-3.8H6.5c-5.8 0-8.7 7-4.6 11.1l62.7 62.7c2.4 2.4 5.7 3.8 9.2 3.8h317.4c5.8 0 8.7-7 4.6-11.1l-62.7-62.7z"
-                      fill="url(#solana-logo-gradient)"
-                    />
-                    <defs>
-                      <linearGradient id="solana-logo-gradient" x1="0" y1="0" x2="397" y2="311" gradientUnits="userSpaceOnUse">
-                        <stop offset="0%" stopColor="#9333EA" /> {/* purple-600 */}
-                        <stop offset="100%" stopColor="#2563EB" /> {/* blue-600 */}
-                      </linearGradient>
-                    </defs>
-                  </svg>
+                  <SolanaLogo className="w-10 h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 mr-2" />
                   <span className="bg-gradient-to-br from-purple-500 to-blue-600 text-transparent bg-clip-text [text-shadow:0_0_25px_rgba(124,58,237,0.6)] animate-pulse">
                     SOL
                   </span>

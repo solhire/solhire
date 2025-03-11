@@ -1,9 +1,8 @@
 'use client';
 
 import { useRef } from 'react';
-import Image from 'next/image';
 import { motion, useInView } from 'framer-motion';
-import { FiSearch, FiCheckCircle, FiDollarSign, FiStar } from 'react-icons/fi';
+import { FiSearch, FiCheckCircle, FiDollarSign, FiStar, FiGrid, FiUsers, FiShield, FiAward } from 'react-icons/fi';
 
 const HowItWorks = () => {
   const ref = useRef(null);
@@ -14,33 +13,29 @@ const HowItWorks = () => {
       id: 1,
       title: 'Browse Services',
       description: 'Explore thousands of creative services from talented professionals around the world.',
-      icon: <FiSearch className="w-6 h-6" />,
+      icon: <FiGrid className="w-12 h-12" />,
       color: 'bg-purple-500',
-      image: '/browse-services.jpg',
     },
     {
       id: 2,
       title: 'Choose & Connect',
       description: 'Find the perfect match for your project and connect with the creator directly.',
-      icon: <FiCheckCircle className="w-6 h-6" />,
+      icon: <FiUsers className="w-12 h-12" />,
       color: 'bg-blue-500',
-      image: '/choose-connect.jpg',
     },
     {
       id: 3,
       title: 'Pay Securely',
       description: 'Make payments with SOL cryptocurrency through our secure escrow system.',
-      icon: <FiDollarSign className="w-6 h-6" />,
+      icon: <FiShield className="w-12 h-12" />,
       color: 'bg-green-500',
-      image: '/pay-securely.jpg',
     },
     {
       id: 4,
       title: 'Receive & Review',
       description: 'Get your completed work and leave a review to help the community.',
-      icon: <FiStar className="w-6 h-6" />,
+      icon: <FiAward className="w-12 h-12" />,
       color: 'bg-amber-500',
-      image: '/receive-review.jpg',
     },
   ];
 
@@ -101,25 +96,16 @@ const HowItWorks = () => {
               </div>
               
               <div className="pt-16 h-full">
-                <div className="bg-background-dark border border-zinc-800 rounded-xl overflow-hidden h-full hover:border-primary/30 transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 group">
-                  {/* Image */}
-                  <div className="relative h-48 overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-t from-background-dark to-transparent z-10"></div>
-                    <Image
-                      src={step.image}
-                      alt={step.title}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                    
-                    {/* Icon */}
-                    <div className="absolute bottom-4 right-4 z-20 w-10 h-10 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center text-primary">
+                <div className="bg-background-dark border border-zinc-800 rounded-xl overflow-hidden h-full hover:border-primary/30 transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 group p-6">
+                  {/* Icon */}
+                  <div className="mb-6 flex justify-center">
+                    <div className={`w-20 h-20 rounded-2xl ${step.color} bg-opacity-10 flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-300`}>
                       {step.icon}
                     </div>
                   </div>
                   
                   {/* Content */}
-                  <div className="p-6">
+                  <div className="text-center">
                     <h3 className="text-xl font-bold mb-3 text-white group-hover:text-primary transition-colors">
                       {step.title}
                     </h3>
