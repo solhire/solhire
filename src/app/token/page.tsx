@@ -45,29 +45,17 @@ export default function TokenPage() {
             <div className="mb-6 bg-blue-500/10 p-4 rounded-lg border border-blue-500/30">
               <h3 className="text-lg font-bold text-blue-500 mb-2">Token Status:</h3>
               <div className="text-md text-gray-300">
-                <p className="mb-4">The $HIRE token has been launched! You can find the official contract address below:</p>
-                <div className="bg-background/50 p-4 rounded-lg border border-blue-500/30 mb-4">
-                  <p className="font-mono text-sm break-all">EkMks5gxnGywxVFnuK7gnq5X9XuzJbXBeo7FU9Ydpump</p>
-                  <a 
-                    href="https://solscan.io/token/EkMks5gxnGywxVFnuK7gnq5X9XuzJbXBeo7FU9Ydpump" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 mt-2"
-                  >
-                    View on Solscan
-                    <FiExternalLink className="w-4 h-4" />
-                  </a>
-                </div>
-                <p className="mb-0">The token was deployed from our verified Pump.fun profile (@solhire1). Always verify the contract address before interacting.</p>
+                <p className="mb-4">The $HIRE token is currently in development. Official details will be announced when ready.</p>
+                <p className="mb-0">Always verify information through our official channels before interacting with any token claiming to be $HIRE.</p>
               </div>
             </div>
             
-            <div className="bg-green-900/20 p-4 rounded-lg border border-green-800/30">
-              <p className="text-lg font-bold text-green-400 mb-2">✅ Token Launched</p>
+            <div className="bg-yellow-900/20 p-4 rounded-lg border border-yellow-800/30">
+              <p className="text-lg font-bold text-yellow-400 mb-2">⚠️ Token In Development</p>
               <p className="mb-4">
-                The official $HIRE token is now live on Solana! You can now interact with the token through our verified contract.
+                The official $HIRE token is still in development. Any token claiming to be $HIRE at this time is not official.
               </p>
-              <p className="text-sm text-green-300">
+              <p className="text-sm text-yellow-300">
                 For the latest updates and announcements, follow us on Twitter (@solhire).
               </p>
             </div>
@@ -80,10 +68,10 @@ export default function TokenPage() {
         <div className="max-w-4xl mx-auto bg-background/50 p-6 rounded-xl border border-purple-500/30 mb-12">
           <div className="flex items-center gap-3 mb-4">
             <FiShield className="text-purple-500 text-xl" />
-            <h2 className="text-xl font-bold text-white">Official Token Deployment</h2>
+            <h2 className="text-xl font-bold text-white">Official Token Information</h2>
           </div>
           <p className="text-gray-300 mb-4">
-            The official $HIRE token will be deployed from our verified Pump.fun profile:
+            When the $HIRE token is ready, it will be deployed from our verified Pump.fun profile:
           </p>
           <a 
             href="https://pump.fun/profile/solhire1" 
@@ -253,7 +241,7 @@ export default function TokenPage() {
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-3xl font-bold mb-6">Stay Updated</h2>
             <p className="text-xl text-gray-300 mb-8">
-              Join our community to receive the latest updates about the $HIRE token launch and ecosystem developments.
+              Join our community to receive the latest updates about the $HIRE token and ecosystem developments.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
