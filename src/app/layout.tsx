@@ -1,10 +1,7 @@
-'use client';
-
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google'
 import '@/styles/globals.css'
-import { Providers } from './providers'
-import PasswordProtection from '@/components/auth/PasswordProtection'
+import ClientLayout from './client-layout'
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -24,11 +21,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.variable}>
       <body className={`min-h-screen bg-black font-sans antialiased ${inter.className}`}>
-        <PasswordProtection>
-          <Providers>
-            {children}
-          </Providers>
-        </PasswordProtection>
+        <ClientLayout>
+          {children}
+        </ClientLayout>
       </body>
     </html>
   )
