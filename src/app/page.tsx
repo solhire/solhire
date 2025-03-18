@@ -17,7 +17,7 @@ import { FiArrowRight, FiShield, FiZap, FiExternalLink } from 'react-icons/fi';
 
 export const metadata: Metadata = {
   title: 'SolHire | Home',
-  description: 'Find and hire top creative professionals and pay with SOL cryptocurrency',
+  description: 'Find and hire top creative professionals for your token brand, memecoin design, and Web3 marketing needs. Pay with SOL cryptocurrency.',
 };
 
 export default function Home() {
@@ -51,7 +51,7 @@ export default function Home() {
                 </span>
               </h1>
               <p className="text-lg md:text-xl text-gray-300 mb-8">
-                Connect with skilled video editors, graphic designers, and other creative professionals. Pay securely with SOL cryptocurrency.
+                Connect with skilled video editors, graphic designers, and creative professionals to build your token brand. Find the perfect talent to create your memecoin logo, promotional materials, and marketing assets. Pay securely with SOL cryptocurrency and launch your project with professional design that stands out from the crowd.
               </p>
               <div className="flex flex-wrap gap-4">
                 <Link href="/services" className="btn btn-primary px-8 py-3 text-lg">
