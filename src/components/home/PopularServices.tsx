@@ -36,7 +36,7 @@ const PopularServices = () => {
       price: 150,
       rating: 4.8,
       reviews: 98,
-      image: '/profile.png',
+      image: null, // No image available
       creator: {
         name: 'DesignStudio',
         image: '/placeholder-avatar.jpg',
@@ -72,7 +72,7 @@ const PopularServices = () => {
       price: 500,
       rating: 4.9,
       reviews: 112,
-      image: '/profile.png',
+      image: null, // No image available
       creator: {
         name: 'WebDev Pro',
         image: '/placeholder-avatar.jpg',
