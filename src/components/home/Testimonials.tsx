@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiStar, FiArrowLeft, FiArrowRight, FiUser, FiMapPin } from 'react-icons/fi';
+import { FiStar, FiArrowLeft, FiArrowRight, FiUser, FiMapPin, FiCalendar } from 'react-icons/fi';
 import { ServiceImage } from '@/components/ui/service-image';
 
 const Testimonials = () => {
@@ -14,47 +14,47 @@ const Testimonials = () => {
   const testimonials = [
     {
       id: 1,
-      name: 'Alex Johnson',
-      role: 'Marketing Director',
-      location: 'New York, USA',
-      avatar: '/testimonial-1.jpg',
+      name: 'John Smith',
+      avatar: '/placeholder-avatar.jpg',
+      location: 'San Francisco, CA',
+      text: 'Working with SolHire was a game-changer for my crypto project. The video editor I found created amazing promotional content that helped us stand out in a crowded market. The payment process with SOL was smooth and secure.',
       rating: 5,
-      text: "I've been using SolHire for all my video editing needs. The quality of work is exceptional, and the payment process with SOL is seamless. Highly recommend!",
       service: 'Video Editing',
-      serviceImage: '/service-video.jpg',
+      serviceImage: null,
+      date: 'March 5, 2025',
     },
     {
       id: 2,
-      name: 'Sarah Chen',
-      role: 'Startup Founder',
-      location: 'San Francisco, USA',
-      avatar: '/testimonial-2.jpg',
+      name: 'Emily Johnson',
+      avatar: '/placeholder-avatar.jpg',
+      location: 'London, UK',
+      text: 'I needed a new logo for my token launch and found the perfect designer on SolHire. They captured exactly what I was looking for and delivered multiple variations. The platform made collaboration easy and secure.',
       rating: 5,
-      text: "SolHire has transformed how I find creative talent. The platform is intuitive, and I love the security of the escrow system. It's my go-to for all design work now.",
       service: 'Logo Design',
-      serviceImage: '/service-design.jpg',
+      serviceImage: null,
+      date: 'February 28, 2025',
     },
     {
       id: 3,
-      name: 'Michael Torres',
-      role: 'Content Creator',
-      location: 'London, UK',
-      avatar: '/testimonial-3.jpg',
+      name: 'Michael Rodriguez',
+      avatar: '/placeholder-avatar.jpg',
+      location: 'Miami, FL',
+      text: 'The 3D animations created for my NFT project exceeded all expectations. The creator understood the Web3 space perfectly and delivered high-quality work ahead of schedule. Will definitely use SolHire again for future projects.',
       rating: 4,
-      text: "As a content creator, I need reliable editors who can deliver on tight deadlines. SolHire has connected me with amazing professionals who consistently exceed my expectations.",
-      service: 'Animation',
-      serviceImage: '/service-animation.jpg',
+      service: '3D Animation',
+      serviceImage: null,
+      date: 'February 22, 2025',
     },
     {
       id: 4,
-      name: 'Emma Wilson',
-      role: 'E-commerce Owner',
-      location: 'Sydney, Australia',
-      avatar: '/testimonial-4.jpg',
+      name: 'Sophia Chen',
+      avatar: '/placeholder-avatar.jpg',
+      location: 'Singapore',
+      text: 'Found an exceptional web developer who built my token dashboard with all the features I needed. The escrow payment system gave me peace of mind, and communication was seamless throughout the project.',
       rating: 5,
-      text: "The web development services I found on SolHire helped me launch my online store in record time. The ability to pay with SOL made the whole process so much smoother.",
       service: 'Web Development',
-      serviceImage: '/service-web.jpg',
+      serviceImage: null,
+      date: 'February 15, 2025',
     },
   ];
 
@@ -211,12 +211,12 @@ const Testimonials = () => {
                       </h4>
                       <div className="flex flex-col text-sm text-gray-400">
                         <span className="flex items-center">
-                          <FiUser className="w-3 h-3 mr-1" />
-                          {testimonials[currentIndex].role}
-                        </span>
-                        <span className="flex items-center">
                           <FiMapPin className="w-3 h-3 mr-1" />
                           {testimonials[currentIndex].location}
+                        </span>
+                        <span className="flex items-center">
+                          <FiCalendar className="w-3 h-3 mr-1" />
+                          {testimonials[currentIndex].date}
                         </span>
                       </div>
                     </div>

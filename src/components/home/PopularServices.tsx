@@ -17,7 +17,7 @@ const PopularServices = () => {
       price: 200,
       rating: 4.9,
       reviews: 127,
-      image: '/profile.png',
+      image: null, // No image available
       creator: {
         name: 'VideoWizard',
         image: '/placeholder-avatar.jpg',
@@ -54,7 +54,7 @@ const PopularServices = () => {
       price: 350,
       rating: 4.7,
       reviews: 64,
-      image: '/profile.png',
+      image: null, // No image available
       creator: {
         name: '3DArtist',
         image: '/placeholder-avatar.jpg',
@@ -91,7 +91,7 @@ const PopularServices = () => {
       price: 300,
       rating: 4.6,
       reviews: 87,
-      image: '/profile.png',
+      image: null, // No image available
       creator: {
         name: 'AnimationStudio',
         image: '/placeholder-avatar.jpg',
@@ -109,7 +109,7 @@ const PopularServices = () => {
       price: 250,
       rating: 4.8,
       reviews: 76,
-      image: '/profile.png',
+      image: null, // No image available
       creator: {
         name: 'IllustrationArt',
         image: '/placeholder-avatar.jpg',
