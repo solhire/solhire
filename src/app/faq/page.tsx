@@ -102,7 +102,7 @@ const faqCategories: FAQCategory[] = [
       },
       {
         question: 'What happens if I lose access to my wallet?',
-        answer: 'If you lose access to your wallet, you'll need to recover it using your seed phrase. SolHire cannot recover wallets or funds for you, so it's crucial to store your recovery phrase in a safe place. We provide educational resources on wallet security for all users.',
+        answer: 'If you lose access to your wallet, you\'ll need to recover it using your seed phrase. SolHire cannot recover wallets or funds for you, so it\'s crucial to store your recovery phrase in a safe place. We provide educational resources on wallet security for all users.',
       },
     ],
   },
