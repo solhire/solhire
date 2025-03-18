@@ -42,16 +42,16 @@ export function ServiceImage({
         className
       )}
     >
-      {/* Gradient overlay for both image and fallback */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10" />
+      {/* Gradient overlay for image only */}
+      {src && !isError && (
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10" />
+      )}
       
       {!src || isError ? (
         <div className="flex items-center justify-center w-full h-full">
-          <div className="text-center p-6 relative">
-            <p className="text-purple-400 font-medium animate-pulse text-shadow-purple">
-              Service image not available
-            </p>
-          </div>
+          <p className="text-purple-400 font-medium animate-pulse text-shadow-purple">
+            Service image not available
+          </p>
         </div>
       ) : (
         <Image
