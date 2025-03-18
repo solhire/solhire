@@ -219,9 +219,10 @@ const Header = () => {
   return (
     <>
       {/* Updated announcement bar */}
-      <div className="bg-background-dark/80 backdrop-blur-sm border-b border-zinc-800/50 py-1 text-center text-xs font-medium text-gray-400">
-        <div className="container-custom">
-          Note: Service creation is temporarily disabled while we finalize our payment system
+      <div className="bg-background-dark/80 backdrop-blur-sm border-b border-zinc-800/50 py-2 text-center text-xs font-medium">
+        <div className="container-custom flex flex-col sm:flex-row items-center justify-center gap-2">
+          <span className="text-gray-400">Service creation is temporarily disabled while we finalize our payment system</span>
+          <span className="text-yellow-400 font-semibold">• Official contract address will be posted first @solhire on X</span>
         </div>
       </div>
       
