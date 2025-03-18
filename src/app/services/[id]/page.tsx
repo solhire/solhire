@@ -9,9 +9,10 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Star, MessageSquare, ThumbsUp, ThumbsDown, ArrowLeft, Share2 } from 'lucide-react';
+import { Star, MessageSquare, ThumbsUp, ThumbsDown, ArrowLeft, Share2, Clock } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import MainLayout from '@/components/layout/MainLayout';
+import { ServiceImage } from '@/components/ui/service-image';
 
 interface Service {
   id: string;
@@ -139,10 +140,10 @@ export default function ServiceDetailPage() {
             {service.portfolio.length > 0 && (
               <div className="mb-8">
                 <div className="aspect-video w-full overflow-hidden rounded-lg mb-4">
-                  <img
+                  <ServiceImage
                     src={activeImage || service.portfolio[0]}
                     alt={service.title}
-                    className="w-full h-full object-cover"
+                    aspectRatio="video"
                   />
                 </div>
                 
@@ -156,10 +157,10 @@ export default function ServiceDetailPage() {
                         }`}
                         onClick={() => setActiveImage(image)}
                       >
-                        <img
+                        <ServiceImage
                           src={image}
                           alt={`Portfolio ${index + 1}`}
-                          className="w-full h-full object-cover"
+                          aspectRatio="video"
                         />
                       </div>
                     ))}

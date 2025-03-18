@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { FiStar, FiArrowRight, FiArrowLeft, FiHeart, FiClock } from 'react-icons/fi';
 import { motion } from 'framer-motion';
+import { ServiceImage } from '@/components/ui/service-image';
 
 const PopularServices = () => {
   // Mock data for popular services
@@ -236,13 +237,11 @@ const PopularServices = () => {
                 <Link key={service.id} href={service.serviceUrl} className="group">
                   <div className="bg-background-dark rounded-lg overflow-hidden border border-zinc-800 hover:border-primary/50 transition-all duration-300 hover:shadow-[0_0_15px_rgba(147,51,234,0.15)]">
                     {/* Service Image */}
-                    <div className="aspect-video relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10"></div>
-                      <div className="flex items-center justify-center w-full h-full bg-background-dark">
-                        <div className="text-center p-6">
-                          <p className="text-gray-400 text-sm">Service preview not available</p>
-                        </div>
-                      </div>
+                    <div className="relative">
+                      <ServiceImage 
+                        src={service.image}
+                        alt={service.title}
+                      />
                       
                       {/* Featured Badge */}
                       {service.featured && (
@@ -252,70 +251,52 @@ const PopularServices = () => {
                       )}
                       
                       {/* Save Button */}
-                      <button 
-                        className="absolute top-3 right-3 z-20 w-8 h-8 rounded-full bg-black/50 flex items-center justify-center text-white hover:bg-primary/80 transition-colors"
+                      <button
+                        className="absolute top-3 right-3 z-20 w-8 h-8 flex items-center justify-center bg-black/50 rounded-full text-white hover:bg-primary/80 transition-colors"
                         onClick={(e) => {
                           e.preventDefault();
-                          // Add save functionality
+                          // Add to wishlist logic
                         }}
                       >
-                        <FiHeart className="w-4 h-4" />
+                        <FiHeart size={14} />
                       </button>
                     </div>
                     
                     {/* Service Info */}
-                    <div className="p-4">
-                      {/* Creator Info */}
-                      <div className="flex items-center gap-2 mb-3">
-                        <div className="w-8 h-8 rounded-full overflow-hidden border border-primary/30">
-                          <Image
-                            src={service.creator.image}
-                            alt={service.creator.name}
-                            width={32}
-                            height={32}
-                            className="w-full h-full object-cover"
-                          />
+                    <div className="p-5">
+                      <div className="flex items-center space-x-2 mb-2">
+                        <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-xs font-medium">
+                          {service.creator.name.charAt(0)}
                         </div>
-                        <div>
-                          <p className="text-sm font-medium text-white">
-                            {service.creator.name}
-                          </p>
-                          <p className="text-xs text-gray-400">
+                        <span className="text-sm text-gray-300">{service.creator.name}</span>
+                        {service.creator.level && (
+                          <span className="text-xs bg-background px-2 py-0.5 rounded text-gray-400">
                             {service.creator.level}
-                          </p>
-                        </div>
+                          </span>
+                        )}
                       </div>
                       
-                      {/* Service Title */}
-                      <h3 className="text-base font-semibold mb-2 line-clamp-2 text-white group-hover:text-primary transition-colors">
+                      <h3 className="text-lg font-semibold mb-2 line-clamp-2 group-hover:text-primary transition-colors">
                         {service.title}
                       </h3>
                       
-                      {/* Rating */}
-                      <div className="flex items-center gap-1 mb-3">
-                        <FiStar className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                        <span className="text-sm font-medium">{service.rating.toFixed(1)}</span>
-                        <span className="text-sm text-gray-400">({service.reviews})</span>
+                      <div className="flex items-center mb-3">
+                        <FiStar className="text-yellow-400 mr-1" size={14} />
+                        <span className="text-sm font-medium mr-1">{service.rating}</span>
+                        <span className="text-xs text-gray-400">({service.reviews})</span>
                       </div>
                     </div>
                     
-                    {/* Footer */}
-                    <div className="border-t border-zinc-800 p-4 flex flex-col">
-                      <div className="flex items-center justify-between w-full mb-2">
+                    {/* Service Footer */}
+                    <div className="border-t border-zinc-800 p-5 bg-background/30">
+                      <div className="flex justify-between items-center">
                         <div className="flex items-center text-xs text-gray-400">
-                          <FiClock className="w-3 h-3 mr-1" />
-                          {service.deliveryTime} day{service.deliveryTime > 1 ? 's' : ''} delivery
+                          <FiClock className="mr-1" size={12} />
+                          <span>{service.deliveryTime} day{service.deliveryTime > 1 ? 's' : ''}</span>
                         </div>
-                      </div>
-                      
-                      <div className="flex items-center justify-between w-full">
-                        <div className="text-xs text-gray-400">
-                          Starting at
-                        </div>
-                        <div className="text-right">
-                          <p className="text-lg font-semibold text-white">
-                            {service.price} SOL
-                          </p>
+                        <div>
+                          <span className="block text-xs text-gray-400">Starting at</span>
+                          <span className="font-semibold">{service.price} SOL</span>
                         </div>
                       </div>
                     </div>

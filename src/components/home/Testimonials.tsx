@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiStar, FiArrowLeft, FiArrowRight, FiUser, FiMapPin } from 'react-icons/fi';
+import { ServiceImage } from '@/components/ui/service-image';
 
 const Testimonials = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -161,12 +162,9 @@ const Testimonials = () => {
               >
                 {/* Service Image */}
                 <div className="relative h-64 md:h-auto">
-                  <div className="absolute inset-0 bg-gradient-to-t from-background-dark to-transparent z-10"></div>
-                  <Image
+                  <ServiceImage 
                     src={testimonials[currentIndex].serviceImage}
                     alt={testimonials[currentIndex].service}
-                    fill
-                    className="object-cover"
                   />
                   <div className="absolute bottom-4 left-4 z-20 bg-background/80 backdrop-blur-sm px-3 py-1 rounded-full text-xs text-primary">
                     {testimonials[currentIndex].service}

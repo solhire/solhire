@@ -7,6 +7,7 @@ import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Star, Heart, Clock, Award } from 'lucide-react';
+import { ServiceImage } from '@/components/ui/service-image';
 
 interface Service {
   id: string;
@@ -109,41 +110,31 @@ export default function ServiceGrid() {
                 </div>
               )}
               
-              {service.portfolio[0] && (
-                <div className="aspect-video w-full overflow-hidden rounded-t-lg relative">
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10"></div>
-                  
-                  {/* Portfolio image carousel */}
-                  <div className="relative h-full">
-                    <img
-                      src={service.portfolio[0]}
-                      alt={service.title}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                    
-                    {/* Image count indicator */}
-                    {service.portfolio.length > 1 && (
-                      <div className="absolute bottom-3 right-3 z-20 bg-black/70 text-white text-xs px-2 py-1 rounded-full">
-                        1/{service.portfolio.length}
-                      </div>
-                    )}
+              <div className="relative">
+                <ServiceImage 
+                  src={service.portfolio.length > 0 ? service.portfolio[0] : null}
+                  alt={service.title}
+                  className="rounded-t-lg"
+                />
+                
+                {service.portfolio.length > 1 && (
+                  <div className="absolute bottom-3 right-3 z-20 bg-black/70 text-white text-xs px-2 py-1 rounded-full">
+                    1/{service.portfolio.length}
                   </div>
-                  
-                  {/* Save button */}
-                  <button 
-                    className="absolute top-3 right-3 z-20 w-8 h-8 rounded-full bg-black/50 flex items-center justify-center text-white hover:bg-primary/80 transition-colors"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      // Add save functionality
-                    }}
-                  >
-                    <Heart className="w-4 h-4" />
-                  </button>
-                </div>
-              )}
+                )}
+                
+                <button 
+                  className="absolute top-3 right-3 z-20 w-8 h-8 rounded-full bg-black/50 flex items-center justify-center text-white hover:bg-primary/80 transition-colors"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    // Add save functionality
+                  }}
+                >
+                  <Heart className="w-4 h-4" />
+                </button>
+              </div>
               
               <div className="p-6">
-                {/* Provider info - moved to top */}
                 <div className="flex items-center gap-2 mb-3">
                   <Avatar className="w-8 h-8 border border-primary/30">
                     <AvatarImage src={service.provider.avatar} />
