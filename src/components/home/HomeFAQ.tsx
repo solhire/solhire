@@ -7,29 +7,25 @@ import { FiArrowRight, FiChevronDown } from 'react-icons/fi';
 
 const faqs = [
   {
-    question: 'How does payment work on SolHire?',
-    answer: 'Payments on SolHire are handled through smart contracts on the Solana blockchain. When a client posts a job, the funds are locked in an escrow smart contract. Once the work is completed and approved, the payment is automatically released to the creator\'s wallet. This ensures security for both parties.'
+    question: 'How does SolHire work?',
+    answer: 'SolHire connects clients with creative professionals through a decentralized marketplace. Clients post job requirements, creators submit proposals, and once agreed, funds are held in smart contract escrow until the work is approved.',
   },
   {
-    question: 'Do I need a Solana wallet to use SolHire?',
-    answer: 'Yes, both clients and creators need a Solana wallet to transact on SolHire. We support popular wallets like Phantom, Solflare, and others. If you don\'t have a wallet yet, we provide guides to help you set one up quickly and easily.'
+    question: 'How are payments processed?',
+    answer: 'Payments are processed through the Solana blockchain, offering fast and low-cost transactions. Funds are held in escrow until work is completed and approved, ensuring security for both parties.',
   },
   {
-    question: 'What fees does SolHire charge?',
-    answer: 'SolHire charges a 5% fee on completed transactions, which is significantly lower than traditional freelance platforms. The platform offers options to reduce fees for long-term users and active community members.'
+    question: 'What are the fees for using SolHire?',
+    answer: 'SolHire charges a competitive platform fee of 5% per transaction, significantly lower than traditional freelance platforms which often charge 20% or more.',
   },
   {
-    question: 'How are disputes handled?',
-    answer: 'We have a comprehensive dispute resolution system. If there\'s a disagreement between a client and creator, our team will review the case and mediate a fair solution. For complex disputes, we also have a community-driven resolution mechanism to ensure fairness.'
+    question: 'How do I get started as a creator?',
+    answer: 'To get started as a creator, connect your SOL wallet, create your professional profile highlighting your skills and portfolio, and start bidding on relevant projects or list your services.',
   },
   {
-    question: 'What is the $HIRE token used for?',
-    answer: 'The $HIRE token is a utility token that enables various platform functions, including reduced transaction fees and access to advanced features. The token plays an important role in the platform\'s ecosystem and governance.'
+    question: 'Is my payment secure?',
+    answer: 'Yes, all payments on SolHire are secured through smart contracts. Funds are held in escrow and only released to the creator after the client approves the completed work.',
   },
-  {
-    question: 'How do I become a verified creator?',
-    answer: 'To become a verified creator, you need to complete your profile, pass our identity verification process, and showcase your portfolio of work. Verification gives you a special badge, improves your visibility in search results, and increases client trust.'
-  }
 ];
 
 const FAQItem = ({ question, answer, isOpen, onClick }: { question: string; answer: string; isOpen: boolean; onClick: () => void }) => {

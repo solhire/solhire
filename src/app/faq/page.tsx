@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import MainLayout from '@/components/layout/MainLayout';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiChevronDown, FiSearch } from 'react-icons/fi';
+import { FiChevronDown, FiSearch, FiHelpCircle, FiBriefcase, FiEdit, FiSettings } from 'react-icons/fi';
 import Link from 'next/link';
 
 interface FAQItem {
@@ -13,121 +13,99 @@ interface FAQItem {
 
 interface FAQCategory {
   name: string;
-  icon: string;
+  icon: React.ComponentType<{ className?: string }>;
   faqs: FAQItem[];
 }
 
 const faqCategories: FAQCategory[] = [
   {
-    name: 'Getting Started',
-    icon: '🚀',
+    name: 'General',
+    icon: FiHelpCircle,
     faqs: [
       {
         question: 'What is SolHire?',
-        answer: 'SolHire is a decentralized marketplace that connects clients with creative professionals. Our platform leverages Solana blockchain technology to provide secure, fast, and low-fee transactions for freelance services.'
+        answer: 'SolHire is a decentralized marketplace connecting creative professionals with clients, operating on the Solana blockchain. Our platform enables secure, fast, and low-cost transactions for creative work.',
       },
       {
-        question: 'How do I create an account?',
-        answer: 'To create an account, click on the "Register" button in the top right corner of the homepage. You can sign up using your email address or connect with your existing Solana wallet. Complete your profile information to get started.'
+        question: 'How is SolHire different from traditional freelance platforms?',
+        answer: 'SolHire leverages blockchain technology to offer lower fees, faster payments, and enhanced security through smart contracts. We eliminate intermediaries and provide a truly decentralized platform for freelance work.',
       },
       {
-        question: 'Do I need a Solana wallet to use SolHire?',
-        answer: 'Yes, both clients and creators need a Solana wallet to transact on SolHire. We support popular wallets like Phantom, Solflare, and others. If you don\'t have a wallet yet, we provide guides to help you set one up quickly and easily.'
+        question: 'What types of services are available on SolHire?',
+        answer: 'SolHire focuses on creative services including graphic design, video editing, animation, content writing, music production, and more. Our specialized focus ensures high-quality work from talented professionals.',
       },
       {
-        question: 'Is SolHire available worldwide?',
-        answer: 'Yes, SolHire is available globally. Since we use Solana cryptocurrency for payments, you can work with clients and creators from anywhere in the world without worrying about currency conversion or international payment fees.'
-      }
-    ]
+        question: 'How do I contact support?',
+        answer: 'You can reach our support team through the help center in your dashboard, or by emailing support@solhire.com. We strive to respond to all inquiries within 24 hours.',
+      },
+    ],
   },
   {
     name: 'For Clients',
-    icon: '👨‍💼',
+    icon: FiBriefcase,
     faqs: [
       {
-        question: 'How do I find the right creator for my project?',
-        answer: 'You can browse creators by category, search for specific skills, or post a job and receive proposals. Each creator has a profile with their portfolio, reviews, and ratings to help you make an informed decision. Our advanced search filters allow you to narrow down creators based on experience, rating, and price range.'
+        question: 'How do I hire a creative professional on SolHire?',
+        answer: 'You can either browse through available services and purchase directly, or post a custom job with your specific requirements. After connecting your Solana wallet, you can place funds in escrow and work directly with your chosen professional.',
       },
       {
-        question: 'How do I pay for services?',
-        answer: 'Payments are made in SOL (Solana\'s native cryptocurrency). When you hire a creator, the funds are held in a secure smart contract escrow until the work is completed to your satisfaction. This protects both you and the creator throughout the process.'
+        question: 'How secure is my payment?',
+        answer: 'All payments on SolHire are secured through smart contracts on the Solana blockchain. Your funds are held in escrow and only released to the creator once you approve the completed work, ensuring you only pay for satisfactory results.',
       },
       {
         question: 'What if I\'m not satisfied with the work?',
-        answer: 'If you\'re not satisfied with the delivered work, you can request revisions based on the package terms. If issues persist, our dispute resolution system can help mediate. In cases where the work doesn\'t meet the agreed requirements, you may be eligible for a refund according to our terms of service.'
+        answer: 'If you\'re not satisfied with the delivered work, you can request revisions based on your initial requirements. If issues persist, our dispute resolution system helps mediate a fair solution between you and the creator.',
       },
       {
-        question: 'Can I request custom services not listed?',
-        answer: 'Yes, you can contact creators directly to discuss custom projects. Alternatively, you can post a job with your specific requirements and receive proposals from interested creators.'
-      }
-    ]
+        question: 'What fees do clients pay?',
+        answer: 'Clients pay a 5% platform fee on top of the agreed service price. This fee is significantly lower than traditional platforms and covers the costs of maintaining the platform, escrow services, and dispute resolution.',
+      },
+    ],
   },
   {
     name: 'For Creators',
-    icon: '👩‍🎨',
+    icon: FiEdit,
     faqs: [
       {
         question: 'How do I become a creator on SolHire?',
-        answer: 'To become a creator, register an account and then visit the "Become a Creator" page. You\'ll need to complete your profile, verify your identity, and showcase your portfolio. Once approved, you can create service listings and start receiving client requests.'
+        answer: 'To become a creator, create an account, connect your Solana wallet, complete your profile with portfolio samples, and set up your service offerings. Once approved, your services will be visible to potential clients.',
       },
       {
-        question: 'How much does it cost to be a creator?',
-        answer: 'Creating an account and becoming a creator is free. SolHire charges a 5% fee on completed transactions, which is significantly lower than traditional freelance platforms. The platform offers options to reduce fees for long-term users and active community members.'
+        question: 'How do I get paid for my work?',
+        answer: 'When a client approves your delivered work, the payment is automatically released from escrow to your connected Solana wallet. The process is quick, transparent, and has minimal fees compared to traditional payment methods.',
       },
       {
-        question: 'When and how do I get paid?',
-        answer: 'Once a client approves your delivered work, the payment is automatically released from escrow to your connected Solana wallet. This typically happens within minutes, unlike traditional platforms that may take days or weeks to process payments.'
+        question: 'What fees are charged to creators?',
+        answer: 'Creators pay a 5% platform fee on completed transactions. This is significantly lower than traditional platforms which often charge 20% or more, allowing you to keep more of your earnings.',
       },
       {
-        question: 'How do I get more clients?',
-        answer: 'Complete your profile with high-quality portfolio items, encourage satisfied clients to leave reviews, respond promptly to inquiries, and maintain high-quality work. Participating in the SolHire community and being active on the platform can also increase your visibility.'
-      }
-    ]
+        question: 'How do I handle client communication?',
+        answer: 'All client communication happens through our integrated messaging system. This keeps your conversations, file sharing, and payment milestones organized in one place, creating a seamless workflow.',
+      },
+    ],
   },
   {
-    name: 'Payments & Security',
-    icon: '🔒',
+    name: 'Technical',
+    icon: FiSettings,
     faqs: [
       {
-        question: 'How does payment work on SolHire?',
-        answer: 'Payments on SolHire are handled through smart contracts on the Solana blockchain. When a client posts a job, the funds are locked in an escrow smart contract. Once the work is completed and approved, the payment is automatically released to the creator\'s wallet. This ensures security for both parties.'
+        question: 'What blockchain does SolHire use?',
+        answer: 'SolHire is built on the Solana blockchain, chosen for its high speed, low transaction costs, and energy efficiency. This allows us to provide a seamless experience with near-instant payments and minimal environmental impact.',
       },
       {
-        question: 'Are my transactions secure?',
-        answer: 'Yes, all transactions on SolHire are secured by Solana blockchain technology. Smart contracts ensure that funds are only released when both parties fulfill their obligations. Additionally, our platform uses encryption to protect your personal information and communications.'
+        question: 'Which wallets are supported?',
+        answer: 'We support popular Solana wallets including Phantom, Solflare, Slope, and others. We recommend Phantom or Solflare for the best user experience on our platform.',
       },
       {
-        question: 'What fees does SolHire charge?',
-        answer: 'SolHire charges a 5% fee on completed transactions, which is significantly lower than traditional freelance platforms. The platform offers options to reduce fees for long-term users and active community members.'
+        question: 'Is my data secure on SolHire?',
+        answer: 'Yes, we implement industry-standard security practices to protect your data. While transaction data is publicly visible on the blockchain for transparency, personal information is protected and encrypted using modern security protocols.',
       },
       {
-        question: 'How are disputes handled?',
-        answer: 'We have a comprehensive dispute resolution system. If there\'s a disagreement between a client and creator, our team will review the case and mediate a fair solution. For complex disputes, we also have a community-driven resolution mechanism to ensure fairness.'
-      }
-    ]
+        question: 'What happens if I lose access to my wallet?',
+        answer: 'If you lose access to your wallet, you'll need to recover it using your seed phrase. SolHire cannot recover wallets or funds for you, so it's crucial to store your recovery phrase in a safe place. We provide educational resources on wallet security for all users.',
+      },
+    ],
   },
-  {
-    name: '$HIRE Token',
-    icon: '💎',
-    faqs: [
-      {
-        question: 'What is the $HIRE token?',
-        answer: 'The $HIRE token is SolHire\'s native utility token built on the Solana blockchain. It provides various benefits to users, including reduced platform fees and access to premium features on the platform.'
-      },
-      {
-        question: 'How do I get $HIRE tokens?',
-        answer: 'You can acquire $HIRE tokens by purchasing them on supported exchanges or participating in community events. More details will be provided when the token officially launches.'
-      },
-      {
-        question: 'What benefits do $HIRE tokens provide?',
-        answer: 'The $HIRE token enables various platform functionalities, including reduced transaction fees and access to advanced features. The token plays an important role in the platform\'s ecosystem and governance.'
-      },
-      {
-        question: 'Can I stake my $HIRE tokens?',
-        answer: 'The token will support various participation mechanisms, which will be detailed once the token is officially launched. Our focus is on creating sustainable utility within the SolHire ecosystem.'
-      }
-    ]
-  }
 ];
 
 const FAQPage = () => {
@@ -198,7 +176,9 @@ const FAQPage = () => {
                                 : 'hover:bg-background text-gray-400 hover:text-white'
                             }`}
                           >
-                            <span className="mr-2">{category.icon}</span>
+                            <span className="mr-2">
+                              {React.createElement(category.icon, { className: "w-5 h-5" })}
+                            </span>
                             {category.name}
                           </button>
                         </li>
@@ -218,7 +198,9 @@ const FAQPage = () => {
                     className={`mb-10 ${!searchQuery && activeCategory !== category.name ? 'hidden' : ''}`}
                   >
                     <div className="flex items-center mb-6">
-                      <span className="text-2xl mr-3">{category.icon}</span>
+                      <span className="text-2xl mr-3">
+                        {React.createElement(category.icon, { className: "w-6 h-6" })}
+                      </span>
                       <h2 className="text-2xl font-bold">{category.name}</h2>
                     </div>
 

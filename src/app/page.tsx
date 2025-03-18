@@ -64,14 +64,10 @@ export default function Home() {
               </div>
               
               <div className="mt-8 flex flex-col sm:flex-row gap-4">
-                <Link href="/token" className="flex items-center text-purple-500 hover:text-blue-500 group transition-all">
-                  <span className="mr-2">Learn about $HIRE token</span>
+                <Link href="/services" className="flex items-center text-purple-500 hover:text-blue-500 group transition-all">
+                  <span className="mr-2">Explore Services</span>
                   <FiArrowRight className="group-hover:translate-x-1 transition-transform" />
                 </Link>
-                <div className="flex items-center text-sm text-gray-400">
-                  <FiShield className="mr-2 text-yellow-500" />
-                  <span className="font-mono">HWqYyKE5Q6fi5Y99KHLCS4jpQdxGUcBSgeQYh2Cspump</span>
-                </div>
               </div>
             </div>
             

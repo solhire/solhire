@@ -78,29 +78,6 @@ const CreatorBenefits = () => {
             </motion.div>
           ))}
         </div>
-        
-        <div className="mt-16 p-8 border border-primary/20 bg-background/50 rounded-2xl">
-          <div className="flex flex-col md:flex-row items-center">
-            <div className="mb-6 md:mb-0 md:mr-8">
-              <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mb-4 mx-auto md:mx-0">
-                <span className="text-3xl">💎</span>
-              </div>
-            </div>
-            <div className="flex-1 text-center md:text-left">
-              <h3 className="text-xl font-bold mb-2">$HIRE Token Utility</h3>
-              <p className="text-gray-400 mb-4">
-                The platform token provides benefits like reduced fees and enhanced features to improve your experience on SolHire.
-              </p>
-              <Link 
-                href="/token" 
-                className="text-primary hover:text-primary/80 inline-flex items-center group"
-              >
-                <span>Learn more about platform tokens</span>
-                <FiArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
-              </Link>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
   );
